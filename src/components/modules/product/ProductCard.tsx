@@ -1,52 +1,39 @@
+"use client";
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Heart, ShoppingCart, Star } from "lucide-react";
 import Image from "next/image";
+import { TProduct } from "@/types/product";
+import { useAppDispatch } from "@/redux/hooks";
+import { addProduct } from "@/redux/features/cartSlice";
 
-interface ProductCardProps {
-  id: string;
-  name: string;
-  price: number;
-  originalPrice?: number;
-  image: string;
-  category: string;
-  rating: number;
-  reviews: number;
-  isNew?: boolean;
-  isSale?: boolean;
-}
+const ProductCard = ({ product }: { product: TProduct }) => {
+  const dispatch = useAppDispatch();
 
-const ProductCard: React.FC<ProductCardProps> = ({
-  id,
-  name,
-  price,
-  originalPrice,
-  image,
-  category,
-  rating,
-  reviews,
-  isNew,
-  isSale,
-}) => {
+  const handleAddToCart = (product: TProduct) => {
+    dispatch(addProduct(product));
+  };
+
   return (
     <div className="group relative bg-card rounded-xl shadow-product hover:shadow-elegant transition-all duration-300 overflow-hidden">
       {/* Image container */}
-      <div className="relative overflow-hidden rounded-t-xl">
+      <div className="relative overflow-hidden rounded-t-xl w-full h-64">
         <Image
-          height={256}
-          width={256}
-          src={image}
-          alt={name}
-          className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500"
+          fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          src={product.imageUrl}
+          alt={product.name}
+          priority
+          className=" object-cover group-hover:scale-110 transition-transform duration-500"
         />
 
         {/* Badges */}
         <div className="absolute top-3 left-3 flex flex-col gap-2">
-          {isNew && (
+          {product.isNew && (
             <Badge className="bg-accent text-accent-foreground">New</Badge>
           )}
-          {isSale && <Badge variant="destructive">Sale</Badge>}
+          {product.isSale && <Badge variant="destructive">Sale</Badge>}
         </div>
 
         {/* Wishlist button */}
@@ -71,10 +58,10 @@ const ProductCard: React.FC<ProductCardProps> = ({
       <div className="p-4 space-y-3">
         <div className="space-y-1">
           <p className="text-sm text-muted-foreground uppercase tracking-wide font-medium">
-            {category}
+            {product.category}
           </p>
           <h3 className="font-semibold text-foreground group-hover:text-accent transition-colors line-clamp-2">
-            {name}
+            {product.name}
           </h3>
         </div>
 
@@ -85,28 +72,36 @@ const ProductCard: React.FC<ProductCardProps> = ({
               <Star
                 key={i}
                 className={`h-3 w-3 ${
-                  i < Math.floor(rating)
+                  i < Math.floor(product.rating)
                     ? "fill-accent text-accent"
                     : "text-muted-foreground/30"
                 }`}
               />
             ))}
           </div>
-          <span className="text-xs text-muted-foreground">({reviews})</span>
+          <span className="text-xs text-muted-foreground">
+            ({product.reviewCount})
+          </span>
         </div>
 
         {/* Price */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="text-lg font-bold text-foreground">${price}</span>
-            {originalPrice && (
+            <span className="text-lg font-bold text-foreground">
+              ${product.price}
+            </span>
+            {product.originalPrice && (
               <span className="text-sm text-muted-foreground line-through">
-                ${originalPrice}
+                ${product.originalPrice}
               </span>
             )}
           </div>
 
-          <Button variant="default" size="sm">
+          <Button
+            variant="default"
+            size="sm"
+            onClick={() => handleAddToCart(product)}
+          >
             Add to Cart
           </Button>
         </div>

@@ -4,19 +4,7 @@ import { ArrowRight, Star, Zap, Users } from "lucide-react";
 
 import Link from "next/link";
 import ProductCard from "@/components/modules/product/ProductCard";
-
-type Product = {
-  id: string;
-  name: string;
-  price: number;
-  originalPrice: number;
-  imageUrl: string;
-  category: string;
-  rating: number;
-  reviewCount: number;
-  isNew: boolean;
-  isSale: boolean;
-};
+import { TProduct } from "@/types/product";
 
 const HomePage = async () => {
   const stats = [
@@ -28,7 +16,7 @@ const HomePage = async () => {
 
   const products = await res.json();
 
-  const featuredProducts: Product[] = products.slice(0, 8);
+  const featuredProducts: TProduct[] = products.slice(0, 8);
 
   return (
     <div className="min-h-screen bg-background">
@@ -53,19 +41,7 @@ const HomePage = async () => {
             ) : ( */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
               {featuredProducts.map((product) => (
-                <ProductCard
-                  key={product.id}
-                  id={product.id}
-                  name={product.name}
-                  price={product.price}
-                  originalPrice={product.originalPrice}
-                  image={product.imageUrl}
-                  category={product.category}
-                  rating={product.rating}
-                  reviews={product.reviewCount}
-                  isNew={product.isNew}
-                  isSale={product.isSale}
-                />
+                <ProductCard key={product.id} product={product} />
               ))}
             </div>
             {/* )} */}

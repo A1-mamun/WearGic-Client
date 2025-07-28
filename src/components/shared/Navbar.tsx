@@ -12,6 +12,8 @@ import Link from "next/link";
 import CartSidebar from "../modules/cart/CartSidebar";
 import PhoneAuthModal from "../modules/auth/PhoneAuthModal";
 import { ThemeToggle } from "../ui/theme-toggle";
+import { useAppSelector } from "@/redux/hooks";
+import { orderProductsSelector } from "@/redux/features/cartSlice";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);

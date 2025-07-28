@@ -13,20 +13,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Search, Filter, X } from "lucide-react";
 import ProductCard from "./ProductCard";
-
-type Product = {
-  id: string;
-  name: string;
-  price: number;
-  originalPrice: number;
-  imageUrl: string;
-  category: string;
-  rating: number;
-  reviewCount: number;
-  gender: string;
-  isNew: boolean;
-  isSale: boolean;
-};
+import { TProduct } from "@/types/product";
 
 type filterOption = {
   value: string;
@@ -39,7 +26,7 @@ const AllProducts = ({
   genderOptions,
   sortOptions,
 }: {
-  products: Product[];
+  products: TProduct[];
   categories: filterOption[];
   genderOptions: filterOption[];
   sortOptions: filterOption[];
@@ -251,19 +238,7 @@ const AllProducts = ({
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                 {sortedProducts.map((product) => (
-                  <ProductCard
-                    key={product.id}
-                    id={product.id}
-                    name={product.name}
-                    price={product.price}
-                    originalPrice={product.originalPrice}
-                    image={product.imageUrl}
-                    category={product.category}
-                    rating={product.rating}
-                    reviews={product.reviewCount}
-                    isNew={product.isNew}
-                    isSale={product.isSale}
-                  />
+                  <ProductCard key={product.id} product={product} />
                 ))}
               </div>
             )}
