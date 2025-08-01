@@ -299,5 +299,43 @@
     { "value": "price-high", "label": "Price: High to Low" },
     { "value": "rating", "label": "Highest Rated" },
     { "value": "newest", "label": "Newest" }
+  ],
+  "cupon": [
+    {
+      "id": "1",
+      "code": "SUMMER20",
+      "discountType": "percentage",
+      "minimumPurchase": 500,
+      "maximumDiscount": 200,
+      "discount": 20,
+      "description": "Get 20% off on your next purchase",
+      "startDate": "2024-07-01",
+      "expiryDate": "2024-08-31",
+      "isActive": true
+    },
+    {
+      "id": "2",
+      "code": "FREESHIP",
+      "discountType": "flat",
+      "minimumPurchase": 1000,
+      "maximumDiscount": 50,
+      "discount": 50,
+      "description": "Free shipping on orders over $1000",
+      "startDate": "2024-07-15",
+      "expiryDate": "2024-09-15",
+      "isActive": true
+    },
+    {
+      "id": "3",
+      "code": "WELCOME10",
+      "discountType": "percentage",
+      "minimumPurchase": 200,
+      "maximumDiscount": 30,
+      "discount": 10,
+      "description": "10% off for new customers",
+      "startDate": "2024-06-01",
+      "expiryDate": "2024-12-31",
+      "isActive": true
+    }
   ]
 }
