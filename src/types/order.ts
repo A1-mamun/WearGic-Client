@@ -1,8 +1,11 @@
-import { TProduct } from "./product";
-
 export interface IOrder {
-  products: TProduct[];
+  products: IOrderProduct[];
   coupon?: string;
   shippingAddress: string;
   paymentMethod: string;
+}
+
+export interface IOrderProduct {
+  product: string;
+  quantity: number;
 }

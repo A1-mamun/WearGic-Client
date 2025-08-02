@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -12,14 +13,15 @@ import {
   orderSelector,
   shippingAddressSelector,
   shippingCostSelector,
-  subtotalSelector,
+  subTotalSelector,
 } from "@/redux/features/cartSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { createOrder } from "@/services/checkout";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 export default function PaymentDetails() {
-  const subTotal = useAppSelector(subtotalSelector);
+  const subTotal = useAppSelector(subTotalSelector);
   const shippingCost = useAppSelector(shippingCostSelector);
   const discountAmount = useAppSelector(discountAmountSelector);
   const grandTotal = useAppSelector(grandTotalSelector);
@@ -69,15 +71,15 @@ export default function PaymentDetails() {
 
       const res = await createOrder(orderData);
 
-      if (res.success) {
-        toast.success(res.message, { id: orderLoading });
-        dispatch(clearCart());
-        router.push(res.data.paymentUrl);
-      }
+      // if (res.success) {
+      //   toast.success(res.message, { id: orderLoading });
+      //   dispatch(clearCart());
+      //   router.push(res.data.paymentUrl);
+      // }
 
-      if (!res.success) {
-        toast.error(res.message, { id: orderLoading });
-      }
+      // if (!res.success) {
+      //   toast.error(res.message, { id: orderLoading });
+      // }
     } catch (error: any) {
       toast.error(error.message, { id: orderLoading });
     }

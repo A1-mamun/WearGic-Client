@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 import ICartProduct from "@/types/cartProduct";
@@ -32,14 +33,12 @@ export const fetchCoupon = createAsyncThunk(
   async ({
     couponCode,
     subTotal,
-    shopId,
   }: {
     couponCode: string;
     subTotal: number;
-    shopId: string;
   }) => {
     try {
-      const res = await addCoupon(couponCode, subTotal, shopId);
+      const res = await addCoupon(couponCode, subTotal);
 
       if (!res.success) {
         throw new Error(res.message);
@@ -131,14 +130,14 @@ export const orderSelector = (state: RootState) => {
     products: state.cart.products.map((product) => ({
       product: product.id,
       quantity: product.orderQuantity,
-      color: "White",
+      // color: "White",
     })),
     shippingAddress: `${state.cart.shippingAddress} - ${state.cart.city}`,
     paymentMethod: "Online",
   };
 };
 
-export const subtotalSelector = (state: RootState) =>
+export const subTotalSelector = (state: RootState) =>
   state.cart.products.reduce(
     (total, product) => total + product.price * product.orderQuantity,
     0
@@ -171,7 +170,7 @@ export const discountAmountSelector = (state: RootState) => {
 };
 
 export const grandTotalSelector = (state: RootState) => {
-  const subTotal = subtotalSelector(state);
+  const subTotal = subTotalSelector(state);
   const shippingCost = shippingCostSelector(state);
   const discountAmount = discountAmountSelector(state);
 

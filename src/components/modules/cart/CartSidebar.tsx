@@ -1,5 +1,5 @@
 "use client";
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import {
   Sheet,
   SheetContent,
@@ -13,18 +13,26 @@ import { ShoppingCart } from "lucide-react";
 import { useAppSelector } from "@/redux/hooks";
 import {
   orderProductsSelector,
-  subtotalSelector,
+  subTotalSelector,
 } from "@/redux/features/cartSlice";
 import CartProductCard from "./CartProductCard";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const CartSidebar = ({ children }: { children: ReactNode }) => {
+  const [open, setOpen] = useState(false);
+  const router = useRouter();
+
   const products = useAppSelector(orderProductsSelector);
 
-  const subtotal = useAppSelector(subtotalSelector);
+  const subTotal = useAppSelector(subTotalSelector);
+
+  const handleCheckout = () => {
+    setOpen(false); // Close the sidebar
+    router.push("/checkout"); // Navigate to checkout
+  };
 
   return (
-    <Sheet>
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <div className="relative">
           {children}
@@ -60,13 +68,12 @@ const CartSidebar = ({ children }: { children: ReactNode }) => {
               <div className="border-t pt-4 space-y-4">
                 <div className="flex justify-between text-lg font-semibold">
                   <span>Total:</span>
-                  <span>${subtotal.toFixed(2)}</span>
+                  <span>${subTotal.toFixed(2)}</span>
                 </div>
-                <Link href="/checkout">
-                  <Button className="w-full" size="lg">
-                    Proceed to Checkout
-                  </Button>
-                </Link>
+
+                <Button className="w-full" size="lg" onClick={handleCheckout}>
+                  Proceed to Checkout
+                </Button>
               </div>
             </>
           )}
