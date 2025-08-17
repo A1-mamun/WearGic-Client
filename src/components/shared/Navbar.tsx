@@ -5,20 +5,18 @@ import React, { useState } from "react";
 import { ShoppingBag, User, Menu, X, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-import { useAuth } from "@/contexts/AuthContext";
-
 import { toast } from "sonner";
 import Link from "next/link";
 import CartSidebar from "../modules/cart/CartSidebar";
 import PhoneAuthModal from "../modules/auth/PhoneAuthModal";
 import { ThemeToggle } from "../ui/theme-toggle";
-import { useAppSelector } from "@/redux/hooks";
-import { orderProductsSelector } from "@/redux/features/cartSlice";
+import { useUser } from "@/contexts/userContext";
+import { logoutUser } from "@/services/auth";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
-  const { user, signOut } = useAuth();
+  const { user, refreshUser } = useUser();
 
   const navigationItems = [
     { name: "Home", path: "/" },
@@ -30,9 +28,11 @@ const Navbar = () => {
     { name: "Track Order", path: "/track-order" },
   ];
 
-  const handleSignOut = async () => {
-    await signOut();
-    toast.success("Signed out successfully");
+  const handleLogOut = async () => {
+    await logoutUser();
+    refreshUser();
+    toast.success("Logged out successfully");
+    // router.push("/");
   };
 
   return (
@@ -73,7 +73,7 @@ const Navbar = () => {
                 <span className="text-sm text-muted-foreground">
                   Welcome, {user.phone || "User"}
                 </span>
-                <Button variant="ghost" size="sm" onClick={handleSignOut}>
+                <Button variant="ghost" size="sm" onClick={handleLogOut}>
                   <LogOut className="h-4 w-4 mr-2" />
                   Sign Out
                 </Button>
@@ -136,7 +136,7 @@ const Navbar = () => {
                     <Button
                       variant="outline"
                       className="w-full"
-                      onClick={handleSignOut}
+                      onClick={handleLogOut}
                     >
                       <LogOut className="h-4 w-4 mr-2" />
                       Sign Out

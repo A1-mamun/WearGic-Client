@@ -2,7 +2,6 @@
 "use server";
 
 import { TCategory } from "@/types/category";
-import { TProduct } from "@/types/product";
 import { cookies } from "next/headers";
 
 export const createCategory = async (category: TCategory) => {
