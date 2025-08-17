@@ -6,18 +6,21 @@ import { cookies } from "next/headers";
 
 export const createOrder = async (order: IOrder) => {
   try {
-    // const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/order`, {
-    //   method: "POST",
-    //   headers: {
-    //     Authorization: (await cookies()).get("accessToken")!.value,
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify(order),
-    // });
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API}/order/place-order`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: (await cookies()).get("accessToken")!.value,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(order),
+      }
+    );
 
-    console.log("Order data:", order);
+    // console.log("Order data:", order);
 
-    return order;
+    return await res.json();
     // return await res.json();
   } catch (error: any) {
     return Error(error);
@@ -26,14 +29,17 @@ export const createOrder = async (order: IOrder) => {
 
 export const addCoupon = async (couponCode: string, subTotal: number) => {
   try {
-    const res = await fetch(`http://localhost:5000/cupon/1`, {
-      method: "POST",
-      headers: {
-        Authorization: (await cookies()).get("accessToken")!.value,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ orderAmount: subTotal }),
-    });
+    const res = await fetch(
+      `${process.env.NEXT_API_URL}/coupon/${couponCode}`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: (await cookies()).get("accessToken")!.value,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ orderAmount: subTotal }),
+      }
+    );
 
     return await res.json();
   } catch (error: any) {
