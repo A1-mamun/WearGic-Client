@@ -55,8 +55,6 @@ const AllProducts = ({
         return a.price - b.price;
       case "price-high":
         return b.price - a.price;
-      case "rating":
-        return b.rating - a.rating;
       case "newest":
         return b.isNew ? 1 : -1;
       default:

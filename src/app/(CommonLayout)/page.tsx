@@ -5,6 +5,7 @@ import { ArrowRight, Star, Zap, Users } from "lucide-react";
 import Link from "next/link";
 import ProductCard from "@/components/modules/product/ProductCard";
 import { TProduct } from "@/types/product";
+import { getAllProducts } from "@/services/product";
 
 const HomePage = async () => {
   const stats = [
@@ -12,9 +13,7 @@ const HomePage = async () => {
     { icon: Star, value: "4.9", label: "Average Rating" },
     { icon: Zap, value: "99%", label: "Customer Satisfaction" },
   ];
-  const res = await fetch("http://localhost:5000/products");
-
-  const products = await res.json();
+  const products = await getAllProducts();
 
   const featuredProducts: TProduct[] = products.slice(0, 8);
 

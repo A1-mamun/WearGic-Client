@@ -44,10 +44,10 @@ export const getAllProducts = async (): Promise<TProduct[]> => {
       {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${token}`, // ✅ standard format
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        cache: "no-store", // ✅ prevents Next.js caching
+        cache: "no-store",
       }
     );
 
@@ -58,6 +58,37 @@ export const getAllProducts = async (): Promise<TProduct[]> => {
     return await res.json();
   } catch (error) {
     // console.error("Get all products error:", error);
+    throw error;
+  }
+};
+
+export const getProductById = async (id: string): Promise<TProduct> => {
+  try {
+    const token = (await cookies()).get("accessToken")?.value;
+
+    if (!token) {
+      throw new Error("No access token found");
+    }
+
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API}/product/product/${id}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        cache: "no-store",
+      }
+    );
+
+    if (!res.ok) {
+      throw new Error(`API error: ${res.status} ${res.statusText}`);
+    }
+
+    return await res.json();
+  } catch (error) {
+    // console.error("Get product by ID error:", error);
     throw error;
   }
 };
