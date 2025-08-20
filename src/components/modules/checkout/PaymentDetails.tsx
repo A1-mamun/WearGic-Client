@@ -71,15 +71,15 @@ export default function PaymentDetails() {
 
       const res = await createOrder(orderData);
 
-      // if (res.success) {
-      //   toast.success(res.message, { id: orderLoading });
-      //   dispatch(clearCart());
-      //   router.push(res.data.paymentUrl);
-      // }
+      if (res.success) {
+        toast.success(res.message, { id: orderLoading });
+        dispatch(clearCart());
+        router.push(res.data.paymentUrl);
+      }
 
-      // if (!res.success) {
-      //   toast.error(res.message, { id: orderLoading });
-      // }
+      if (!res.success) {
+        toast.error(res.message, { id: orderLoading });
+      }
     } catch (error: any) {
       toast.error(error.message, { id: orderLoading });
     }

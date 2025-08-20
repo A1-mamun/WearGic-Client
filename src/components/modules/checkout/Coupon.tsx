@@ -10,13 +10,26 @@ import { toast } from "sonner";
 import {
   couponSelector,
   fetchCoupon,
+  removeCoupon,
   subTotalSelector,
 } from "@/redux/features/cartSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { useEffect } from "react";
 
-export default function Coupon() {
+interface CouponProps {
+  // eslint-disable-next-line no-unused-vars
+  setIsApplied: (isApplied: boolean) => void;
+}
+
+export default function Coupon({ setIsApplied }: CouponProps) {
   const subTotal = useAppSelector(subTotalSelector);
   const { isLoading, code } = useAppSelector(couponSelector);
+
+  useEffect(() => {
+    if (code === "") {
+      form.reset();
+    }
+  }, [code]);
 
   const dispatch = useAppDispatch();
 
@@ -25,7 +38,10 @@ export default function Coupon() {
   const couponInput = form.watch("coupon");
 
   const handleRemoveCoupon = () => {
+    setIsApplied(false);
     form.reset();
+    dispatch(removeCoupon());
+    console.log("Coupon removed");
   };
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
@@ -33,7 +49,9 @@ export default function Coupon() {
       const res = await dispatch(
         fetchCoupon({ couponCode: data.coupon, subTotal })
       ).unwrap();
-      console.log(res, "inside component");
+      if (res.success) {
+        setIsApplied(true);
+      }
     } catch (error: any) {
       console.log(error);
       toast.error(error.message);
@@ -48,40 +66,44 @@ export default function Coupon() {
 
         <Form {...form}>
           <form className="mt-3" onSubmit={form.handleSubmit(onSubmit)}>
-            <FormField
-              control={form.control}
-              name="coupon"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      className="rounded-full"
-                      placeholder="Promo / Coupon code"
-                      value={field.value || code}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <div className="flex gap-3 mt-3">
-              <Button
-                disabled={!couponInput}
-                type="submit"
-                className="w-full text-xl font-semibold py-5 "
-              >
-                {isLoading ? "Applying..." : "Apply"}
-              </Button>
+            <div className="flex gap-3 mb-3">
+              <div className="flex-1">
+                <FormField
+                  control={form.control}
+                  name="coupon"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          className=""
+                          placeholder="Promo / Coupon code"
+                          value={field.value || code}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              </div>
+
               {couponInput && (
                 <Button
                   onClick={handleRemoveCoupon}
                   variant="outline"
-                  className="bg-red-100 rounded-full size-10"
+                  type="button"
+                  className="bg-red-100 size-"
                 >
                   <Trash size={24} className="text-red-500" />
                 </Button>
               )}
             </div>
+            <Button
+              disabled={!couponInput}
+              type="submit"
+              className="w-full text-xl font-semibold py-5 "
+            >
+              {isLoading ? "Applying..." : "Apply"}
+            </Button>
           </form>
         </Form>
       </div>

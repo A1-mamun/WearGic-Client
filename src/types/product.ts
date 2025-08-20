@@ -21,7 +21,7 @@ export type TProduct = {
   updatedAt: Date;
 
   // Relations
-  images: TProductImage[];
+  productImages: TProductImage[];
 };
 
 // Image type for creation

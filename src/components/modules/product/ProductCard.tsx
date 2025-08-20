@@ -2,9 +2,9 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Heart, ShoppingCart, Star } from "lucide-react";
+import { Heart, ShoppingCart } from "lucide-react";
 import Image from "next/image";
-import { TProduct } from "@/types/product";
+import { TProduct, TProductImage } from "@/types/product";
 import { useAppDispatch } from "@/redux/hooks";
 import { addProduct } from "@/redux/features/cartSlice";
 
@@ -15,6 +15,10 @@ const ProductCard = ({ product }: { product: TProduct }) => {
     dispatch(addProduct(product));
   };
 
+  const primaryImage =
+    product.productImages.find((img: TProductImage) => img.isPrimary) ||
+    product.productImages[0];
+
   return (
     <div className="group relative bg-card rounded-xl shadow-product hover:shadow-elegant transition-all duration-300 overflow-hidden">
       {/* Image container */}
@@ -22,7 +26,7 @@ const ProductCard = ({ product }: { product: TProduct }) => {
         <Image
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          src={product.imageUrl}
+          src={primaryImage.imageUrl}
           alt={product.name}
           priority
           className=" object-cover group-hover:scale-110 transition-transform duration-500"
@@ -33,7 +37,7 @@ const ProductCard = ({ product }: { product: TProduct }) => {
           {product.isNew && (
             <Badge className="bg-accent text-accent-foreground">New</Badge>
           )}
-          {product.isSale && <Badge variant="destructive">Sale</Badge>}
+          {/* {product.isSale && <Badge variant="destructive">Sale</Badge>} */}
         </div>
 
         {/* Wishlist button */}
@@ -66,7 +70,7 @@ const ProductCard = ({ product }: { product: TProduct }) => {
         </div>
 
         {/* Rating */}
-        <div className="flex items-center gap-2">
+        {/* <div className="flex items-center gap-2">
           <div className="flex items-center gap-1">
             {[...Array(5)].map((_, i) => (
               <Star
@@ -82,7 +86,7 @@ const ProductCard = ({ product }: { product: TProduct }) => {
           <span className="text-xs text-muted-foreground">
             ({product.reviewCount})
           </span>
-        </div>
+        </div> */}
 
         {/* Price */}
         <div className="flex items-center justify-between">

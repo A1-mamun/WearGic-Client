@@ -10,6 +10,7 @@ interface InitialState {
   shippingAddress: string;
   coupon: {
     code: string;
+    type: string;
     discountAmount: number;
     isLoading: boolean;
     error: string;
@@ -22,6 +23,7 @@ const initialState: InitialState = {
   shippingAddress: "",
   coupon: {
     code: "",
+    type: "",
     discountAmount: 0,
     isLoading: false,
     error: "",
@@ -51,6 +53,15 @@ export const fetchCoupon = createAsyncThunk(
     }
   }
 );
+
+// Helper function to clear coupon completely
+const clearCouponState = (state: InitialState) => {
+  state.coupon.code = "";
+  state.coupon.type = "";
+  state.coupon.discountAmount = 0;
+  state.coupon.error = "";
+  state.coupon.isLoading = false;
+};
 
 const cartSlice = createSlice({
   name: "cart",
@@ -101,6 +112,11 @@ const cartSlice = createSlice({
       state.products = [];
       state.city = "";
       state.shippingAddress = "";
+      clearCouponState(state);
+    },
+
+    removeCoupon: (state) => {
+      clearCouponState(state);
     },
   },
   extraReducers: (builder) => {
@@ -113,12 +129,14 @@ const cartSlice = createSlice({
       state.coupon.error = action.error.message as string;
       state.coupon.code = "";
       state.coupon.discountAmount = 0;
+      state.coupon.type = "";
     });
     builder.addCase(fetchCoupon.fulfilled, (state, action) => {
       state.coupon.isLoading = false;
       state.coupon.error = "";
       state.coupon.code = action.payload.data.coupon.code;
-      state.coupon.discountAmount = action.payload.data.discount;
+      state.coupon.discountAmount = action.payload.data.discountAmount;
+      state.coupon.type = action.payload.data.coupon.discountType;
     });
   },
 });
@@ -145,6 +163,12 @@ export const subTotalSelector = (state: RootState) =>
 
 export const shippingCostSelector = (state: RootState) => {
   if (
+    state.cart.city &&
+    state.cart.products.length > 0 &&
+    state.cart.coupon.type === "FREE_SHIPPING"
+  ) {
+    return 0;
+  } else if (
     state.cart.city &&
     state.cart.city === "Dhaka" &&
     state.cart.products.length > 0
@@ -193,5 +217,6 @@ export const {
   updateCity,
   updateShippingAddress,
   clearCart,
+  removeCoupon,
 } = cartSlice.actions;
 export default cartSlice.reducer;

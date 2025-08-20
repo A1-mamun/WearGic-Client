@@ -30,11 +30,11 @@ export const createOrder = async (order: IOrder) => {
 export const addCoupon = async (couponCode: string, subTotal: number) => {
   try {
     const res = await fetch(
-      `${process.env.NEXT_API_URL}/coupon/${couponCode}`,
+      `${process.env.NEXT_PUBLIC_BASE_API}/coupon/${couponCode}`,
       {
         method: "POST",
         headers: {
-          Authorization: (await cookies()).get("accessToken")!.value,
+          // Authorization: (await cookies()).get("accessToken")!.value,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ orderAmount: subTotal }),

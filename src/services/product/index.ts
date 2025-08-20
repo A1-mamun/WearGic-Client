@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 
-import { TCreateProduct, TProduct } from "@/types/product";
+import { TCreateProduct } from "@/types/product";
+import { revalidateTag } from "next/cache";
 import { cookies } from "next/headers";
 
 export const createProduct = async (product: TCreateProduct) => {
@@ -24,45 +25,45 @@ export const createProduct = async (product: TCreateProduct) => {
       }
     );
 
-    // console.log("Product data:", product);
-    return await res.json();
+    if (!res.ok) {
+      throw new Error("Failed to create product");
+    }
+
+    const data = await res.json();
+
+    //Invalidate the product cache after creating a new product
+    revalidateTag("PRODUCT");
+
+    return data;
   } catch (error: any) {
-    return Error(error);
+    throw new Error(error.message || "Something went wrong");
   }
 };
 
-export const getAllProducts = async (): Promise<TProduct[]> => {
+export const getAllProducts = async () => {
   try {
-    const token = (await cookies()).get("accessToken")?.value;
-
-    if (!token) {
-      throw new Error("No access token found");
-    }
-
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_API}/product/products`,
       {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
+        next: {
+          tags: ["PRODUCT"],
         },
-        cache: "no-store",
       }
     );
-
     if (!res.ok) {
-      throw new Error(`API error: ${res.status} ${res.statusText}`);
+      throw new Error("Failed to fetch products");
     }
 
-    return await res.json();
-  } catch (error) {
-    // console.error("Get all products error:", error);
-    throw error;
+    // console.log("Get all products response:", await res.json());
+
+    const data = await res.json();
+    return data;
+  } catch (error: any) {
+    return Error(error.message);
   }
 };
 
-export const getProductById = async (id: string): Promise<TProduct> => {
+export const getProductById = async (id: string) => {
   try {
     const token = (await cookies()).get("accessToken")?.value;
 
@@ -82,13 +83,9 @@ export const getProductById = async (id: string): Promise<TProduct> => {
       }
     );
 
-    if (!res.ok) {
-      throw new Error(`API error: ${res.status} ${res.statusText}`);
-    }
-
-    return await res.json();
-  } catch (error) {
-    // console.error("Get product by ID error:", error);
-    throw error;
+    const data = await res.json();
+    return data;
+  } catch (error: any) {
+    return Error(error.message);
   }
 };

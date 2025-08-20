@@ -6,10 +6,17 @@ import {
 } from "@/redux/features/cartSlice";
 import { useAppDispatch } from "@/redux/hooks";
 import ICartProduct from "@/types/cartProduct";
+import { TProductImage } from "@/types/product";
 import { Plus, Minus, Trash2 } from "lucide-react";
 import Image from "next/image";
 
-const CartProductCard = ({ product }: { product: ICartProduct }) => {
+const CartProductCard = ({
+  isCouponApplied,
+  product,
+}: {
+  isCouponApplied: boolean;
+  product: ICartProduct;
+}) => {
   const dispatch = useAppDispatch();
 
   const incrementQuantity = (id: string) => {
@@ -26,13 +33,18 @@ const CartProductCard = ({ product }: { product: ICartProduct }) => {
     // Dispatch remove action
     dispatch(removeOrderProduct(id));
   };
+
+  const primaryImage =
+    product.productImages.find((img: TProductImage) => img.isPrimary) ||
+    product.productImages[0];
+
   return (
     <div
       key={product.id}
       className="flex items-center space-x-4 p-3 border rounded-lg"
     >
       <Image
-        src={product.imageUrl}
+        src={primaryImage.imageUrl}
         alt={product.name}
         width={70}
         height={70}
@@ -47,6 +59,7 @@ const CartProductCard = ({ product }: { product: ICartProduct }) => {
           variant="outline"
           size="icon"
           className="h-8 w-8"
+          disabled={isCouponApplied}
           onClick={() => decrementQuantity(product.id)}
         >
           <Minus className="h-3 w-3" />
@@ -56,6 +69,7 @@ const CartProductCard = ({ product }: { product: ICartProduct }) => {
           variant="outline"
           size="icon"
           className="h-8 w-8"
+          disabled={isCouponApplied}
           onClick={() => incrementQuantity(product.id)}
         >
           <Plus className="h-3 w-3" />
@@ -64,6 +78,7 @@ const CartProductCard = ({ product }: { product: ICartProduct }) => {
           variant="outline"
           size="icon"
           className="h-8 w-8 text-destructive hover:text-destructive"
+          disabled={isCouponApplied}
           onClick={() => removeProduct(product.id)}
         >
           <Trash2 className="h-3 w-3" />

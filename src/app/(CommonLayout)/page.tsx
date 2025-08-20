@@ -14,8 +14,11 @@ const HomePage = async () => {
     { icon: Zap, value: "99%", label: "Customer Satisfaction" },
   ];
   const products = await getAllProducts();
+  // console.log("All Products:", products);
 
-  const featuredProducts: TProduct[] = products.slice(0, 8);
+  const featuredProducts: TProduct[] = products.data.slice(0, 8);
+
+  // console.log("Featured Products:", featuredProducts);
 
   return (
     <div className="min-h-screen bg-background">
@@ -39,7 +42,7 @@ const HomePage = async () => {
               </div>
             ) : ( */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
-              {featuredProducts.map((product) => (
+              {featuredProducts?.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}
             </div>

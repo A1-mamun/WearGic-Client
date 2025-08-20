@@ -2,6 +2,7 @@
 "use server";
 
 import { TCategory } from "@/types/category";
+import { revalidateTag } from "next/cache";
 import { cookies } from "next/headers";
 
 export const createCategory = async (category: TCategory) => {
@@ -24,35 +25,26 @@ export const createCategory = async (category: TCategory) => {
       }
     );
 
-    // console.log("Product data:", product);
+    revalidateTag("CATEGORY");
     return await res.json();
   } catch (error: any) {
     return Error(error);
   }
 };
 
-export const getAllCategories = async (): Promise<TCategory[]> => {
+export const getAllCategories = async () => {
   try {
-    const token = (await cookies()).get("accessToken")?.value;
-
-    if (!token) {
-      throw new Error("You must be logged in to get categories");
-    }
-
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_API}/category/categories`,
       {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
+        next: {
+          tags: ["CATEGORY"],
         },
-        cache: "no-store",
       }
     );
 
     if (!res.ok) {
-      throw new Error(`API error: ${res.status} ${res.statusText}`);
+      throw new Error("Failed to fetch categories");
     }
 
     return await res.json();

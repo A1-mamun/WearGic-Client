@@ -5,7 +5,11 @@ import { useAppSelector } from "@/redux/hooks";
 import { orderProductsSelector } from "@/redux/features/cartSlice";
 import Image from "next/image";
 import ICartProduct from "@/types/cartProduct";
-const CheckoutProducts = () => {
+const CheckoutProducts = ({
+  isCouponApplied,
+}: {
+  isCouponApplied: boolean;
+}) => {
   const products = useAppSelector(orderProductsSelector);
 
   return (
@@ -28,7 +32,11 @@ const CheckoutProducts = () => {
         </div>
       )}
       {products?.map((product: ICartProduct) => (
-        <CartProductCard key={product.id} product={product} />
+        <CartProductCard
+          isCouponApplied={isCouponApplied}
+          key={product.id}
+          product={product}
+        />
       ))}
     </div>
   );
