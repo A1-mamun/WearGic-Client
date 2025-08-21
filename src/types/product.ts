@@ -1,5 +1,6 @@
 export type TProductImage = {
   id: string;
+  productId: string;
   imageUrl: string;
   color: string;
   stock: number;

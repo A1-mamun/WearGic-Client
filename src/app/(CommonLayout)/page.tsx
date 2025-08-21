@@ -18,7 +18,7 @@ const HomePage = async () => {
 
   const featuredProducts: TProduct[] = products.data.slice(0, 8);
 
-  // console.log("Featured Products:", featuredProducts);
+  console.log("Featured Products:", featuredProducts);
 
   return (
     <div className="min-h-screen bg-background">

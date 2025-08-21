@@ -14,7 +14,7 @@ const CartProductCard = ({
   isCouponApplied,
   product,
 }: {
-  isCouponApplied: boolean;
+  isCouponApplied?: boolean;
   product: ICartProduct;
 }) => {
   const dispatch = useAppDispatch();

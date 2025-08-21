@@ -59,33 +59,30 @@ export const getAllProducts = async () => {
     const data = await res.json();
     return data;
   } catch (error: any) {
-    return Error(error.message);
+    throw new Error(error.message || "Something went wrong");
   }
 };
 
 export const getProductById = async (id: string) => {
+  console.log("id:", id);
   try {
-    const token = (await cookies()).get("accessToken")?.value;
-
-    if (!token) {
-      throw new Error("No access token found");
-    }
-
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_API}/product/product/${id}`,
+      `${process.env.NEXT_PUBLIC_BASE_API}/product/${id}`,
       {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
+        next: {
+          tags: ["PRODUCT"],
         },
-        cache: "no-store",
       }
     );
+
+    if (!res.ok) {
+      throw new Error("Failed to fetch product");
+    }
 
     const data = await res.json();
     return data;
   } catch (error: any) {
-    return Error(error.message);
+    console.log("Error fetching product by ID:", error);
+    throw new Error(error.message || "Something went wrong");
   }
 };

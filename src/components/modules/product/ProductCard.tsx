@@ -2,18 +2,25 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Heart, ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import { TProduct, TProductImage } from "@/types/product";
 import { useAppDispatch } from "@/redux/hooks";
 import { addProduct } from "@/redux/features/cartSlice";
+import { useRouter } from "next/navigation";
 
 const ProductCard = ({ product }: { product: TProduct }) => {
+  const router = useRouter();
   const dispatch = useAppDispatch();
 
   const handleAddToCart = (product: TProduct) => {
     dispatch(addProduct(product));
   };
+
+  const discountPercentage = Math.round(
+    (((product?.originalPrice ?? 0) - product?.price) /
+      (product?.originalPrice ?? 0)) *
+      100
+  );
 
   const primaryImage =
     product.productImages.find((img: TProductImage) => img.isPrimary) ||
@@ -33,40 +40,35 @@ const ProductCard = ({ product }: { product: TProduct }) => {
         />
 
         {/* Badges */}
-        <div className="absolute top-3 left-3 flex flex-col gap-2">
-          {product.isNew && (
-            <Badge className="bg-accent text-accent-foreground">New</Badge>
-          )}
-          {/* {product.isSale && <Badge variant="destructive">Sale</Badge>} */}
-        </div>
-
-        {/* Wishlist button */}
-        <Button
-          variant="ghost"
-          size="icon"
-          className="absolute top-3 right-3 bg-background/80 backdrop-blur-sm hover:bg-background opacity-0 group-hover:opacity-100 transition-all duration-300"
-        >
-          <Heart className="h-4 w-4" />
-        </Button>
-
-        {/* Quick add overlay */}
-        <div className="absolute inset-0 bg-primary/80 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
-          <Button variant="default" size="lg">
-            <ShoppingCart className="h-5 w-5 mr-2" />
-            Quick Add
-          </Button>
-        </div>
+        <Badge className="absolute top-4 left-4 bg-destructive text-destructive-foreground">
+          {discountPercentage}% OFF
+        </Badge>
+        <Badge className="absolute top-12 left-4 bg-primary text-primary-foreground">
+          {product.isNew ? "New" : "Featured"}
+        </Badge>
       </div>
 
       {/* Content */}
       <div className="p-4 space-y-3">
-        <div className="space-y-1">
-          <p className="text-sm text-muted-foreground uppercase tracking-wide font-medium">
-            {product.category}
-          </p>
-          <h3 className="font-semibold text-foreground group-hover:text-accent transition-colors line-clamp-2">
-            {product.name}
-          </h3>
+        <div className="flex justify-between items-end">
+          <div className="space-y-1">
+            <p className="text-sm text-muted-foreground uppercase tracking-wide font-medium">
+              {product.category}
+            </p>
+            <h3 className="font-semibold text-foreground transition-colors line-clamp-2">
+              {product.name}
+            </h3>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-lg font-bold text-foreground">
+              ${product.price}
+            </span>
+            {product.originalPrice && (
+              <span className="text-sm text-muted-foreground line-through">
+                ${product.originalPrice}
+              </span>
+            )}
+          </div>
         </div>
 
         {/* Rating */}
@@ -88,25 +90,28 @@ const ProductCard = ({ product }: { product: TProduct }) => {
           </span>
         </div> */}
 
-        {/* Price */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-lg font-bold text-foreground">
-              ${product.price}
-            </span>
-            {product.originalPrice && (
-              <span className="text-sm text-muted-foreground line-through">
-                ${product.originalPrice}
-              </span>
-            )}
-          </div>
+        <div className="flex items-center justify-between gap-3">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="flex-1 border-2 border-border hover:bg-accent hover:text-accent-foreground"
+            onClick={() => router.push(`/products/${product.id}`)}
+          >
+            See Details
+          </Button>
 
           <Button
-            variant="default"
+            variant="ghost"
             size="sm"
+            className="flex-1 border-2 border-border hover:bg-accent hover:text-accent-foreground"
             onClick={() => handleAddToCart(product)}
           >
             Add to Cart
+          </Button>
+        </div>
+        <div className="w-full">
+          <Button variant="default" size="sm" className="w-full">
+            Buy Now
           </Button>
         </div>
       </div>
