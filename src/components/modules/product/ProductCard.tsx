@@ -1,21 +1,54 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
 import { TProduct, TProductImage } from "@/types/product";
-import { useAppDispatch } from "@/redux/hooks";
-import { addProduct } from "@/redux/features/cartSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import {
+  addProduct,
+  orderProductsSelector,
+  removeFromCart,
+} from "@/redux/features/cartSlice";
 import { useRouter } from "next/navigation";
 
 const ProductCard = ({ product }: { product: TProduct }) => {
+  const [isCarted, setIsCarted] = useState(false);
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const cartProducts = useAppSelector(orderProductsSelector);
 
   const handleAddToCart = (product: TProduct) => {
-    dispatch(addProduct(product));
+    dispatch(
+      addProduct({
+        product,
+        selectedId:
+          product.productImages.find((img: TProductImage) => img.isPrimary)
+            ?.id || product.productImages[0].id,
+      })
+    );
   };
 
+  const handleRemoveFromCart = (productId: string) => {
+    // Dispatch remove action
+    dispatch(
+      removeFromCart({
+        productId,
+        selectedId:
+          product.productImages.find((img: TProductImage) => img.isPrimary)
+            ?.id || product.productImages[0].id,
+      })
+    );
+  };
+
+  useEffect(() => {
+    const existsInCart = cartProducts.some(
+      (cartItem) => cartItem.id === product.id
+    );
+    setIsCarted(existsInCart);
+  }, [cartProducts, product.id]);
+
+  // Calculate discount percentage
   const discountPercentage = Math.round(
     (((product?.originalPrice ?? 0) - product?.price) /
       (product?.originalPrice ?? 0)) *
@@ -99,15 +132,25 @@ const ProductCard = ({ product }: { product: TProduct }) => {
           >
             See Details
           </Button>
-
-          <Button
-            variant="ghost"
-            size="sm"
-            className="flex-1 border-2 border-border hover:bg-accent hover:text-accent-foreground"
-            onClick={() => handleAddToCart(product)}
-          >
-            Add to Cart
-          </Button>
+          {isCarted ? (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="flex-1 border-2 border-red-400 hover:bg-accent hover:text-accent-foreground"
+              onClick={() => handleRemoveFromCart(product.id)}
+            >
+              Remove from Cart
+            </Button>
+          ) : (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="flex-1 border-2 border-border hover:bg-accent hover:text-accent-foreground"
+              onClick={() => handleAddToCart(product)}
+            >
+              Add to Cart
+            </Button>
+          )}
         </div>
         <div className="w-full">
           <Button variant="default" size="sm" className="w-full">

@@ -59,7 +59,7 @@ const ProductDetails = ({ productData }: { productData: TProduct }) => {
       setColorError(true);
       return;
     }
-    dispatch(addProduct(product));
+    dispatch(addProduct({ product, selectedId: selectedColor.id }));
   };
 
   const handleBuyNow = () => {

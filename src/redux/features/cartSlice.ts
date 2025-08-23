@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 import ICartProduct from "@/types/cartProduct";
 import { addCoupon } from "@/services/checkout";
+import { TProduct } from "@/types/product";
 
 interface InitialState {
   products: ICartProduct[];
@@ -67,16 +68,38 @@ const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
-    addProduct: (state, action) => {
+    addProduct: (
+      state,
+      action: PayloadAction<{ product: TProduct; selectedId: string }>
+    ) => {
+      const { product, selectedId } = action.payload;
       const existingProduct = state.products.find(
-        (product) => product.id === action.payload.id
+        (product) =>
+          product.id === product.id && product.selectedProductId === selectedId
       );
       if (existingProduct) {
         existingProduct.orderQuantity += 1;
         return;
       }
-      // If product does not exist, add it to the cart
-      state.products.push({ ...action.payload, orderQuantity: 1 });
+
+      state.products.push({
+        ...product,
+        orderQuantity: 1,
+        selectedProductId: selectedId,
+      });
+    },
+    removeFromCart: (
+      state,
+      action: PayloadAction<{ productId: string; selectedId: string }>
+    ) => {
+      const { productId, selectedId } = action.payload;
+      state.products = state.products.filter(
+        (cartItem) =>
+          !(
+            cartItem.id === productId &&
+            cartItem.selectedProductId === selectedId
+          )
+      );
     },
     incrementOrderQuantity: (state, action) => {
       const product = state.products.find(
@@ -148,7 +171,7 @@ export const orderSelector = (state: RootState) => {
     products: state.cart.products.map((product) => ({
       product: product.id,
       quantity: product.orderQuantity,
-      // color: "White",
+      selectedProductId: product.selectedProductId,
     })),
     shippingAddress: `${state.cart.shippingAddress} - ${state.cart.city}`,
     paymentMethod: "Online",
@@ -218,5 +241,6 @@ export const {
   updateShippingAddress,
   clearCart,
   removeCoupon,
+  removeFromCart,
 } = cartSlice.actions;
 export default cartSlice.reducer;
