@@ -1,13 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ShoppingCart, Minus, Plus } from "lucide-react";
 import Image from "next/image";
 import { TProduct, TProductImage } from "@/types/product";
-import { useAppDispatch } from "@/redux/hooks";
-import { addProduct } from "@/redux/features/cartSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import {
+  addProductWithQuantity,
+  orderProductsSelector,
+} from "@/redux/features/cartSlice";
+import { useRouter } from "next/navigation";
 
 const ProductDetails = ({ productData }: { productData: TProduct }) => {
   const [showedColor, setShowedColor] = useState<TProductImage | null>(
@@ -18,6 +22,27 @@ const ProductDetails = ({ productData }: { productData: TProduct }) => {
   );
   const [colorError, setColorError] = useState(false);
   const [quantity, setQuantity] = useState(1);
+  const router = useRouter();
+
+  const products = useAppSelector(orderProductsSelector);
+
+  useEffect(() => {
+    const existsInCart = products.find(
+      (cartItem) => cartItem.id === productData.id
+    );
+
+    setSelectedColor(
+      existsInCart
+        ? productData.productImages.find(
+            (img) => img.id === existsInCart.selectedProductId
+          ) || null
+        : null
+    );
+
+    setQuantity(existsInCart ? existsInCart.orderQuantity : 1);
+  }, [products, productData]);
+
+  // Check if the product with the selected color is already in the cart
 
   const discountPercentage = Math.round(
     (((productData?.originalPrice ?? 0) - productData?.price) /
@@ -59,16 +84,29 @@ const ProductDetails = ({ productData }: { productData: TProduct }) => {
       setColorError(true);
       return;
     }
-    dispatch(addProduct({ product, selectedId: selectedColor.id }));
+    dispatch(
+      addProductWithQuantity({
+        product,
+        selectedId: selectedColor.id,
+        quantity,
+      })
+    );
   };
 
-  const handleBuyNow = () => {
+  const handleBuyNow = (product: TProduct) => {
     if (!selectedColor) {
       setColorError(true);
       return;
     }
-    // Buy now logic here
-    // console.log("Buy now:", { color: selectedColor, quantity });
+    dispatch(
+      addProductWithQuantity({
+        product,
+        selectedId: selectedColor.id,
+        quantity,
+      })
+    );
+    // Redirect to checkout page
+    router.push("/checkout");
   };
 
   return (
@@ -251,7 +289,7 @@ const ProductDetails = ({ productData }: { productData: TProduct }) => {
                 variant="outline"
                 size="lg"
                 className="w-full bg-transparent"
-                onClick={handleBuyNow}
+                onClick={() => handleBuyNow(productData)}
               >
                 Buy Now
               </Button>

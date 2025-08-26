@@ -60,7 +60,10 @@ const CartSidebar = ({ children }: { children: ReactNode }) => {
               {/* Cart Items */}
               <div className="flex-1 overflow-auto py-4 space-y-4">
                 {products.map((product) => (
-                  <CartProductCard key={product.id} product={product} />
+                  <CartProductCard
+                    key={product.selectedProductId}
+                    product={product}
+                  />
                 ))}
               </div>
 

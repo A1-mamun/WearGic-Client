@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import {
   decrementOrderQuantity,
   incrementOrderQuantity,
-  removeOrderProduct,
+  removeSelectedProductFromCart,
 } from "@/redux/features/cartSlice";
 import { useAppDispatch } from "@/redux/hooks";
 import ICartProduct from "@/types/cartProduct";
@@ -19,19 +19,19 @@ const CartProductCard = ({
 }) => {
   const dispatch = useAppDispatch();
 
-  const incrementQuantity = (id: string) => {
+  const incrementQuantity = (id: string, selectedId: string) => {
     // Dispatch increment action
-    dispatch(incrementOrderQuantity(id));
+    dispatch(incrementOrderQuantity({ productId: id, selectedId }));
   };
 
-  const decrementQuantity = (id: string) => {
+  const decrementQuantity = (id: string, selectedId: string) => {
     // Dispatch decrement action
-    dispatch(decrementOrderQuantity(id));
+    dispatch(decrementOrderQuantity({ productId: id, selectedId }));
   };
 
-  const removeProduct = (id: string) => {
+  const removeProduct = (id: string, selectedId: string) => {
     // Dispatch remove action
-    dispatch(removeOrderProduct(id));
+    dispatch(removeSelectedProductFromCart({ productId: id, selectedId }));
   };
 
   const primaryImage =
@@ -39,10 +39,7 @@ const CartProductCard = ({
     product.productImages[0];
 
   return (
-    <div
-      key={product.id}
-      className="flex items-center space-x-4 p-3 border rounded-lg"
-    >
+    <div className="flex items-center space-x-4 p-3 border rounded-lg">
       <Image
         src={primaryImage.imageUrl}
         alt={product.name}
@@ -60,7 +57,9 @@ const CartProductCard = ({
           size="icon"
           className="h-8 w-8"
           disabled={isCouponApplied}
-          onClick={() => decrementQuantity(product.id)}
+          onClick={() =>
+            decrementQuantity(product.id, product.selectedProductId)
+          }
         >
           <Minus className="h-3 w-3" />
         </Button>
@@ -70,7 +69,9 @@ const CartProductCard = ({
           size="icon"
           className="h-8 w-8"
           disabled={isCouponApplied}
-          onClick={() => incrementQuantity(product.id)}
+          onClick={() =>
+            incrementQuantity(product.id, product.selectedProductId)
+          }
         >
           <Plus className="h-3 w-3" />
         </Button>
@@ -79,7 +80,7 @@ const CartProductCard = ({
           size="icon"
           className="h-8 w-8 text-destructive hover:text-destructive"
           disabled={isCouponApplied}
-          onClick={() => removeProduct(product.id)}
+          onClick={() => removeProduct(product.id, product.selectedProductId)}
         >
           <Trash2 className="h-3 w-3" />
         </Button>

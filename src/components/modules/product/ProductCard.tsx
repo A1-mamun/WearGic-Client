@@ -31,14 +31,7 @@ const ProductCard = ({ product }: { product: TProduct }) => {
 
   const handleRemoveFromCart = (productId: string) => {
     // Dispatch remove action
-    dispatch(
-      removeFromCart({
-        productId,
-        selectedId:
-          product.productImages.find((img: TProductImage) => img.isPrimary)
-            ?.id || product.productImages[0].id,
-      })
-    );
+    dispatch(removeFromCart(productId));
   };
 
   useEffect(() => {
@@ -153,7 +146,12 @@ const ProductCard = ({ product }: { product: TProduct }) => {
           )}
         </div>
         <div className="w-full">
-          <Button variant="default" size="sm" className="w-full">
+          <Button
+            variant="default"
+            size="sm"
+            className="w-full"
+            onClick={() => router.push(`/products/${product.id}`)}
+          >
             Buy Now
           </Button>
         </div>

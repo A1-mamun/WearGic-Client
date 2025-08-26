@@ -74,8 +74,8 @@ const cartSlice = createSlice({
     ) => {
       const { product, selectedId } = action.payload;
       const existingProduct = state.products.find(
-        (product) =>
-          product.id === product.id && product.selectedProductId === selectedId
+        (item) =>
+          item.id === product.id && item.selectedProductId === selectedId
       );
       if (existingProduct) {
         existingProduct.orderQuantity += 1;
@@ -88,7 +88,37 @@ const cartSlice = createSlice({
         selectedProductId: selectedId,
       });
     },
-    removeFromCart: (
+    addProductWithQuantity: (
+      state,
+      action: PayloadAction<{
+        product: TProduct;
+        selectedId: string;
+        quantity: number;
+      }>
+    ) => {
+      const { product, selectedId, quantity } = action.payload;
+      const existingProduct = state.products.find(
+        (item) =>
+          item.id === product.id && item.selectedProductId === selectedId
+      );
+      if (existingProduct) {
+        existingProduct.orderQuantity = quantity;
+        return;
+      }
+
+      state.products.push({
+        ...product,
+        orderQuantity: quantity,
+        selectedProductId: selectedId,
+      });
+    },
+    removeFromCart: (state, action) => {
+      state.products = state.products.filter(
+        (cartItem) => !(cartItem.id === action.payload)
+      );
+    },
+
+    removeSelectedProductFromCart: (
       state,
       action: PayloadAction<{ productId: string; selectedId: string }>
     ) => {
@@ -101,30 +131,38 @@ const cartSlice = createSlice({
           )
       );
     },
-    incrementOrderQuantity: (state, action) => {
-      const product = state.products.find(
-        (product) => product.id === action.payload
+    incrementOrderQuantity: (
+      state,
+      action: PayloadAction<{ productId: string; selectedId: string }>
+    ) => {
+      const { productId, selectedId } = action.payload;
+      const existingProduct = state.products.find(
+        (item) => item.id === productId && item.selectedProductId === selectedId
       );
-      if (product) {
-        product.orderQuantity += 1;
+
+      if (existingProduct) {
+        existingProduct.orderQuantity += 1;
       }
     },
-    decrementOrderQuantity: (state, action) => {
-      const product = state.products.find(
-        (product) => product.id === action.payload
+
+    decrementOrderQuantity: (
+      state,
+      action: PayloadAction<{ productId: string; selectedId: string }>
+    ) => {
+      const { productId, selectedId } = action.payload;
+      const existingProduct = state.products.find(
+        (item) => item.id === productId && item.selectedProductId === selectedId
       );
-      if (product && product.orderQuantity > 1) {
-        product.orderQuantity -= 1;
-      } else if (product) {
+      if (existingProduct && existingProduct.orderQuantity > 1) {
+        existingProduct.orderQuantity -= 1;
+      } else if (existingProduct) {
         // If order quantity is 1, remove the product from the cart
-        state.products = state.products.filter((p) => p.id !== action.payload);
+        state.products = state.products.filter(
+          (p) => !(p.id === productId && p.selectedProductId === selectedId)
+        );
       }
     },
-    removeOrderProduct: (state, action) => {
-      state.products = state.products.filter(
-        (product) => product.id !== action.payload
-      );
-    },
+
     updateCity: (state, action) => {
       state.city = action.payload;
     },
@@ -234,13 +272,14 @@ export const shippingAddressSelector = (state: RootState) => {
 
 export const {
   addProduct,
+  addProductWithQuantity,
   incrementOrderQuantity,
   decrementOrderQuantity,
-  removeOrderProduct,
   updateCity,
   updateShippingAddress,
   clearCart,
   removeCoupon,
   removeFromCart,
+  removeSelectedProductFromCart,
 } = cartSlice.actions;
 export default cartSlice.reducer;
