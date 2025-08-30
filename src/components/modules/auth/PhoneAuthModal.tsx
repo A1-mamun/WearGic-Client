@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+/* eslint-disable no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -13,15 +15,17 @@ import {
 } from "@/components/ui/dialog";
 
 import { toast } from "sonner";
+import { addUserInfo, loginUser, resendOtp, verifyOtp } from "@/services/auth";
+import UserRegistrationForm from "./UserRegistrationForm";
+import { useUser } from "@/contexts/userContext";
 
 const phoneSchema = z.object({
   phone: z
     .string()
     .min(1, "Phone number is required")
     .refine((phone) => {
-      // Bangladesh phone number validation
-      return /^(\+88)?01[3-9]\d{8}$/.test(phone.replace(/\s/g, ""));
-    }, "Please enter a valid Bangladeshi phone number"),
+      return /^01[3-9]\d{8}$/.test(phone.replace(/\s/g, ""));
+    }, "Please enter a valid phone number"),
 });
 
 interface PhoneAuthModalProps {
@@ -31,131 +35,147 @@ interface PhoneAuthModalProps {
 
 const PhoneAuthModal = ({ open, onOpenChange }: PhoneAuthModalProps) => {
   const [loading, setLoading] = useState(false);
-  const [step, setStep] = useState<"phone" | "otp" | "register">("phone");
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [step, setStep] = useState<"phone" | "otp" | "info">("phone");
+  const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
-  //   const [isNewUser, setIsNewUser] = useState(false);
-  //   const { signIn, verifyOtp } = useAuth();
+  const [isNewUser, setIsNewUser] = useState(false);
+  const [timer, setTimer] = useState<number>(0);
+
+  const { user, refreshUser } = useUser();
 
   const phoneForm = useForm<z.infer<typeof phoneSchema>>({
     resolver: zodResolver(phoneSchema),
   });
 
   const handlePhoneSubmit = async (data: z.infer<typeof phoneSchema>) => {
-    // setLoading(true);
-    // try {
-    //   // Normalize phone number to Bangladesh format
-    //   let normalizedPhone = data.phone.replace(/\s/g, '');
-    //   if (!normalizedPhone.startsWith('+88')) {
-    //     normalizedPhone = '+88' + normalizedPhone;
-    //   }
-    //   const { error } = await signIn(normalizedPhone);
-    //   if (error) {
-    //     toast.error(error.message);
-    //     return;
-    //   }
-    //   setPhoneNumber(normalizedPhone);
-    //   setStep('otp');
-    //   toast.success('OTP sent to your phone number!');
-    // } catch (error) {
-    //   toast.error('An unexpected error occurred');
-    // } finally {
-    //   setLoading(false);
-    // }
+    setLoading(true);
+    try {
+      const res = await loginUser({ phone: data.phone });
+      if (res.success) {
+        setPhone(data.phone);
+        setStep("otp");
+        setTimer(60); // start 120s countdown
+        toast.success("OTP sent to your phone number!");
+      } else if (!res.success) {
+        toast.error(res.message || "Failed to send OTP");
+      }
+    } catch (error: any) {
+      toast.error(error.message || "Failed to send OTP");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  //   const handleVerifyOtp = async () => {
-  //     setLoading(true);
-  //     try {
-  //       // Check if user exists
-  //       const { data: profile } = await supabase
-  //         .from('profiles')
-  //         .select('*')
-  //         .eq('phone', phoneNumber)
-  //         .single();
+  // start countdown
+  useEffect(() => {
+    if (timer > 0) {
+      const interval = setInterval(() => {
+        setTimer((prev) => prev - 1);
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [timer]);
 
-  //       const { error } = await verifyOtp(phoneNumber, otp);
-  //       if (error) {
-  //         toast.error(error.message);
-  //         return;
-  //       }
+  const formatTime = (seconds: number) => {
+    const m = Math.floor(seconds / 60)
+      .toString()
+      .padStart(2, "0");
+    const s = (seconds % 60).toString().padStart(2, "0");
+    return `${m}:${s}`;
+  };
 
-  //       // If no profile exists, show registration form
-  //       if (!profile) {
-  //         setIsNewUser(true);
-  //         setStep('register');
-  //       } else {
-  //         // Existing user, complete login
-  //         toast.success('Successfully logged in!');
-  //         resetModal();
-  //         onOpenChange(false);
-  //       }
-  //     } catch (error) {
-  //       toast.error('An unexpected error occurred');
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
+  // function to reset timer when resend clicked
+  const handleResendOtp = async () => {
+    setLoading(true);
+    try {
+      const res = await resendOtp({ phone });
+      if (res.success) {
+        setPhone(phone);
+        setTimer(60); // start 60s countdown
+        toast.success(res.message || "OTP resent successfully!");
+      } else if (!res.success) {
+        toast.error(res.message || "Failed to send OTP");
+      }
+    } catch (error: any) {
+      toast.error(error.message || "Failed to send OTP");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  //   const handleUserRegistration = async (userData: { full_name: string; district: string }) => {
-  //     setLoading(true);
-  //     try {
-  //       // Get current user from auth
-  //       const { data: { user } } = await supabase.auth.getUser();
+  const handleVerifyOtp = async () => {
+    setLoading(true);
+    try {
+      const res = await verifyOtp({ phone, otp });
 
-  //       if (!user) {
-  //         toast.error('User not authenticated');
-  //         return;
-  //       }
+      console.log(res);
 
-  //       // Create profile for the new user
-  //       const { error } = await supabase
-  //         .from('profiles')
-  //         .insert({
-  //           user_id: user.id,
-  //           phone: phoneNumber,
-  //           full_name: userData.full_name,
-  //           district: userData.district,
-  //           phone_verified: true,
-  //         });
+      refreshUser();
 
-  //       if (error) {
-  //         toast.error('Failed to create profile');
-  //         return;
-  //       }
+      // If no profile exists, show registration form
+      if (res.success && res.data.isNewUser) {
+        setIsNewUser(true);
+        setStep("info");
+        toast.success("Successfully logged in!");
+      } else if (!res.success) {
+        toast.error(res.message || "OTP verification failed");
+      } else {
+        // Existing user, complete login
+        toast.success("Successfully logged in!");
+        resetModal();
+        onOpenChange(false);
+      }
+    } catch (error: any) {
+      toast.error(error.message || "An unexpected error occurred");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  //       toast.success('Account created successfully!');
-  //       resetModal();
-  //       onOpenChange(false);
-  //     } catch (error) {
-  //       toast.error('An unexpected error occurred');
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
+  const handleUserRegistration = async (userData: {
+    name: string;
+    district: string;
+  }) => {
+    setLoading(true);
+    try {
+      await addUserInfo(userData, user!.userId);
+      toast.success("Info updated successfully!");
+      refreshUser();
+      resetModal();
+      onOpenChange(false);
+    } catch (error: any) {
+      toast.error(error.message || "Failed to update info");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  //   const resetModal = () => {
-  //     setStep('phone');
-  //     setPhoneNumber('');
-  //     setOtp('');
-  //     setIsNewUser(false);
-  //     phoneForm.reset();
-  //   };
+  const resetModal = () => {
+    setStep("phone");
+    setPhone("");
+    setOtp("");
+    setIsNewUser(false);
+    phoneForm.reset();
+  };
 
-  //   if (step === 'register') {
-  //     return (
-  //       <UserRegistrationForm
-  //         open={open}
-  //         phone={phoneNumber}
-  //         onSubmit={handleUserRegistration}
-  //         loading={loading}
-  //       />
-  //     );
-  //   }
+  if (step === "info" && isNewUser) {
+    return (
+      <UserRegistrationForm
+        open={open}
+        onSubmit={handleUserRegistration}
+        loading={loading}
+      />
+    );
+  }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent
+        className="sm:max-w-md"
+        onInteractOutside={(e) => {
+          e.preventDefault(); // 🚫 prevent closing on outside click
+        }}
+      >
         {step === "phone" ? (
           <>
             <DialogHeader>
@@ -195,7 +215,7 @@ const PhoneAuthModal = ({ open, onOpenChange }: PhoneAuthModalProps) => {
 
             <div className="space-y-4">
               <p className="text-sm text-muted-foreground">
-                We have sent a verification code to {phoneNumber}
+                We have sent a verification code to {phone}
               </p>
 
               <div className="space-y-2">
@@ -210,7 +230,7 @@ const PhoneAuthModal = ({ open, onOpenChange }: PhoneAuthModalProps) => {
               </div>
 
               <Button
-                // onClick={handleVerifyOtp}
+                onClick={handleVerifyOtp}
                 className="w-full"
                 disabled={loading || otp.length !== 6}
               >
@@ -219,10 +239,13 @@ const PhoneAuthModal = ({ open, onOpenChange }: PhoneAuthModalProps) => {
 
               <Button
                 variant="outline"
-                onClick={() => setStep("phone")}
+                onClick={handleResendOtp}
                 className="w-full"
+                disabled={timer > 0}
               >
-                Back to Phone Number
+                {timer > 0
+                  ? `Resend OTP in ${formatTime(timer)}`
+                  : "Resend OTP"}
               </Button>
             </div>
           </>

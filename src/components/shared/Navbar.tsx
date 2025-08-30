@@ -18,6 +18,8 @@ const Navbar = () => {
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const { user, refreshUser } = useUser();
 
+  console.log("Navbar User:", user);
+
   const navigationItems = [
     { name: "Home", path: "/" },
     { name: "All Products", path: "/products" },
@@ -71,7 +73,7 @@ const Navbar = () => {
             {user ? (
               <div className="hidden md:flex items-center space-x-2">
                 <span className="text-sm text-muted-foreground">
-                  Welcome, {user.phone || "User"}
+                  Welcome, {user.name || "User"}
                 </span>
                 <Button variant="ghost" size="sm" onClick={handleLogOut}>
                   <LogOut className="h-4 w-4 mr-2" />
@@ -131,7 +133,7 @@ const Navbar = () => {
                 {user ? (
                   <div className="space-y-2">
                     <p className="text-sm text-muted-foreground">
-                      Welcome, {user.phone || "User"}
+                      Welcome, {user.name || "User"}
                     </p>
                     <Button
                       variant="outline"

@@ -5,13 +5,20 @@ import { jwtDecode } from "jwt-decode";
 import { cookies } from "next/headers";
 import { FieldValues } from "react-hook-form";
 
-export const registerUser = async (userData: FieldValues) => {
+export const addUserInfo = async (userData: FieldValues, id: string) => {
   try {
+    const token = (await cookies()).get("accessToken")?.value;
+
+    if (!token) {
+      throw new Error("You must be logged in to create a category");
+    }
+
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_API}/auth/register`,
+      `${process.env.NEXT_PUBLIC_BASE_API}/auth/add-user-info/${id}`,
       {
         method: "POST",
         headers: {
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(userData),
@@ -65,6 +72,27 @@ export const verifyOtp = async (userData: FieldValues) => {
       (await cookies()).set("refreshToken", result?.data?.refreshToken);
     }
 
+    return result;
+  } catch (error: any) {
+    return Error(error);
+  }
+};
+
+export const resendOtp = async (userData: FieldValues) => {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API}/auth/resend-otp`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData),
+        credentials: "include",
+      }
+    );
+
+    const result = await res.json();
     return result;
   } catch (error: any) {
     return Error(error);
