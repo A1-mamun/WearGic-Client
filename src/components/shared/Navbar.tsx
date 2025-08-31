@@ -18,8 +18,6 @@ const Navbar = () => {
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const { user, refreshUser } = useUser();
 
-  console.log("Navbar User:", user);
-
   const navigationItems = [
     { name: "Home", path: "/" },
     { name: "All Products", path: "/products" },

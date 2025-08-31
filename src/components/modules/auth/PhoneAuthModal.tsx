@@ -107,12 +107,8 @@ const PhoneAuthModal = ({ open, onOpenChange }: PhoneAuthModalProps) => {
     setLoading(true);
     try {
       const res = await verifyOtp({ phone, otp });
-
-      console.log(res);
-
       refreshUser();
 
-      // If no profile exists, show registration form
       if (res.success && res.data.isNewUser) {
         setIsNewUser(true);
         setStep("info");
@@ -120,7 +116,6 @@ const PhoneAuthModal = ({ open, onOpenChange }: PhoneAuthModalProps) => {
       } else if (!res.success) {
         toast.error(res.message || "OTP verification failed");
       } else {
-        // Existing user, complete login
         toast.success("Successfully logged in!");
         resetModal();
         onOpenChange(false);
