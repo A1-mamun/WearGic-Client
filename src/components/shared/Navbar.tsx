@@ -26,6 +26,7 @@ const Navbar = () => {
     { name: "About Us", path: "/about" },
     { name: "Contact Us", path: "/contact" },
     { name: "Track Order", path: "/track-order" },
+    { name: "Dashboard", path: "/dashboard" },
   ];
 
   const handleLogOut = async () => {
