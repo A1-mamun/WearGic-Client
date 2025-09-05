@@ -1,7 +1,12 @@
+import ProductsPage from "@/components/modules/dashboard/products/ProductsPage";
 import React from "react";
 
-const ProductsPage = () => {
-  return <div>Products Page</div>;
+const Products = () => {
+  return (
+    <main>
+      <ProductsPage />
+    </main>
+  );
 };
 
-export default ProductsPage;
+export default Products;

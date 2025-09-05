@@ -6,6 +6,8 @@ export type TProductImage = {
   stock: number;
   isPrimary: boolean;
   isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 export type TProduct = {
@@ -29,9 +31,9 @@ export type TProduct = {
 export type TCreateProductImage = {
   imageUrl: string;
   color: string;
-  stock?: number; // optional since default = 0
-  isPrimary?: boolean; // optional since default = false
-  isActive?: boolean; // optional since default = true
+  stock?: number;
+  isPrimary?: boolean;
+  isActive?: boolean;
 };
 
 // Product type for creation
@@ -39,9 +41,11 @@ export type TCreateProduct = {
   name: string;
   description?: string;
   originalPrice?: number;
-  price?: number; // optional since default = 0.0
+  price?: number;
   category: string;
-  isNew?: boolean; // optional since default = false
-  gender?: "MALE" | "FEMALE" | "UNISEX"; // based on your GenderEnum
+  isNew?: boolean;
+  gender?: "MALE" | "FEMALE";
   productImages: TCreateProductImage[];
 };
+
+export type TGender = "MALE" | "FEMALE";
