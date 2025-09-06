@@ -19,7 +19,7 @@ import { usePathname } from "next/navigation";
 const navigationItems = [
   { icon: Home, label: "Dashboard", href: "/dashboard" },
   { icon: BarChart3, label: "Products", href: "/dashboard/products" },
-  { icon: Users, label: "Users", href: "/users" },
+  { icon: Users, label: "Categories", href: "/dashboard/categories" },
   { icon: FileText, label: "Reports", href: "/reports" },
   { icon: Bell, label: "Notifications", href: "/notifications" },
   { icon: Settings, label: "Settings", href: "/settings" },

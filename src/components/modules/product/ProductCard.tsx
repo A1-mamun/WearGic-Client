@@ -9,7 +9,7 @@ import {
   addProduct,
   orderProductsSelector,
   removeFromCart,
-} from "@/redux/features/cartSlice";
+} from "@/redux/features/cart/cartSlice";
 import { useRouter } from "next/navigation";
 
 const ProductCard = ({ product }: { product: TProduct }) => {

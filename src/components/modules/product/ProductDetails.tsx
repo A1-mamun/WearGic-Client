@@ -10,7 +10,7 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import {
   addProductWithQuantity,
   orderProductsSelector,
-} from "@/redux/features/cartSlice";
+} from "@/redux/features/cart/cartSlice";
 import { useRouter } from "next/navigation";
 
 const ProductDetails = ({ productData }: { productData: TProduct }) => {

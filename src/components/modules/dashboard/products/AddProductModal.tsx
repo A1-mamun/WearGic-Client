@@ -1,9 +1,8 @@
-/* eslint-disable no-unused-vars */
 "use client";
-
-import type React from "react";
-
 import { useState } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -22,38 +21,101 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Plus, Trash2 } from "lucide-react";
-import { TGender, TProduct } from "@/types/product";
+import { Plus, Trash2, X } from "lucide-react";
+import type { Product } from "./products-page";
+import Image from "next/image";
+import { TCategory } from "@/types/category";
+
+const productImageSchema = z.object({
+  file: z.instanceof(File).nullable(),
+  color: z.string().min(1, "Color is required"),
+  stock: z.number().min(0, "Stock must be 0 or greater"),
+  isPrimary: z.boolean(),
+  isActive: z.boolean(),
+});
+
+const productFormSchema = z.object({
+  name: z
+    .string()
+    .min(1, "Product name is required")
+    .max(100, "Name must be less than 100 characters"),
+  description: z.string().optional(),
+  originalPrice: z.string().optional(),
+  price: z
+    .string()
+    .min(1, "Price is required")
+    .refine((val) => !isNaN(Number(val)) && Number(val) >= 0, {
+      message: "Price must be a valid number greater than or equal to 0",
+    }),
+  category: z.string().min(1, "Category is required"),
+  isNew: z.boolean(),
+  gender: z.enum(["MALE", "FEMALE", "UNISEX"]).optional(),
+  productImages: z
+    .array(productImageSchema)
+    .min(1, "At least one product image is required")
+    .refine((images) => images.some((img) => img.isPrimary), {
+      message: "At least one image must be marked as primary",
+    })
+    .refine((images) => images.filter((img) => img.isPrimary).length === 1, {
+      message: "Only one image can be marked as primary",
+    }),
+});
+
+type ProductFormData = z.infer<typeof productFormSchema>;
 
 interface AddProductModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onAdd: (product: Omit<TProduct, "id" | "createdAt" | "updatedAt">) => void;
+  categories: TCategory[];
+  onAdd: (product: Omit<Product, "id" | "createdAt" | "updatedAt">) => void;
 }
 
 interface ProductImageForm {
-  imageUrl: string;
+  file: File | null;
   color: string;
   stock: number;
   isPrimary: boolean;
   isActive: boolean;
+  previewUrl?: string;
 }
 
-const AddProductModal = ({ isOpen, onClose, onAdd }: AddProductModalProps) => {
-  const [formData, setFormData] = useState({
-    name: "",
-    description: "",
-    originalPrice: "",
-    price: "",
-    category: "",
-    isNew: false,
-    gender: "" as Gender | "",
-    isDeleted: false,
+export function AddProductModal({
+  isOpen,
+  onClose,
+  categories,
+  onAdd,
+}: AddProductModalProps) {
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    reset,
+    setValue,
+  } = useForm<ProductFormData>({
+    resolver: zodResolver(productFormSchema),
+    defaultValues: {
+      name: "",
+      description: "",
+      originalPrice: "",
+      price: "",
+      category: "",
+      isNew: false,
+      gender: undefined,
+      productImages: [
+        {
+          file: null,
+          color: "",
+          stock: 0,
+          isPrimary: true,
+          isActive: true,
+        },
+      ],
+    },
   });
 
   const [productImages, setProductImages] = useState<ProductImageForm[]>([
     {
-      imageUrl: "",
+      file: null,
       color: "",
       stock: 0,
       isPrimary: true,
@@ -61,53 +123,56 @@ const AddProductModal = ({ isOpen, onClose, onAdd }: AddProductModalProps) => {
     },
   ]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = async (data: ProductFormData) => {
+    const formDataToSend = new FormData();
 
-    const product: Omit<TProduct, "id" | "createdAt" | "updatedAt"> = {
-      name: formData.name,
-      description: formData.description || undefined,
-      originalPrice: formData.originalPrice
-        ? Number.parseFloat(formData.originalPrice)
-        : undefined,
-      price: Number.parseFloat(formData.price) || 0,
-      category: formData.category,
-      isNew: formData.isNew,
-      gender: formData.gender || undefined,
-      isDeleted: false,
-      productImages: productImages.map((img, index) => ({
-        id: `temp-${index}`,
-        productId: "temp",
-        imageUrl:
-          img.imageUrl ||
-          `/placeholder.svg?height=200&width=200&query=${img.color} product`,
-        color: img.color,
-        stock: img.stock,
-        isPrimary: img.isPrimary,
-        isActive: img.isActive,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      })),
-    };
+    formDataToSend.append("name", data.name);
+    formDataToSend.append("description", data.description || "");
+    formDataToSend.append("originalPrice", data.originalPrice || "");
+    formDataToSend.append("price", data.price || "0");
+    formDataToSend.append("category", data.category);
+    formDataToSend.append("isNew", data.isNew.toString());
+    formDataToSend.append("gender", data.gender || "");
+    formDataToSend.append("isDeleted", "false");
 
-    onAdd(product);
-    resetForm();
+    productImages.forEach((image, index) => {
+      if (image.file) {
+        formDataToSend.append(`images`, image.file);
+        formDataToSend.append(
+          `imageData_${index}`,
+          JSON.stringify({
+            color: image.color,
+            stock: image.stock,
+            isPrimary: image.isPrimary,
+            isActive: image.isActive,
+          })
+        );
+      }
+    });
+
+    try {
+      const response = await fetch("/api/products", {
+        method: "POST",
+        body: formDataToSend,
+      });
+
+      if (response.ok) {
+        const newProduct = await response.json();
+        onAdd(newProduct);
+        resetForm();
+      } else {
+        console.error("Failed to create product");
+      }
+    } catch (error) {
+      console.error("Error creating product:", error);
+    }
   };
 
   const resetForm = () => {
-    setFormData({
-      name: "",
-      description: "",
-      originalPrice: "",
-      price: "",
-      category: "",
-      isNew: false,
-      gender: "",
-      isDeleted: false,
-    });
+    reset();
     setProductImages([
       {
-        imageUrl: "",
+        file: null,
         color: "",
         stock: 0,
         isPrimary: true,
@@ -120,7 +185,17 @@ const AddProductModal = ({ isOpen, onClose, onAdd }: AddProductModalProps) => {
     setProductImages([
       ...productImages,
       {
-        imageUrl: "",
+        file: null,
+        color: "",
+        stock: 0,
+        isPrimary: false,
+        isActive: true,
+      },
+    ]);
+    setValue("productImages", [
+      ...productImages,
+      {
+        file: null,
         color: "",
         stock: 0,
         isPrimary: false,
@@ -129,14 +204,35 @@ const AddProductModal = ({ isOpen, onClose, onAdd }: AddProductModalProps) => {
     ]);
   };
 
+  const handleFileChange = (index: number, file: File | null) => {
+    const newImages = [...productImages];
+    newImages[index].file = file;
+
+    if (file) {
+      const previewUrl = URL.createObjectURL(file);
+      newImages[index].previewUrl = previewUrl;
+    } else {
+      newImages[index].previewUrl = undefined;
+    }
+
+    setProductImages(newImages);
+    setValue("productImages", newImages);
+  };
+
   const removeProductImage = (index: number) => {
     if (productImages.length > 1) {
+      const imageToRemove = productImages[index];
+
+      if (imageToRemove.previewUrl) {
+        URL.revokeObjectURL(imageToRemove.previewUrl);
+      }
+
       const newImages = productImages.filter((_, i) => i !== index);
-      // Ensure at least one image is primary
       if (productImages[index].isPrimary && newImages.length > 0) {
         newImages[0].isPrimary = true;
       }
       setProductImages(newImages);
+      setValue("productImages", newImages);
     }
   };
 
@@ -148,7 +244,6 @@ const AddProductModal = ({ isOpen, onClose, onAdd }: AddProductModalProps) => {
     const newImages = [...productImages];
 
     if (field === "isPrimary" && value) {
-      // Only one image can be primary
       newImages.forEach((img, i) => {
         img.isPrimary = i === index;
       });
@@ -157,115 +252,148 @@ const AddProductModal = ({ isOpen, onClose, onAdd }: AddProductModalProps) => {
     }
 
     setProductImages(newImages);
+    setValue("productImages", newImages);
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Add New Product</DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Basic Product Info */}
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="name">Product Name *</Label>
-              <Input
-                id="name"
-                value={formData.name}
-                onChange={(e) =>
-                  setFormData({ ...formData, name: e.target.value })
-                }
-                required
+              <Controller
+                name="name"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    id="name"
+                    {...field}
+                    className={errors.name ? "border-red-500" : ""}
+                  />
+                )}
               />
+              {errors.name && (
+                <p className="text-sm text-red-500">{errors.name.message}</p>
+              )}
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="category">Category *</Label>
-              <Input
-                id="category"
-                value={formData.category}
-                onChange={(e) =>
-                  setFormData({ ...formData, category: e.target.value })
-                }
-                required
+              <Controller
+                name="category"
+                control={control}
+                render={({ field }) => (
+                  <Select value={field.value} onValueChange={field.onChange}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {categories.map((category) => (
+                        <SelectItem key={category.id} value={category.name}>
+                          {category.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
               />
+              {errors.category && (
+                <p className="text-sm text-red-500">
+                  {errors.category.message}
+                </p>
+              )}
             </div>
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="description">Description</Label>
-            <Textarea
-              id="description"
-              value={formData.description}
-              onChange={(e) =>
-                setFormData({ ...formData, description: e.target.value })
-              }
-              rows={3}
+            <Controller
+              name="description"
+              control={control}
+              render={({ field }) => (
+                <Textarea id="description" {...field} rows={3} />
+              )}
             />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="space-y-2">
               <Label htmlFor="price">Price *</Label>
-              <Input
-                id="price"
-                type="number"
-                step="0.01"
-                value={formData.price}
-                onChange={(e) =>
-                  setFormData({ ...formData, price: e.target.value })
-                }
-                required
+              <Controller
+                name="price"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    id="price"
+                    type="number"
+                    step="0.01"
+                    {...field}
+                    className={errors.price ? "border-red-500" : ""}
+                  />
+                )}
               />
+              {errors.price && (
+                <p className="text-sm text-red-500">{errors.price.message}</p>
+              )}
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="originalPrice">Original Price</Label>
-              <Input
-                id="originalPrice"
-                type="number"
-                step="0.01"
-                value={formData.originalPrice}
-                onChange={(e) =>
-                  setFormData({ ...formData, originalPrice: e.target.value })
-                }
+              <Controller
+                name="originalPrice"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    id="originalPrice"
+                    type="number"
+                    step="0.01"
+                    {...field}
+                  />
+                )}
               />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="gender">Gender</Label>
-              <Select
-                value={formData.gender}
-                onValueChange={(value) =>
-                  setFormData({ ...formData, gender: value as TGender })
-                }
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select gender" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="MALE">Male</SelectItem>
-                  <SelectItem value="FEMALE">Female</SelectItem>
-                  <SelectItem value="UNISEX">Unisex</SelectItem>
-                </SelectContent>
-              </Select>
+              <Controller
+                name="gender"
+                control={control}
+                render={({ field }) => (
+                  <Select value={field.value} onValueChange={field.onChange}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select gender" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="MALE">Male</SelectItem>
+                      <SelectItem value="FEMALE">Female</SelectItem>
+                      <SelectItem value="UNISEX">Unisex</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
             </div>
           </div>
 
           <div className="flex items-center space-x-2">
-            <Checkbox
-              id="isNew"
-              checked={formData.isNew}
-              onCheckedChange={(checked) =>
-                setFormData({ ...formData, isNew: !!checked })
-              }
+            <Controller
+              name="isNew"
+              control={control}
+              render={({ field }) => (
+                <Checkbox
+                  id="isNew"
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              )}
             />
             <Label htmlFor="isNew">Mark as New Product</Label>
           </div>
 
-          {/* Product Images */}
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <Label className="text-base font-semibold">
@@ -281,6 +409,12 @@ const AddProductModal = ({ isOpen, onClose, onAdd }: AddProductModalProps) => {
                 Add Color Variant
               </Button>
             </div>
+
+            {errors.productImages && (
+              <p className="text-sm text-red-500">
+                {errors.productImages.message}
+              </p>
+            )}
 
             {productImages.map((image, index) => (
               <div key={index} className="border rounded-lg p-4 space-y-3">
@@ -300,14 +434,40 @@ const AddProductModal = ({ isOpen, onClose, onAdd }: AddProductModalProps) => {
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                   <div className="space-y-2">
-                    <Label>Image URL</Label>
-                    <Input
-                      value={image.imageUrl}
-                      onChange={(e) =>
-                        updateProductImage(index, "imageUrl", e.target.value)
-                      }
-                      placeholder="https://example.com/image.jpg"
-                    />
+                    <Label>Product Image</Label>
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <Input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) =>
+                            handleFileChange(index, e.target.files?.[0] || null)
+                          }
+                          className="file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-sm file:bg-muted file:text-muted-foreground"
+                        />
+                        {image.file && (
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleFileChange(index, null)}
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        )}
+                      </div>
+                      {image.previewUrl && (
+                        <div className="relative w-20 h-20 border rounded overflow-hidden">
+                          <Image
+                            src={image.previewUrl || "/placeholder.svg"}
+                            alt={`Preview ${index + 1}`}
+                            width={80}
+                            height={80}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      )}
+                    </div>
                   </div>
 
                   <div className="space-y-2">
@@ -317,8 +477,17 @@ const AddProductModal = ({ isOpen, onClose, onAdd }: AddProductModalProps) => {
                       onChange={(e) =>
                         updateProductImage(index, "color", e.target.value)
                       }
-                      required
+                      className={
+                        errors.productImages?.[index]?.color
+                          ? "border-red-500"
+                          : ""
+                      }
                     />
+                    {errors.productImages?.[index]?.color && (
+                      <p className="text-sm text-red-500">
+                        {errors.productImages[index].color?.message}
+                      </p>
+                    )}
                   </div>
 
                   <div className="space-y-2">
@@ -333,7 +502,17 @@ const AddProductModal = ({ isOpen, onClose, onAdd }: AddProductModalProps) => {
                           Number.parseInt(e.target.value) || 0
                         )
                       }
+                      className={
+                        errors.productImages?.[index]?.stock
+                          ? "border-red-500"
+                          : ""
+                      }
                     />
+                    {errors.productImages?.[index]?.stock && (
+                      <p className="text-sm text-red-500">
+                        {errors.productImages[index].stock?.message}
+                      </p>
+                    )}
                   </div>
                 </div>
 
@@ -372,6 +551,4 @@ const AddProductModal = ({ isOpen, onClose, onAdd }: AddProductModalProps) => {
       </DialogContent>
     </Dialog>
   );
-};
-
-export default AddProductModal;
+}

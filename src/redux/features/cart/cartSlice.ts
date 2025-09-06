@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { RootState } from "../store";
+import { RootState } from "../../store";
 import ICartProduct from "@/types/cartProduct";
 import { addCoupon } from "@/services/checkout";
 import { TProduct } from "@/types/product";

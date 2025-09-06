@@ -1,6 +1,5 @@
 "use client";
 import ProductsTable from "./ProductsTable";
-import AddProductModal from "./AddProductModal";
 import EditProductModal from "./EditProductModal";
 import { DeleteProductModal } from "./DeleteProductModal";
 import ViewProductModal from "./ViewProductModal";
@@ -9,8 +8,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { TProduct } from "@/types/product";
 import { Plus, Search } from "lucide-react";
+import { AddProductModal } from "./AddProductModal";
+import { TCategory } from "@/types/category";
 
-const Products = ({ productsData }: { productsData: TProduct[] }) => {
+const Products = ({
+  productsData,
+  categoriesData,
+}: {
+  productsData: TProduct[];
+  categoriesData: TCategory[];
+}) => {
   const [products, setProducts] = useState<TProduct[]>(productsData || []);
   const [searchTerm, setSearchTerm] = useState("");
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -121,6 +128,7 @@ const Products = ({ productsData }: { productsData: TProduct[] }) => {
         <AddProductModal
           isOpen={isAddModalOpen}
           onClose={() => setIsAddModalOpen(false)}
+          categories={categoriesData}
           onAdd={handleAddProduct}
         />
 

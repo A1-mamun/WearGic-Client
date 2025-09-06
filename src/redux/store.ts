@@ -1,5 +1,6 @@
-import { configureStore } from "@reduxjs/toolkit";
-import cartReducer from "./features/cartSlice";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import cartReducer from "./features/cart/cartSlice";
+import authReducer from "./features/auth/authSlice";
 import {
   FLUSH,
   PAUSE,
@@ -11,18 +12,22 @@ import {
 } from "redux-persist";
 import storage from "./storage";
 
+const rootReducer = combineReducers({
+  cart: cartReducer,
+  auth: authReducer,
+});
+
 const persistOptions = {
-  key: "cart",
+  key: "root",
   storage,
+  whitelist: ["cart", "auth"],
 };
 
-const persistedCart = persistReducer(persistOptions, cartReducer);
+const persistedReducer = persistReducer(persistOptions, rootReducer);
 
 export const makeStore = () => {
   return configureStore({
-    reducer: {
-      cart: persistedCart,
-    },
+    reducer: persistedReducer,
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({
         serializableCheck: {

@@ -14,7 +14,7 @@ import { useAppSelector } from "@/redux/hooks";
 import {
   orderProductsSelector,
   subTotalSelector,
-} from "@/redux/features/cartSlice";
+} from "@/redux/features/cart/cartSlice";
 import CartProductCard from "./CartProductCard";
 import { useRouter } from "next/navigation";
 

@@ -12,7 +12,7 @@ import {
   fetchCoupon,
   removeCoupon,
   subTotalSelector,
-} from "@/redux/features/cartSlice";
+} from "@/redux/features/cart/cartSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { useEffect } from "react";
 

@@ -3,7 +3,7 @@ import {
   decrementOrderQuantity,
   incrementOrderQuantity,
   removeSelectedProductFromCart,
-} from "@/redux/features/cartSlice";
+} from "@/redux/features/cart/cartSlice";
 import { useAppDispatch } from "@/redux/hooks";
 import ICartProduct from "@/types/cartProduct";
 import { TProductImage } from "@/types/product";

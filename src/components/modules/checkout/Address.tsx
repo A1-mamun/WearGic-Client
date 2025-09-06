@@ -9,7 +9,10 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { cities } from "@/constants/cities";
-import { updateCity, updateShippingAddress } from "@/redux/features/cartSlice";
+import {
+  updateCity,
+  updateShippingAddress,
+} from "@/redux/features/cart/cartSlice";
 import { useAppDispatch } from "@/redux/hooks";
 
 export default function Address() {

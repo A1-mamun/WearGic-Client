@@ -36,7 +36,7 @@ export const createProduct = async (product: TCreateProduct) => {
 
     return data;
   } catch (error: any) {
-    throw new Error(error.message || "Something went wrong");
+    console.log("Error creating product:", error);
   }
 };
 
@@ -59,7 +59,7 @@ export const getAllProducts = async () => {
     const data = await res.json();
     return data;
   } catch (error: any) {
-    throw new Error(error.message || "Something went wrong");
+    console.log("Error fetching products:", error);
   }
 };
 
@@ -83,6 +83,5 @@ export const getProductById = async (id: string) => {
     return data;
   } catch (error: any) {
     console.log("Error fetching product by ID:", error);
-    throw new Error(error.message || "Something went wrong");
   }
 };

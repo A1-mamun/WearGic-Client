@@ -2,7 +2,7 @@
 import emptyCart from "@/assets/empty-cart.png";
 import CartProductCard from "../cart/CartProductCard";
 import { useAppSelector } from "@/redux/hooks";
-import { orderProductsSelector } from "@/redux/features/cartSlice";
+import { orderProductsSelector } from "@/redux/features/cart/cartSlice";
 import Image from "next/image";
 import ICartProduct from "@/types/cartProduct";
 const CheckoutProducts = ({
