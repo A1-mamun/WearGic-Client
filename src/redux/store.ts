@@ -11,10 +11,12 @@ import {
   REHYDRATE,
 } from "redux-persist";
 import storage from "./storage";
+import { baseApi } from "./api/baseApi";
 
 const rootReducer = combineReducers({
   cart: cartReducer,
   auth: authReducer,
+  [baseApi.reducerPath]: baseApi.reducer,
 });
 
 const persistOptions = {
@@ -33,7 +35,7 @@ export const makeStore = () => {
         serializableCheck: {
           ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
         },
-      }),
+      }).concat(baseApi.middleware),
   });
 };
 

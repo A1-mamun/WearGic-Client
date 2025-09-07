@@ -24,7 +24,7 @@ export default function CategoriesTable({
   onEdit,
   onDelete,
 }: CategoriesTableProps) {
-  if (categories.length === 0) {
+  if (categories?.length === 0) {
     return (
       <div className="text-center py-12">
         <p className="text-muted-foreground">No categories found</p>
@@ -42,14 +42,11 @@ export default function CategoriesTable({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {categories.map((category) => (
+          {categories?.map((category) => (
             <TableRow key={category.id}>
               <TableCell>
                 <div>
                   <div className="font-medium">{category.name}</div>
-                  <div className="text-sm text-muted-foreground">
-                    /{category.id}
-                  </div>
                 </div>
               </TableCell>
               <TableCell className="text-right">

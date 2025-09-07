@@ -4,14 +4,23 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Plus, Search } from "lucide-react";
-import CategoriesTable from "./categories-table";
-import AddCategoryModal from "./add-category-modal";
-import EditCategoryModal from "./edit-category-modal";
-import DeleteCategoryModal from "./delete-category-modal";
-import { TCategory } from "@/types/category";
 
-const Categories = ({ categoriesData }: { categoriesData: TCategory[] }) => {
-  const [categories, setCategories] = useState<TCategory[]>(categoriesData);
+import { TCategory } from "@/types/category";
+import CategoriesTable from "./CategoriesTable";
+import AddCategoryModal from "./AddCategoryModal";
+import EditCategoryModal from "./EditCategoryModal";
+import DeleteCategoryModal from "./DeletCategoryModal";
+
+const Categories = ({
+  categoriesData,
+  refetch,
+}: {
+  categoriesData: TCategory[];
+  refetch: () => void;
+}) => {
+  const [categories, setCategories] = useState<TCategory[] | []>(
+    categoriesData
+  );
   const [searchTerm, setSearchTerm] = useState("");
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -20,20 +29,9 @@ const Categories = ({ categoriesData }: { categoriesData: TCategory[] }) => {
     null
   );
 
-  const filteredCategories = categories.filter((category) =>
+  const filteredCategories = categories?.filter((category) =>
     category.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
-  const handleAddCategory = (
-    categoryData: Omit<TCategory, "id" | "createdAt" | "updatedAt">
-  ) => {
-    const newCategory: TCategory = {
-      ...categoryData,
-      id: Date.now().toString(),
-    };
-    setCategories([...categories, newCategory]);
-    setIsAddModalOpen(false);
-  };
 
   const handleEditCategory = (
     categoryData: Omit<TCategory, "id" | "createdAt" | "updatedAt">
@@ -117,8 +115,7 @@ const Categories = ({ categoriesData }: { categoriesData: TCategory[] }) => {
       <AddCategoryModal
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
-        onAdd={handleAddCategory}
-        existingCategories={categories}
+        refetch={refetch}
       />
 
       <EditCategoryModal
@@ -127,9 +124,7 @@ const Categories = ({ categoriesData }: { categoriesData: TCategory[] }) => {
           setIsEditModalOpen(false);
           setSelectedCategory(null);
         }}
-        onEdit={handleEditCategory}
         category={selectedCategory}
-        existingCategories={categories}
       />
 
       <DeleteCategoryModal
@@ -138,7 +133,6 @@ const Categories = ({ categoriesData }: { categoriesData: TCategory[] }) => {
           setIsDeleteModalOpen(false);
           setSelectedCategory(null);
         }}
-        onDelete={handleDeleteCategory}
         category={selectedCategory}
       />
     </div>

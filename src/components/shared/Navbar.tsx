@@ -21,11 +21,11 @@ const Navbar = () => {
   const navigationItems = [
     { name: "Home", path: "/" },
     { name: "All Products", path: "/products" },
-    { name: "Surprise Gift", path: "/surprise-gift" },
+
     { name: "FAQ", path: "/faq" },
     { name: "About Us", path: "/about" },
     { name: "Contact Us", path: "/contact" },
-    { name: "Track Order", path: "/track-order" },
+
     { name: "Dashboard", path: "/dashboard" },
   ];
 

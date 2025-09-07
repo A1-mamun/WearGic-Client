@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { set, z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -22,14 +23,28 @@ import {
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Plus, Trash2, X } from "lucide-react";
-import type { Product } from "./products-page";
 import Image from "next/image";
 import { TCategory } from "@/types/category";
+import { useAddProductMutation } from "@/redux/features/product/product";
+import { toast } from "sonner";
 
 const productImageSchema = z.object({
-  file: z.instanceof(File).nullable(),
+  file: z
+    .custom<File | null>((val) => val instanceof File && val.size > 0, {
+      message: "Product image is required",
+    })
+    .refine((file) => !file || file.size <= 10 * 1024 * 1024, {
+      message: "Max file size is 10MB",
+    })
+    .refine(
+      (file) =>
+        !file || ["image/jpeg", "image/png", "image/jpg"].includes(file.type),
+      {
+        message: "Only JPG, JPEG or PNG files are allowed",
+      }
+    ),
   color: z.string().min(1, "Color is required"),
-  stock: z.number().min(0, "Stock must be 0 or greater"),
+  stock: z.number().nonnegative("Stock cannot be negative"),
   isPrimary: z.boolean(),
   isActive: z.boolean(),
 });
@@ -40,16 +55,14 @@ const productFormSchema = z.object({
     .min(1, "Product name is required")
     .max(100, "Name must be less than 100 characters"),
   description: z.string().optional(),
-  originalPrice: z.string().optional(),
-  price: z
-    .string()
-    .min(1, "Price is required")
-    .refine((val) => !isNaN(Number(val)) && Number(val) >= 0, {
-      message: "Price must be a valid number greater than or equal to 0",
-    }),
+  originalPrice: z
+    .number()
+    .nonnegative("Original price cannot be negative")
+    .optional(),
+  price: z.number().nonnegative("Price cannot be negative"),
   category: z.string().min(1, "Category is required"),
   isNew: z.boolean(),
-  gender: z.enum(["MALE", "FEMALE", "UNISEX"]).optional(),
+  gender: z.enum(["MALE", "FEMALE"]).optional(),
   productImages: z
     .array(productImageSchema)
     .min(1, "At least one product image is required")
@@ -67,7 +80,7 @@ interface AddProductModalProps {
   isOpen: boolean;
   onClose: () => void;
   categories: TCategory[];
-  onAdd: (product: Omit<Product, "id" | "createdAt" | "updatedAt">) => void;
+  refetchProducts: () => void;
 }
 
 interface ProductImageForm {
@@ -83,8 +96,9 @@ export function AddProductModal({
   isOpen,
   onClose,
   categories,
-  onAdd,
+  refetchProducts,
 }: AddProductModalProps) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const {
     control,
     handleSubmit,
@@ -96,14 +110,14 @@ export function AddProductModal({
     defaultValues: {
       name: "",
       description: "",
-      originalPrice: "",
-      price: "",
+      originalPrice: 0,
+      price: 0,
       category: "",
       isNew: false,
       gender: undefined,
       productImages: [
         {
-          file: null,
+          file: undefined,
           color: "",
           stock: 0,
           isPrimary: true,
@@ -123,48 +137,48 @@ export function AddProductModal({
     },
   ]);
 
+  const [addProduct] = useAddProductMutation();
+
   const onSubmit = async (data: ProductFormData) => {
+    setIsSubmitting(true);
+    const toastId = toast.loading("Adding product...");
     const formDataToSend = new FormData();
-
-    formDataToSend.append("name", data.name);
-    formDataToSend.append("description", data.description || "");
-    formDataToSend.append("originalPrice", data.originalPrice || "");
-    formDataToSend.append("price", data.price || "0");
-    formDataToSend.append("category", data.category);
-    formDataToSend.append("isNew", data.isNew.toString());
-    formDataToSend.append("gender", data.gender || "");
-    formDataToSend.append("isDeleted", "false");
-
-    productImages.forEach((image, index) => {
-      if (image.file) {
-        formDataToSend.append(`images`, image.file);
-        formDataToSend.append(
-          `imageData_${index}`,
-          JSON.stringify({
-            color: image.color,
-            stock: image.stock,
-            isPrimary: image.isPrimary,
-            isActive: image.isActive,
+    formDataToSend.append("data", JSON.stringify(data));
+    // Append product images to form data as productImages array without the file property
+    if (productImages) {
+      formDataToSend.append(
+        "productImages",
+        JSON.stringify(
+          productImages.map((img) => {
+            const { file, ...rest } = img;
+            return rest;
           })
-        );
+        )
+      );
+    }
+
+    productImages.forEach((image) => {
+      if (image.file) {
+        formDataToSend.append("images", image.file);
       }
     });
 
     try {
-      const response = await fetch("/api/products", {
-        method: "POST",
-        body: formDataToSend,
+      await addProduct(formDataToSend).unwrap();
+      toast.success("Product added successfully", {
+        id: toastId,
+        duration: 2000,
       });
-
-      if (response.ok) {
-        const newProduct = await response.json();
-        onAdd(newProduct);
-        resetForm();
-      } else {
-        console.error("Failed to create product");
-      }
-    } catch (error) {
-      console.error("Error creating product:", error);
+      resetForm();
+      onClose();
+      refetchProducts();
+    } catch (error: any) {
+      toast.error(error.message || "Failed creating product!", {
+        id: toastId,
+        duration: 2000,
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -331,8 +345,8 @@ export function AddProductModal({
                   <Input
                     id="price"
                     type="number"
-                    step="0.01"
                     {...field}
+                    onChange={(e) => field.onChange(e.target.valueAsNumber)}
                     className={errors.price ? "border-red-500" : ""}
                   />
                 )}
@@ -351,11 +365,17 @@ export function AddProductModal({
                   <Input
                     id="originalPrice"
                     type="number"
-                    step="0.01"
                     {...field}
+                    onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                    className={errors.originalPrice ? "border-red-500" : ""}
                   />
                 )}
               />
+              {errors.originalPrice && (
+                <p className="text-sm text-red-500">
+                  {errors.originalPrice.message}
+                </p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -371,7 +391,6 @@ export function AddProductModal({
                     <SelectContent>
                       <SelectItem value="MALE">Male</SelectItem>
                       <SelectItem value="FEMALE">Female</SelectItem>
-                      <SelectItem value="UNISEX">Unisex</SelectItem>
                     </SelectContent>
                   </Select>
                 )}
@@ -434,79 +453,118 @@ export function AddProductModal({
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                   <div className="space-y-2">
-                    <Label>Product Image</Label>
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2">
-                        <Input
-                          type="file"
-                          accept="image/*"
-                          onChange={(e) =>
-                            handleFileChange(index, e.target.files?.[0] || null)
-                          }
-                          className="file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-sm file:bg-muted file:text-muted-foreground"
-                        />
-                        {image.file && (
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleFileChange(index, null)}
-                          >
-                            <X className="h-4 w-4" />
-                          </Button>
-                        )}
-                      </div>
-                      {image.previewUrl && (
-                        <div className="relative w-20 h-20 border rounded overflow-hidden">
-                          <Image
-                            src={image.previewUrl || "/placeholder.svg"}
-                            alt={`Preview ${index + 1}`}
-                            width={80}
-                            height={80}
-                            className="w-full h-full object-cover"
-                          />
+                    <Label>Product Image *</Label>
+                    <Controller
+                      name={`productImages.${index}.file`}
+                      control={control}
+                      render={({ field }) => (
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2">
+                            <Input
+                              type="file"
+                              accept="image/jpeg,image/png,image/jpg"
+                              onChange={(e) => {
+                                const file = e.target.files?.[0] || null;
+                                field.onChange(file); // ✅ updates RHF state
+                                handleFileChange(index, file); // ✅ still keeps preview
+                              }}
+                              className={`file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-sm file:bg-muted file:text-muted-foreground ${
+                                errors.productImages?.[index]?.file
+                                  ? "border-red-500"
+                                  : ""
+                              }`}
+                            />
+                            {field.value && (
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => {
+                                  field.onChange(null); // ✅ clear RHF value
+                                  handleFileChange(index, null); // ✅ clear preview
+                                }}
+                              >
+                                <X className="h-4 w-4" />
+                              </Button>
+                            )}
+                          </div>
+
+                          {/* Error message */}
+                          {errors.productImages?.[index]?.file && (
+                            <p className="text-sm text-red-500">
+                              {errors.productImages[index].file?.message}
+                            </p>
+                          )}
+
+                          {/* Info */}
+                          <p className="text-xs text-gray-500">
+                            Accepted formats: JPG, JPEG, PNG (Max size: 10MB)
+                          </p>
+
+                          {image.previewUrl && (
+                            <div className="relative w-20 h-20 border rounded overflow-hidden">
+                              <Image
+                                src={image.previewUrl || "/placeholder.svg"}
+                                alt={`Preview ${index + 1}`}
+                                width={80}
+                                height={80}
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                          )}
                         </div>
                       )}
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label>Color *</Label>
-                    <Input
-                      value={image.color}
-                      onChange={(e) =>
-                        updateProductImage(index, "color", e.target.value)
-                      }
-                      className={
-                        errors.productImages?.[index]?.color
-                          ? "border-red-500"
-                          : ""
-                      }
                     />
-                    {errors.productImages?.[index]?.color && (
-                      <p className="text-sm text-red-500">
-                        {errors.productImages[index].color?.message}
-                      </p>
-                    )}
                   </div>
-
+                  <Controller
+                    name={`productImages.${index}.color`}
+                    control={control}
+                    render={({ field }) => (
+                      <div className="space-y-2">
+                        <Label>Color *</Label>
+                        <Input
+                          {...field}
+                          value={field.value ?? ""} // ✅ controlled by RHF
+                          onChange={(e) => {
+                            field.onChange(e.target.value); // ✅ updates RHF
+                            updateProductImage(index, "color", e.target.value); // ✅ keeps your preview/local state
+                          }}
+                          className={
+                            errors.productImages?.[index]?.color
+                              ? "border-red-500"
+                              : ""
+                          }
+                        />
+                        {errors.productImages?.[index]?.color && (
+                          <p className="text-sm text-red-500">
+                            {errors.productImages[index].color?.message}
+                          </p>
+                        )}
+                      </div>
+                    )}
+                  />{" "}
                   <div className="space-y-2">
-                    <Label>Stock</Label>
-                    <Input
-                      type="number"
-                      value={image.stock}
-                      onChange={(e) =>
-                        updateProductImage(
-                          index,
-                          "stock",
-                          Number.parseInt(e.target.value) || 0
-                        )
-                      }
-                      className={
-                        errors.productImages?.[index]?.stock
-                          ? "border-red-500"
-                          : ""
-                      }
+                    <Label>Stock *</Label>
+                    <Controller
+                      name={`productImages.${index}.stock`}
+                      control={control}
+                      render={({ field }) => (
+                        <Input
+                          type="number"
+                          {...field}
+                          value={field.value ?? 0} // RHF controlled value
+                          onChange={(e) => {
+                            const value = Number.parseInt(e.target.value) || 0;
+                            field.onChange(value); // ✅ RHF aware of changes
+                            updateProductImage(index, "stock", value); // ✅ keep your local state in sync
+                          }}
+                          className={
+                            errors.productImages?.[index]?.stock
+                              ? "border-red-500"
+                              : ""
+                          }
+                        />
+                      )}
                     />
                     {errors.productImages?.[index]?.stock && (
                       <p className="text-sm text-red-500">
@@ -545,7 +603,9 @@ export function AddProductModal({
             <Button type="button" variant="outline" onClick={onClose}>
               Cancel
             </Button>
-            <Button type="submit">Add Product</Button>
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "Adding..." : "Add Product"}
+            </Button>
           </div>
         </form>
       </DialogContent>

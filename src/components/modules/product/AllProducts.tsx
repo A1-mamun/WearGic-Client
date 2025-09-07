@@ -14,6 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { Search, Filter, X } from "lucide-react";
 import ProductCard from "./ProductCard";
 import { TProduct } from "@/types/product";
+import { TCategory } from "@/types/category";
 
 type filterOption = {
   value: string;
@@ -27,7 +28,7 @@ const AllProducts = ({
   sortOptions,
 }: {
   products: TProduct[];
-  categories: filterOption[];
+  categories: TCategory[];
   genderOptions: filterOption[];
   sortOptions: filterOption[];
 }) => {
@@ -42,7 +43,7 @@ const AllProducts = ({
       .includes(searchTerm.toLowerCase());
     const matchesCategory =
       selectedCategory === "all" ||
-      product.category.toLowerCase() === selectedCategory;
+      product.category.toLowerCase() === selectedCategory.toLowerCase();
     const matchesGender =
       selectedGender === "all" || product.gender === selectedGender;
 
@@ -116,8 +117,8 @@ const AllProducts = ({
                   </SelectTrigger>
                   <SelectContent>
                     {categories.map((category) => (
-                      <SelectItem key={category.value} value={category.value}>
-                        {category.label}
+                      <SelectItem key={category.name} value={category.name}>
+                        {category.name}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -181,10 +182,7 @@ const AllProducts = ({
                 {selectedCategory !== "all" && (
                   <Badge variant="outline" className="gap-2">
                     Category:{" "}
-                    {
-                      categories.find((c) => c.value === selectedCategory)
-                        ?.label
-                    }
+                    {categories.find((c) => c.name === selectedCategory)?.name}
                     <X
                       className="h-3 w-3 cursor-pointer"
                       onClick={() => setSelectedCategory("all")}

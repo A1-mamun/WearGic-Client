@@ -1,24 +1,33 @@
-import React from "react";
+"use client";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Star, Zap, Users } from "lucide-react";
 
 import Link from "next/link";
 import ProductCard from "@/components/modules/product/ProductCard";
 import { TProduct } from "@/types/product";
-import { getAllProducts } from "@/services/product";
+import { useGetAllProductsQuery } from "@/redux/features/product/product";
 
-const HomePage = async () => {
+const HomePage = () => {
   const stats = [
     { icon: Users, value: "10K+", label: "Happy Customers" },
     { icon: Star, value: "4.9", label: "Average Rating" },
     { icon: Zap, value: "99%", label: "Customer Satisfaction" },
   ];
-  const products = await getAllProducts();
-  // console.log("All Products:", products);
+  const {
+    data: products,
+    isError,
+    isLoading,
+  } = useGetAllProductsQuery(undefined);
 
-  const featuredProducts: TProduct[] = products.data.slice(0, 8);
+  const featuredProducts: TProduct[] = products?.data.slice(0, 8);
 
-  console.log("Featured Products:", featuredProducts);
+  if (isLoading) {
+    return <div>Loading........</div>;
+  }
+
+  if (isError) {
+    return <div>Error loading products.</div>;
+  }
 
   return (
     <div className="min-h-screen bg-background">

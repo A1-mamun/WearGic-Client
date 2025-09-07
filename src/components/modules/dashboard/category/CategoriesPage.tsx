@@ -1,10 +1,20 @@
-import { getAllCategories } from "@/services/category";
+"use client";
+import { useGetAllCategoriesQuery } from "@/redux/features/category/category";
 import Categories from "./Categories";
 
-const CategoriesPage = async () => {
-  const categories = await getAllCategories();
+const CategoriesPage = () => {
+  const {
+    data: categories,
+    isLoading,
+    refetch,
+    isFetching,
+  } = useGetAllCategoriesQuery(undefined);
 
-  return <Categories categoriesData={categories.data} />;
+  if (isLoading || isFetching) {
+    return <div>Loading...</div>;
+  }
+
+  return <Categories categoriesData={categories?.data} refetch={refetch} />;
 };
 
 export default CategoriesPage;

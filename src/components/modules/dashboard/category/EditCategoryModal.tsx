@@ -1,9 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable no-unused-vars */
 "use client";
 
-import type React from "react";
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -16,30 +14,29 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useAddCategoryMutation } from "@/redux/features/category/category";
-import { toast } from "sonner";
+import { TCategory } from "@/types/category";
 
 const categorySchema = z.object({
   name: z
     .string()
-    .nonempty("Category name is required")
     .min(2, "Category name must be at least 2 characters long")
-    .max(100, "Name must be less than 100 characters"),
+    .max(100, "Name must be less than 100 characters")
+    .optional(),
 });
 
 type CategoryFormData = z.infer<typeof categorySchema>;
 
-interface AddCategoryModalProps {
+interface EditCategoryModalProps {
   isOpen: boolean;
   onClose: () => void;
-  refetch: () => void;
+  category: TCategory | null;
 }
 
-const AddCategoryModal = ({
+export default function EditCategoryModal({
   isOpen,
   onClose,
-  refetch,
-}: AddCategoryModalProps) => {
+  category,
+}: EditCategoryModalProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
@@ -51,22 +48,10 @@ const AddCategoryModal = ({
     resolver: zodResolver(categorySchema),
   });
 
-  const [addCategory] = useAddCategoryMutation();
-
   const onSubmit = async (data: CategoryFormData) => {
-    setIsSubmitting(true);
+    if (!category) return;
 
-    try {
-      await addCategory(data).unwrap();
-      toast.success("Category added successfully");
-      reset();
-      onClose();
-      refetch();
-    } catch (error: any) {
-      toast.error("Failed to add category");
-    } finally {
-      setIsSubmitting(false);
-    }
+    setIsSubmitting(true);
   };
 
   const handleClose = () => {
@@ -74,24 +59,29 @@ const AddCategoryModal = ({
     onClose();
   };
 
+  if (!category) return null;
+
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Add New Category</DialogTitle>
+          <DialogTitle>Edit Category</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          <div className="space-y-2">
-            <Label htmlFor="name">Category Name *</Label>
-            <Input
-              id="name"
-              {...register("name")}
-              placeholder="Enter category name"
-            />
-            {errors.name && (
-              <p className="text-sm text-red-500">{errors.name.message}</p>
-            )}
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="name">Category Name *</Label>
+              <Input
+                id="name"
+                {...register("name")}
+                defaultValue={category.name}
+                placeholder="Enter category name"
+              />
+              {errors.name && (
+                <p className="text-sm text-red-500">{errors.name.message}</p>
+              )}
+            </div>
           </div>
 
           {/* Actions */}
@@ -100,13 +90,11 @@ const AddCategoryModal = ({
               Cancel
             </Button>
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Adding..." : "Add Category"}
+              {isSubmitting ? "Updating..." : "Update Category"}
             </Button>
           </div>
         </form>
       </DialogContent>
     </Dialog>
   );
-};
-
-export default AddCategoryModal;
+}

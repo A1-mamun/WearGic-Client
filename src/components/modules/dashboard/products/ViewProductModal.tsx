@@ -23,8 +23,11 @@ const ViewProductModal = ({
   product,
 }: ViewProductModalProps) => {
   const formatPrice = (price: number) => `$${price.toFixed(2)}`;
-  const formatDate = (date: Date) => date.toLocaleDateString();
-
+  // const formatDate = (date: Date) => date.toLocaleDateString();
+  const formatDate = (date: Date | string) => {
+    const dateObj = typeof date === "string" ? new Date(date) : date;
+    return dateObj.toLocaleDateString();
+  };
   const getTotalStock = () => {
     return product.productImages.reduce(
       (total, image) => total + image.stock,

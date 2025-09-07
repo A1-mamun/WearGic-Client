@@ -14,9 +14,11 @@ import { TCategory } from "@/types/category";
 const Products = ({
   productsData,
   categoriesData,
+  refetchProducts,
 }: {
   productsData: TProduct[];
   categoriesData: TCategory[];
+  refetchProducts: () => void;
 }) => {
   const [products, setProducts] = useState<TProduct[]>(productsData || []);
   const [searchTerm, setSearchTerm] = useState("");
@@ -32,19 +34,6 @@ const Products = ({
       (product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         product.category.toLowerCase().includes(searchTerm.toLowerCase()))
   );
-
-  const handleAddProduct = (
-    newProduct: Omit<TProduct, "id" | "createdAt" | "updatedAt">
-  ) => {
-    const product: TProduct = {
-      ...newProduct,
-      id: Date.now().toString(),
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-    setProducts([...products, product]);
-    setIsAddModalOpen(false);
-  };
 
   const handleEditProduct = (updatedProduct: TProduct) => {
     setProducts(
@@ -129,7 +118,7 @@ const Products = ({
           isOpen={isAddModalOpen}
           onClose={() => setIsAddModalOpen(false)}
           categories={categoriesData}
-          onAdd={handleAddProduct}
+          refetchProducts={refetchProducts}
         />
 
         {selectedProduct && (

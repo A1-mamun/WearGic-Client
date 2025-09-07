@@ -1,13 +1,28 @@
-import { getAllProducts } from "@/services/product";
+"use client";
+import { useGetAllProductsQuery } from "@/redux/features/product/product";
 import Products from "./Products";
-import { getAllCategories } from "@/services/category";
+import { useGetAllCategoriesQuery } from "@/redux/features/category/category";
 
-const ProductsPage = async () => {
-  const products = await getAllProducts();
-  const categories = await getAllCategories();
+const ProductsPage = () => {
+  const {
+    data: products,
+    isLoading: loadingProducts,
+    refetch: refetchProducts,
+    isFetching,
+  } = useGetAllProductsQuery(undefined);
+  const { data: categories, isLoading: loadingCategories } =
+    useGetAllCategoriesQuery(undefined);
+
+  if (loadingProducts || loadingCategories || isFetching) {
+    return <div>Loading...</div>;
+  }
 
   return (
-    <Products productsData={products.data} categoriesData={categories.data} />
+    <Products
+      productsData={products?.data}
+      categoriesData={categories?.data}
+      refetchProducts={refetchProducts}
+    />
   );
 };
 
