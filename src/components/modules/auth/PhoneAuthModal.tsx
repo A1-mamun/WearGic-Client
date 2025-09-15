@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
@@ -18,6 +18,7 @@ import { toast } from "sonner";
 import { addUserInfo, loginUser, resendOtp, verifyOtp } from "@/services/auth";
 import UserRegistrationForm from "./UserRegistrationForm";
 import { useUser } from "@/contexts/userContext";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const phoneSchema = z.object({
   phone: z
@@ -26,6 +27,9 @@ const phoneSchema = z.object({
     .refine((phone) => {
       return /^01[3-9]\d{8}$/.test(phone.replace(/\s/g, ""));
     }, "Please enter a valid phone number"),
+  terms: z
+    .boolean()
+    .refine((val) => val === true, "You must accept the terms and conditions"),
 });
 
 interface PhoneAuthModalProps {
@@ -45,7 +49,18 @@ const PhoneAuthModal = ({ open, onOpenChange }: PhoneAuthModalProps) => {
 
   const phoneForm = useForm<z.infer<typeof phoneSchema>>({
     resolver: zodResolver(phoneSchema),
+    defaultValues: {
+      phone: "",
+      terms: false,
+    },
   });
+
+  const {
+    handleSubmit,
+    control,
+    register,
+    formState: { errors },
+  } = phoneForm;
 
   const handlePhoneSubmit = async (data: z.infer<typeof phoneSchema>) => {
     setLoading(true);
@@ -168,7 +183,7 @@ const PhoneAuthModal = ({ open, onOpenChange }: PhoneAuthModalProps) => {
       <DialogContent
         className="sm:max-w-md"
         onInteractOutside={(e) => {
-          e.preventDefault(); // 🚫 prevent closing on outside click
+          e.preventDefault();
         }}
       >
         {step === "phone" ? (
@@ -178,7 +193,7 @@ const PhoneAuthModal = ({ open, onOpenChange }: PhoneAuthModalProps) => {
             </DialogHeader>
 
             <form
-              onSubmit={phoneForm.handleSubmit(handlePhoneSubmit)}
+              onSubmit={handleSubmit(handlePhoneSubmit)}
               className="space-y-4"
             >
               <div className="space-y-2">
@@ -186,17 +201,43 @@ const PhoneAuthModal = ({ open, onOpenChange }: PhoneAuthModalProps) => {
                 <Input
                   id="phone"
                   placeholder="01XXXXXXXXX"
-                  {...phoneForm.register("phone")}
+                  {...register("phone")}
                 />
-                <p className="text-xs text-muted-foreground">
-                  Enter your Bangladeshi phone number
-                </p>
-                {phoneForm.formState.errors.phone && (
+
+                {errors.phone && (
                   <p className="text-sm text-destructive">
-                    {phoneForm.formState.errors.phone.message}
+                    {errors.phone.message}
                   </p>
                 )}
               </div>
+
+              {/* ✅ Terms & Conditions */}
+              <Controller
+                control={control}
+                name="terms"
+                render={({ field }) => (
+                  <div className="flex items-center gap-2">
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={(checked) =>
+                        field.onChange(checked === true)
+                      }
+                    />
+                    <Label htmlFor="terms" className="text-sm">
+                      I accept the{" "}
+                      <a href="/terms" className="text-blue-500 underline">
+                        Terms and Conditions
+                      </a>
+                    </Label>
+                  </div>
+                )}
+              />
+              {errors.terms && (
+                <p className="text-sm text-destructive">
+                  {errors.terms.message}
+                </p>
+              )}
+
               <Button type="submit" className="w-full" disabled={loading}>
                 {loading ? "Sending OTP..." : "Send OTP"}
               </Button>

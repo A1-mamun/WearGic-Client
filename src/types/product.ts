@@ -1,3 +1,8 @@
+export type TProductSpecifications = {
+  key: string;
+  value: string;
+};
+
 export type TProductImage = {
   id: string;
   productId: string;
@@ -25,6 +30,7 @@ export type TProduct = {
 
   // Relations
   productImages: TProductImage[];
+  specifications: TProductSpecifications[];
 };
 
 // Image type for creation

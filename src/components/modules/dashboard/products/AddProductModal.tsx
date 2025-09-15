@@ -1,9 +1,11 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { set, z } from "zod";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -27,6 +29,11 @@ import Image from "next/image";
 import { TCategory } from "@/types/category";
 import { useAddProductMutation } from "@/redux/features/product/product";
 import { toast } from "sonner";
+
+const specificationSchema = z.object({
+  key: z.string().min(1, "Specification key is required"),
+  value: z.string().min(1, "Specification value is required"),
+});
 
 const productImageSchema = z.object({
   file: z
@@ -72,6 +79,7 @@ const productFormSchema = z.object({
     .refine((images) => images.filter((img) => img.isPrimary).length === 1, {
       message: "Only one image can be marked as primary",
     }),
+  specifications: z.array(specificationSchema).optional(),
 });
 
 type ProductFormData = z.infer<typeof productFormSchema>;
@@ -91,6 +99,25 @@ interface ProductImageForm {
   isActive: boolean;
   previewUrl?: string;
 }
+
+interface ProductSpecification {
+  key: string;
+  value: string;
+}
+
+const DEFAULT_SPECIFICATION_KEYS = [
+  "Material",
+  "Color",
+  "Dimension",
+  "Inner Pocket",
+  "Handle",
+  "Strap Material Type",
+  "Lock Type",
+  "Zipper",
+  "Compartments",
+  "Straps",
+  "Origin",
+];
 
 export function AddProductModal({
   isOpen,
@@ -124,6 +151,10 @@ export function AddProductModal({
           isActive: true,
         },
       ],
+      specifications: DEFAULT_SPECIFICATION_KEYS.map((key) => ({
+        key,
+        value: "",
+      })),
     },
   });
 
@@ -136,6 +167,10 @@ export function AddProductModal({
       isActive: true,
     },
   ]);
+
+  const [specifications, setSpecifications] = useState<ProductSpecification[]>(
+    DEFAULT_SPECIFICATION_KEYS.map((key) => ({ key, value: "" }))
+  );
 
   const [addProduct] = useAddProductMutation();
 
@@ -193,6 +228,32 @@ export function AddProductModal({
         isActive: true,
       },
     ]);
+    setSpecifications(
+      DEFAULT_SPECIFICATION_KEYS.map((key) => ({ key, value: "" }))
+    );
+  };
+
+  const addSpecification = () => {
+    const newSpecs = [...specifications, { key: "", value: "" }];
+    setSpecifications(newSpecs);
+    setValue("specifications", newSpecs);
+  };
+
+  const removeSpecification = (index: number) => {
+    const newSpecs = specifications.filter((_, i) => i !== index);
+    setSpecifications(newSpecs);
+    setValue("specifications", newSpecs);
+  };
+
+  const updateSpecification = (
+    index: number,
+    field: keyof ProductSpecification,
+    value: string
+  ) => {
+    const newSpecs = [...specifications];
+    newSpecs[index] = { ...newSpecs[index], [field]: value };
+    setSpecifications(newSpecs);
+    setValue("specifications", newSpecs);
   };
 
   const addProductImage = () => {
@@ -271,7 +332,7 @@ export function AddProductModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="min-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Add New Product</DialogTitle>
         </DialogHeader>
@@ -303,7 +364,7 @@ export function AddProductModal({
                 control={control}
                 render={({ field }) => (
                   <Select value={field.value} onValueChange={field.onChange}>
-                    <SelectTrigger>
+                    <SelectTrigger className="w-full">
                       <SelectValue placeholder="Select category" />
                     </SelectTrigger>
                     <SelectContent>
@@ -385,7 +446,7 @@ export function AddProductModal({
                 control={control}
                 render={({ field }) => (
                   <Select value={field.value} onValueChange={field.onChange}>
-                    <SelectTrigger>
+                    <SelectTrigger className="w-full">
                       <SelectValue placeholder="Select gender" />
                     </SelectTrigger>
                     <SelectContent>
@@ -411,6 +472,83 @@ export function AddProductModal({
               )}
             />
             <Label htmlFor="isNew">Mark as New Product</Label>
+          </div>
+
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <Label className="text-base font-semibold">
+                Product Specifications
+              </Label>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={addSpecification}
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Add Specification
+              </Button>
+            </div>
+
+            {errors.specifications && (
+              <p className="text-sm text-red-500">
+                {errors.specifications.message}
+              </p>
+            )}
+
+            <div className="grid gap-3">
+              {specifications.map((spec, index) => (
+                <div key={index} className="flex gap-3 items-start">
+                  <div className="flex-1">
+                    <Input
+                      placeholder="Specification key (e.g., Material)"
+                      value={spec.key}
+                      onChange={(e) =>
+                        updateSpecification(index, "key", e.target.value)
+                      }
+                      className={
+                        errors.specifications?.[index]?.key
+                          ? "border-red-500"
+                          : ""
+                      }
+                    />
+                    {errors.specifications?.[index]?.key && (
+                      <p className="text-sm text-red-500 mt-1">
+                        {errors.specifications[index].key?.message}
+                      </p>
+                    )}
+                  </div>
+                  <div className="flex-1">
+                    <Input
+                      placeholder="Specification value"
+                      value={spec.value}
+                      onChange={(e) =>
+                        updateSpecification(index, "value", e.target.value)
+                      }
+                      className={
+                        errors.specifications?.[index]?.value
+                          ? "border-red-500"
+                          : ""
+                      }
+                    />
+                    {errors.specifications?.[index]?.value && (
+                      <p className="text-sm text-red-500 mt-1">
+                        {errors.specifications[index].value?.message}
+                      </p>
+                    )}
+                  </div>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => removeSpecification(index)}
+                    className="mt-0"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              ))}
+            </div>
           </div>
 
           <div className="space-y-4">

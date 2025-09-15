@@ -84,7 +84,7 @@ const ContactForm = () => {
                 id="name"
                 type="text"
                 {...register("name")}
-                className={`bg-input border-border focus:ring-ring ${
+                className={`bg-background border-border focus:ring-ring ${
                   errors.name ? "border-red-500" : ""
                 }`}
                 placeholder="Your full name"
@@ -102,7 +102,7 @@ const ContactForm = () => {
                 id="email"
                 type="email"
                 {...register("email")}
-                className={`bg-input border-border focus:ring-ring ${
+                className={`bg-background border-border focus:ring-ring ${
                   errors.email ? "border-red-500" : ""
                 }`}
                 placeholder="your.email@example.com"
@@ -122,7 +122,7 @@ const ContactForm = () => {
                 id="phone"
                 type="tel"
                 {...register("phone")}
-                className={`bg-input border-border focus:ring-ring ${
+                className={`bg-background border-border focus:ring-ring ${
                   errors.phone ? "border-red-500" : ""
                 }`}
                 placeholder="01XXXXXXXXX"
@@ -140,7 +140,7 @@ const ContactForm = () => {
                 id="subject"
                 type="text"
                 {...register("subject")}
-                className={`bg-input border-border focus:ring-ring ${
+                className={`bg-background border-border focus:ring-ring ${
                   errors.subject ? "border-red-500" : ""
                 }`}
                 placeholder="What's this about?"
@@ -158,7 +158,7 @@ const ContactForm = () => {
             <Textarea
               id="message"
               {...register("message")}
-              className={`bg-input border-border focus:ring-ring min-h-32 ${
+              className={`bg-background border-border focus:ring-ring min-h-32 ${
                 errors.message ? "border-red-500" : ""
               }`}
               placeholder="Tell us more about your inquiry..."

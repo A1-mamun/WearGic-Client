@@ -256,7 +256,7 @@ const ProductCard = ({ product }: { product: TProduct }) => {
         <Button
           variant="default"
           size="sm"
-          className="w-full"
+          className="w-full text-black"
           onClick={() => router.push(`/products/${product.id}`)}
         >
           Buy Now

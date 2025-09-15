@@ -13,6 +13,7 @@ import PhoneAuthModal from "../modules/auth/PhoneAuthModal";
 import { useUser } from "@/contexts/userContext";
 import { logoutUser } from "@/services/auth";
 import { usePathname } from "next/navigation";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -81,14 +82,39 @@ const Navbar = () => {
           {/* Right side buttons */}
           <div className="flex items-center space-x-4">
             {user ? (
-              <div className="hidden md:flex items-center space-x-2">
-                <span className="text-sm text-muted-foreground">
-                  Welcome, {user.name || "User"}
-                </span>
-                <Button variant="ghost" size="sm" onClick={handleLogOut}>
-                  <LogOut className="h-4 w-4 mr-2" />
-                  Sign Out
-                </Button>
+              <div className="flex items-center gap-5">
+                {/* Avatar Circle with first two letters */}
+
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="w-8 h-8 rounded-full bg-accent font-bold flex items-center justify-center ring-2 ring-black text-primary">
+                      {user.name?.slice(0, 2).toUpperCase() || "NA"}
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p className="text-sm text-black font-medium">
+                      {user.name || "NA"}
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+
+                {/* Sign Out Button with tooltip */}
+
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={handleLogOut}
+                      className="border-2 border-primary"
+                    >
+                      <LogOut className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p className="text-sm text-black font-medium">Log Out</p>
+                  </TooltipContent>
+                </Tooltip>
               </div>
             ) : (
               <Button

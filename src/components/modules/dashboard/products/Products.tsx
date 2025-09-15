@@ -129,6 +129,7 @@ const Products = ({
                 setIsEditModalOpen(false);
                 setSelectedProduct(null);
               }}
+              categories={categoriesData}
               onEdit={handleEditProduct}
               product={selectedProduct}
             />

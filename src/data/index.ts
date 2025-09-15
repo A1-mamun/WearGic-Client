@@ -578,10 +578,41 @@ export const contactInfos = [
   },
   {
     icon: Phone,
-    label: "01745093497",
+    label: "01345880782",
   },
   {
     icon: MapPin,
     label: "Rajshahi, Bangladesh",
+  },
+];
+
+export const contactDetails = [
+  {
+    icon: Phone,
+    label: "Phone",
+    value: "+8801345880782",
+    href: "https://wa.me/8801345880782",
+    description: "Sun-Thu 9AM-6PM BDT",
+  },
+  {
+    icon: Mail,
+    label: "Email",
+    value: "contact@weargic.com",
+    href: "mailto:contact@weargic.com",
+    description: "We reply within 24 hours",
+  },
+  {
+    icon: MapPin,
+    label: "Address",
+    value: "Zero Point, Rajshahi",
+    href: "https://www.google.com/maps/place/%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%B6%E0%A6%BE%E0%A6%B9%E0%A7%80/@24.3796644,88.5649606,13z/data=!3m1!4b1!4m6!3m5!1s0x39fbefa96a38d031:0x10f93a950ed6f410!8m2!3d24.3746497!4d88.6003665!16zL20vMDR2MDc2?entry=ttu&g_ep=EgoyMDI1MDkxMC4wIKXMDSoASAFQAw%3D%3D",
+    description: "Rajshahi, Bangladesh",
+  },
+  {
+    icon: Facebook,
+    label: "Facebook",
+    value: "@WearGic",
+    href: "https://www.facebook.com/weargic",
+    description: "Follow us for updates",
   },
 ];

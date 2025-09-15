@@ -90,6 +90,24 @@ const ViewProductModal = ({
             </div>
           </div>
 
+          {product.specifications && product.specifications.length > 0 && (
+            <div>
+              <h4 className="font-medium mb-3">Product Specifications</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {product.specifications.map((spec, index) => (
+                  <div key={index} className="border rounded-lg p-3">
+                    <div className="flex justify-between items-start">
+                      <span className="font-medium text-sm text-muted-foreground">
+                        {spec.key}
+                      </span>
+                    </div>
+                    <p className="mt-1 text-sm">{spec.value}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Product Images & Colors */}
           <div>
             <h4 className="font-medium mb-3">Color Variants</h4>
