@@ -9,23 +9,23 @@ import { toast } from "sonner";
 import Link from "next/link";
 import CartSidebar from "../modules/cart/CartSidebar";
 import PhoneAuthModal from "../modules/auth/PhoneAuthModal";
-import { ThemeToggle } from "../ui/theme-toggle";
+// import { ThemeToggle } from "../ui/theme-toggle";
 import { useUser } from "@/contexts/userContext";
 import { logoutUser } from "@/services/auth";
+import { usePathname } from "next/navigation";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const { user, refreshUser } = useUser();
+  const pathname = usePathname();
 
   const navigationItems = [
     { name: "Home", path: "/" },
     { name: "All Products", path: "/products" },
-
     { name: "FAQ", path: "/faq" },
     { name: "About Us", path: "/about" },
     { name: "Contact Us", path: "/contact" },
-
     { name: "Dashboard", path: "/dashboard" },
   ];
 
@@ -55,16 +55,27 @@ const Navbar = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center space-x-8">
-            {navigationItems.map((item) => (
-              <Link
-                key={item.name}
-                href={item.path}
-                className="text-foreground hover:text-accent font-medium transition-smooth relative group"
-              >
-                {item.name}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-accent transition-all duration-300 group-hover:w-full"></span>
-              </Link>
-            ))}
+            {navigationItems.map((item) => {
+              const isActive = pathname === item.path;
+              return (
+                <Link
+                  key={item.name}
+                  href={item.path}
+                  className={`font-medium transition-smooth relative group ${
+                    isActive
+                      ? "text-primary font-semibold" // ⬅️ Active color
+                      : "text-black/80 hover:text-black/60"
+                  }`}
+                >
+                  {item.name}
+                  <span
+                    className={`absolute -bottom-1 left-0 h-0.5 bg-gradient-accent transition-all duration-300 ${
+                      isActive ? "w-full" : "w-0 group-hover:w-full"
+                    }`}
+                  ></span>
+                </Link>
+              );
+            })}
           </div>
 
           {/* Right side buttons */}

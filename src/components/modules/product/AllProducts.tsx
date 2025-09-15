@@ -85,7 +85,7 @@ const AllProducts = ({
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
               All Products
             </h1>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-lg text-black/60 max-w-2xl mx-auto">
               Explore our complete collection of premium fashion accessories
             </p>
           </div>
@@ -97,12 +97,12 @@ const AllProducts = ({
             <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
               {/* Search */}
               <div className="relative flex-1 max-w-md">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-black/60" />
                 <Input
                   placeholder="Search products..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
+                  className="pl-10 text-black/60 border-black/40"
                 />
               </div>
 
@@ -112,10 +112,14 @@ const AllProducts = ({
                   value={selectedCategory}
                   onValueChange={setSelectedCategory}
                 >
-                  <SelectTrigger className="w-40">
+                  <SelectTrigger className="w-40 border-black/40">
                     <SelectValue placeholder="Category" />
                   </SelectTrigger>
+
                   <SelectContent>
+                    <SelectItem key="all" value="all">
+                      All
+                    </SelectItem>
                     {categories.map((category) => (
                       <SelectItem key={category.name} value={category.name}>
                         {category.name}
@@ -128,10 +132,13 @@ const AllProducts = ({
                   value={selectedGender}
                   onValueChange={setSelectedGender}
                 >
-                  <SelectTrigger className="w-32">
+                  <SelectTrigger className="w-32 border-black/40">
                     <SelectValue placeholder="Gender" />
                   </SelectTrigger>
                   <SelectContent>
+                    <SelectItem key="all" value="all">
+                      All
+                    </SelectItem>
                     {genderOptions.map((option) => (
                       <SelectItem key={option.value} value={option.value}>
                         {option.label}
@@ -141,10 +148,13 @@ const AllProducts = ({
                 </Select>
 
                 <Select value={sortBy} onValueChange={setSortBy}>
-                  <SelectTrigger className="w-48">
+                  <SelectTrigger className="w-48 border-black/40">
                     <SelectValue placeholder="Sort by" />
                   </SelectTrigger>
                   <SelectContent>
+                    <SelectItem key="featured" value="featured">
+                      Featured
+                    </SelectItem>
                     {sortOptions.map((option) => (
                       <SelectItem key={option.value} value={option.value}>
                         {option.label}
@@ -173,20 +183,36 @@ const AllProducts = ({
                 {searchTerm && (
                   <Badge variant="outline" className="gap-2">
                     Search: &quot;{searchTerm}&quot;
-                    <X
-                      className="h-3 w-3 cursor-pointer"
-                      onClick={() => setSearchTerm("")}
-                    />
+                    <Button
+                      type="button"
+                      size="icon"
+                      variant="ghost"
+                      className="h-5 w-5 p-0 bg-primary hover:bg-primary/90 rounded-sm"
+                      onClick={(e) => {
+                        e.stopPropagation(); // prevent parent badge click if any
+                        setSearchTerm("");
+                      }}
+                    >
+                      <X className="h-3 w-3 text-white" />
+                    </Button>
                   </Badge>
                 )}
                 {selectedCategory !== "all" && (
                   <Badge variant="outline" className="gap-2">
                     Category:{" "}
                     {categories.find((c) => c.name === selectedCategory)?.name}
-                    <X
-                      className="h-3 w-3 cursor-pointer"
-                      onClick={() => setSelectedCategory("all")}
-                    />
+                    <Button
+                      type="button"
+                      size="icon"
+                      variant="ghost"
+                      className="h-5 w-5 p-0 bg-primary hover:bg-primary/90 rounded-sm"
+                      onClick={(e) => {
+                        e.stopPropagation(); // prevent parent badge click if any
+                        setSelectedCategory("all");
+                      }}
+                    >
+                      <X className="h-3 w-3 text-white" />
+                    </Button>
                   </Badge>
                 )}
                 {selectedGender !== "all" && (
@@ -196,10 +222,18 @@ const AllProducts = ({
                       genderOptions.find((g) => g.value === selectedGender)
                         ?.label
                     }
-                    <X
-                      className="h-3 w-3 cursor-pointer"
-                      onClick={() => setSelectedGender("all")}
-                    />
+                    <Button
+                      type="button"
+                      size="icon"
+                      variant="ghost"
+                      className="h-5 w-5 p-0 bg-primary hover:bg-primary/90 rounded-sm"
+                      onClick={(e) => {
+                        e.stopPropagation(); // prevent parent badge click if any
+                        setSelectedGender("all");
+                      }}
+                    >
+                      <X className="h-3 w-3 text-white" />
+                    </Button>
                   </Badge>
                 )}
               </div>
@@ -211,7 +245,7 @@ const AllProducts = ({
         <section className="py-12">
           <div className="container mx-auto px-4">
             <div className="flex justify-between items-center mb-8">
-              <p className="text-muted-foreground">
+              <p className="text-black/60">
                 Showing {sortedProducts.length} of {products.length} products
               </p>
             </div>

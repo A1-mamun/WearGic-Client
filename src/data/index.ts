@@ -1,3 +1,16 @@
+import {
+  Facebook,
+  Instagram,
+  Twitter,
+  Mail,
+  Phone,
+  MapPin,
+  CreditCard,
+  Shield,
+  Truck,
+  RotateCcw,
+} from "lucide-react";
+
 export const termsAndConditions = {
   title: "Terms & Conditions",
   sections: [
@@ -514,5 +527,61 @@ export const faqs = [
     question: "How do I contact customer support?",
     answer:
       "You can reach our customer support team via email at support@weargic.com or through the live chat option available on our website.",
+  },
+];
+
+export const footerLinks = {
+  shop: [
+    { name: "All Products", path: "/products" },
+    { name: "Men's Collection", path: "/products?category=men" },
+    { name: "Women's Collection", path: "/products?category=women" },
+    { name: "Accessories", path: "/products?category=accessories" },
+    { name: "Surprise Gifts", path: "/surprise-gift" },
+  ],
+  support: [
+    { name: "Track Your Order", path: "/track-order" },
+    { name: "FAQ", path: "/faq" },
+    { name: "Contact Us", path: "/contact" },
+    { name: "Size Guide", path: "/size-guide" },
+    { name: "Returns", path: "/refund-and-return-policy" },
+  ],
+  company: [
+    { name: "About Us", path: "/about" },
+    { name: "Privacy Policy", path: "/privacy-policy" },
+    { name: "Terms of Service", path: "/terms-and-conditions" },
+    { name: "Careers", path: "/careers" },
+    { name: "Press", path: "/press" },
+  ],
+};
+
+export const features = [
+  { icon: Truck, text: "Quick Shipping" },
+  { icon: RotateCcw, text: "7-Day Returns" },
+  { icon: Shield, text: "Secure Payment" },
+  { icon: CreditCard, text: "Easy Checkout" },
+];
+
+export const socialLinks = [
+  { icon: Facebook, href: "https://facebook.com/weargic", label: "Facebook" },
+  {
+    icon: Instagram,
+    href: "https://instagram.com/weargic",
+    label: "Instagram",
+  },
+  { icon: Twitter, href: "https://twitter.com/weargic", label: "Twitter" },
+];
+
+export const contactInfos = [
+  {
+    icon: Mail,
+    label: "contact@weargic.com",
+  },
+  {
+    icon: Phone,
+    label: "01745093497",
+  },
+  {
+    icon: MapPin,
+    label: "Rajshahi, Bangladesh",
   },
 ];
