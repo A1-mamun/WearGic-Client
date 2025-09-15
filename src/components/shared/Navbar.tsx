@@ -90,7 +90,7 @@ const Navbar = () => {
               </Button>
             )}
 
-            <ThemeToggle />
+            {/* <ThemeToggle /> */}
 
             <CartSidebar>
               <Button variant="ghost" size="icon" className="relative">
