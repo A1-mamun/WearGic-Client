@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { contactInfos, features, footerLinks, socialLinks } from "@/data";
+import logo from "../../../public/Weargic_Logo.png";
+import Image from "next/image";
 
 const Footer = () => {
   return (
@@ -33,10 +35,13 @@ const Footer = () => {
           {/* Brand section */}
           <div className="lg:col-span-2 space-y-6">
             <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                <span className="text-black font-bold text-lg">W</span>
-              </div>
-              <span className="text-2xl text-white/60 font-bold">WearGic</span>
+              <Image
+                src={logo}
+                alt="WearGic"
+                width={200}
+                height={16}
+                className="rounded-lg"
+              />
             </div>
 
             <p className="text-white/60 max-w-md">

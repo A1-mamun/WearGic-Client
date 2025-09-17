@@ -238,148 +238,148 @@ export const termsAndConditions = {
   ],
 };
 
-export const privacyPolicy = {
-  title: "Privacy Policy",
-  sections: [
-    {
-      title: "Introduction",
-      introduction: [
-        "WearGic.com respects your privacy and is committed to protecting it. We know that you care about how information about you is collected, used, and shared, and we value your trust.",
-        "By using our website and services, you agree to the terms of this Privacy Policy. If you do not agree, please do not use our services.",
-        "We may update this policy from time to time. Changes will be effective once posted, and continued use of our services means you accept the updates.",
-      ],
-      subSections: [],
-    },
-    {
-      title: "Information We Collect",
-      introduction: [
-        "We collect personal and non-personal information to provide and improve our services. This may include:",
-      ],
-      subSections: [
-        {
-          title: "1. Personal Identifiable Information",
-          subtitle:
-            "We may collect information that can identify you, such as:",
-          content: [
-            "Full name",
-            "Phone number",
-            "Email address",
-            "Billing and shipping address",
-            "Payment details (processed securely through third-party providers)",
-          ],
-        },
-        {
-          title: "2. Non-Personal Information",
-          subtitle:
-            "We may collect anonymous information automatically, including:",
-          content: [
-            "Browser type and version",
-            "IP address",
-            "Device information",
-            "Pages visited and time spent on the website",
-            "Referring website or search engine",
-          ],
-        },
-      ],
-    },
-    {
-      title: "How We Use Your Information",
-      introduction: [
-        "We use your information to provide, personalize, and improve your experience with WearGic. Specifically, we may use it to:",
-      ],
-      list: {
-        title: "Information is used for:",
-        listItem: [
-          "Process and fulfill your orders",
-          "Provide customer support and respond to inquiries",
-          "Send order updates, promotional offers, or service-related communications",
-          "Improve website functionality and user experience",
-          "Prevent fraudulent activity and enhance security",
-          "Comply with legal obligations",
-        ],
-      },
-      subSections: [],
-    },
-    {
-      title: "Sharing of Information",
-      introduction: [
-        "We do not sell or rent your personal information to third parties. However, we may share your information under the following circumstances:",
-      ],
-      list: {
-        title: "Information may be shared with:",
-        listItem: [
-          "Trusted third-party service providers (e.g., payment processors, shipping companies) to complete your orders",
-          "Legal authorities when required by law, court order, or to protect rights, property, or safety",
-          "In the event of a merger, acquisition, or sale of assets, your information may be transferred to the new entity",
-        ],
-      },
-      subSections: [],
-    },
-    {
-      title: "Security of Your Information",
-      introduction: [
-        "We use industry-standard practices to protect your information from unauthorized access, disclosure, alteration, or destruction.",
-        "Although we strive to safeguard your data, no method of transmission over the Internet or electronic storage is 100% secure, and we cannot guarantee absolute protection.",
-      ],
-      subSections: [],
-    },
-    {
-      title: "Your Rights & Choices",
-      introduction: [
-        "You have the right to control your personal data. You may:",
-      ],
-      list: {
-        title: "Your rights include:",
-        listItem: [
-          "Request access to the personal data we hold about you",
-          "Update or correct inaccuracies in your personal information",
-          "Request deletion of your data, subject to legal or transactional requirements",
-          "Opt-out of promotional communications at any time",
-        ],
-      },
-      subSections: [],
-    },
-    {
-      title: "Cookies & Tracking Technologies",
-      introduction: [
-        "WearGic uses cookies and similar technologies to enhance user experience, track website usage, and deliver personalized content.",
-        "You can control or disable cookies through your browser settings, but this may affect website functionality.",
-      ],
-      subSections: [],
-    },
-    {
-      title: "Third-Party Links",
-      introduction: [
-        "Our website may contain links to third-party sites. We are not responsible for the privacy practices or content of those sites. Please review their policies before providing personal information.",
-      ],
-      subSections: [],
-    },
-    {
-      title: "Data Retention",
-      introduction: [
-        "We retain your personal information only for as long as necessary to provide services, fulfill legal obligations, resolve disputes, and enforce agreements.",
-      ],
-      subSections: [],
-    },
-    {
-      title: "Policy Updates",
-      introduction: [
-        "We may update this Privacy Policy from time to time. Any changes will be posted on this page with the updated effective date.",
-        "We encourage you to review this policy regularly to stay informed about how we are protecting your information.",
-      ],
-      subSections: [],
-    },
-    {
-      title: "Contact Us",
-      introduction: [
-        "If you have questions, requests, or concerns about this Privacy Policy, please contact us at:",
-        "Email: support@weargic.com",
-        "Phone: +880-XXXXXXXXXX",
-      ],
-      subSections: [],
-    },
-  ],
-};
+// export const privacyPolicy = {
+//   title: "Privacy Policy",
+//   sections: [
+//     {
+//       title: "Introduction",
+//       introduction: [
+//         "WearGic.com respects your privacy and is committed to protecting it. We know that you care about how information about you is collected, used, and shared, and we value your trust.",
+//         "By using our website and services, you agree to the terms of this Privacy Policy. If you do not agree, please do not use our services.",
+//         "We may update this policy from time to time. Changes will be effective once posted, and continued use of our services means you accept the updates.",
+//       ],
+//       subSections: [],
+//     },
+//     {
+//       title: "Information We Collect",
+//       introduction: [
+//         "We collect personal and non-personal information to provide and improve our services. This may include:",
+//       ],
+//       subSections: [
+//         {
+//           title: "1. Personal Identifiable Information",
+//           subtitle:
+//             "We may collect information that can identify you, such as:",
+//           content: [
+//             "Full name",
+//             "Phone number",
+//             "Email address",
+//             "Billing and shipping address",
+//             "Payment details (processed securely through third-party providers)",
+//           ],
+//         },
+//         {
+//           title: "2. Non-Personal Information",
+//           subtitle:
+//             "We may collect anonymous information automatically, including:",
+//           content: [
+//             "Browser type and version",
+//             "IP address",
+//             "Device information",
+//             "Pages visited and time spent on the website",
+//             "Referring website or search engine",
+//           ],
+//         },
+//       ],
+//     },
+//     {
+//       title: "How We Use Your Information",
+//       introduction: [
+//         "We use your information to provide, personalize, and improve your experience with WearGic. Specifically, we may use it to:",
+//       ],
+//       list: {
+//         title: "Information is used for:",
+//         listItem: [
+//           "Process and fulfill your orders",
+//           "Provide customer support and respond to inquiries",
+//           "Send order updates, promotional offers, or service-related communications",
+//           "Improve website functionality and user experience",
+//           "Prevent fraudulent activity and enhance security",
+//           "Comply with legal obligations",
+//         ],
+//       },
+//       subSections: [],
+//     },
+//     {
+//       title: "Sharing of Information",
+//       introduction: [
+//         "We do not sell or rent your personal information to third parties. However, we may share your information under the following circumstances:",
+//       ],
+//       list: {
+//         title: "Information may be shared with:",
+//         listItem: [
+//           "Trusted third-party service providers (e.g., payment processors, shipping companies) to complete your orders",
+//           "Legal authorities when required by law, court order, or to protect rights, property, or safety",
+//           "In the event of a merger, acquisition, or sale of assets, your information may be transferred to the new entity",
+//         ],
+//       },
+//       subSections: [],
+//     },
+//     {
+//       title: "Security of Your Information",
+//       introduction: [
+//         "We use industry-standard practices to protect your information from unauthorized access, disclosure, alteration, or destruction.",
+//         "Although we strive to safeguard your data, no method of transmission over the Internet or electronic storage is 100% secure, and we cannot guarantee absolute protection.",
+//       ],
+//       subSections: [],
+//     },
+//     {
+//       title: "Your Rights & Choices",
+//       introduction: [
+//         "You have the right to control your personal data. You may:",
+//       ],
+//       list: {
+//         title: "Your rights include:",
+//         listItem: [
+//           "Request access to the personal data we hold about you",
+//           "Update or correct inaccuracies in your personal information",
+//           "Request deletion of your data, subject to legal or transactional requirements",
+//           "Opt-out of promotional communications at any time",
+//         ],
+//       },
+//       subSections: [],
+//     },
+//     {
+//       title: "Cookies & Tracking Technologies",
+//       introduction: [
+//         "WearGic uses cookies and similar technologies to enhance user experience, track website usage, and deliver personalized content.",
+//         "You can control or disable cookies through your browser settings, but this may affect website functionality.",
+//       ],
+//       subSections: [],
+//     },
+//     {
+//       title: "Third-Party Links",
+//       introduction: [
+//         "Our website may contain links to third-party sites. We are not responsible for the privacy practices or content of those sites. Please review their policies before providing personal information.",
+//       ],
+//       subSections: [],
+//     },
+//     {
+//       title: "Data Retention",
+//       introduction: [
+//         "We retain your personal information only for as long as necessary to provide services, fulfill legal obligations, resolve disputes, and enforce agreements.",
+//       ],
+//       subSections: [],
+//     },
+//     {
+//       title: "Policy Updates",
+//       introduction: [
+//         "We may update this Privacy Policy from time to time. Any changes will be posted on this page with the updated effective date.",
+//         "We encourage you to review this policy regularly to stay informed about how we are protecting your information.",
+//       ],
+//       subSections: [],
+//     },
+//     {
+//       title: "Contact Us",
+//       introduction: [
+//         "If you have questions, requests, or concerns about this Privacy Policy, please contact us at:",
+//         "Email: support@weargic.com",
+//         "Phone: +880-XXXXXXXXXX",
+//       ],
+//       subSections: [],
+//     },
+//   ],
+// };
 
 export const returnAndRefundPolicy = {
   title: "Refund & Return Policy",
@@ -616,3 +616,221 @@ export const contactDetails = [
     description: "Follow us for updates",
   },
 ];
+
+export const genders = [
+  { value: "MALE", label: "Male" },
+  { value: "FEMALE", label: "Female" },
+];
+export const sortOptions = [
+  { value: "asc", label: "Price: Low to High" },
+  { value: "desc", label: "Price: High to Low" },
+];
+
+export const privacyPolicy = {
+  title: "Privacy Policy",
+  lastUpdated: "December 15, 2024",
+  sections: [
+    {
+      id: "introduction",
+      title: "Introduction",
+      icon: "info",
+      content: `
+        <p>WearGic.com respects your privacy and is committed to protecting it. We know that you care about how information about you is collected, used, and shared, and we value your trust.</p>
+        <p>By using our website and services, you agree to the terms of this Privacy Policy. If you do not agree, please do not use our services.</p>
+        <p>We may update this policy from time to time. Changes will be effective once posted, and continued use of our services means you accept the updates.</p>
+      `,
+    },
+    {
+      id: "information-collection",
+      title: "Information We Collect",
+      icon: "database",
+      content: `
+        <p>We collect personal and non-personal information to provide and improve our services. This may include:</p>
+      `,
+      subsections: [
+        {
+          id: "personal-information",
+          title: "Personal Identifiable Information",
+          content: `
+            <p>We may collect information that can identify you, such as:</p>
+            <ul>
+              <li>Full name</li>
+              <li>Phone number</li>
+              <li>Email address</li>
+              <li>Billing and shipping address</li>
+              <li>Payment details (processed securely through third-party providers)</li>
+            </ul>
+          `,
+        },
+        {
+          id: "non-personal-information",
+          title: "Non-Personal Information",
+          content: `
+            <p>We may collect anonymous information automatically, including:</p>
+            <ul>
+              <li>Browser type and version</li>
+              <li>IP address</li>
+              <li>Device information</li>
+              <li>Pages visited and time spent on the website</li>
+              <li>Referring website or search engine</li>
+            </ul>
+          `,
+        },
+      ],
+    },
+    {
+      id: "information-use",
+      title: "How We Use Your Information",
+      icon: "eye",
+      content: `
+        <p>We use your information to provide, personalize, and improve your experience with WearGic. Specifically, we may use it to:</p>
+        <ul>
+          <li>Process and fulfill your orders</li>
+          <li>Provide customer support and respond to inquiries</li>
+          <li>Send order updates, promotional offers, or service-related communications</li>
+          <li>Improve website functionality and user experience</li>
+          <li>Prevent fraudulent activity and enhance security</li>
+          <li>Comply with legal obligations</li>
+        </ul>
+      `,
+    },
+    {
+      id: "information-sharing",
+      title: "Sharing of Information",
+      icon: "users",
+      content: `
+        <p>We do not sell or rent your personal information to third parties. However, we may share your information under the following circumstances:</p>
+        <ul>
+          <li>Trusted third-party service providers (e.g., payment processors, shipping companies) to complete your orders</li>
+          <li>Legal authorities when required by law, court order, or to protect rights, property, or safety</li>
+          <li>In the event of a merger, acquisition, or sale of assets, your information may be transferred to the new entity</li>
+        </ul>
+      `,
+    },
+    {
+      id: "data-security",
+      title: "Security of Your Information",
+      icon: "shield",
+      content: `
+        <p>We use industry-standard practices to protect your information from unauthorized access, disclosure, alteration, or destruction.</p>
+        <p>Although we strive to safeguard your data, no method of transmission over the Internet or electronic storage is 100% secure, and we cannot guarantee absolute protection.</p>
+        <div class="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+          <p class="text-amber-800 font-medium">Security Measures Include:</p>
+          <ul class="text-amber-700 mt-2">
+            <li>Encryption of data in transit and at rest</li>
+            <li>Regular security assessments and audits</li>
+            <li>Access controls and authentication mechanisms</li>
+            <li>Employee training on data protection practices</li>
+          </ul>
+        </div>
+      `,
+    },
+    {
+      id: "your-rights",
+      title: "Your Rights & Choices",
+      content: `
+        <p>You have the right to control your personal data. You may:</p>
+        <ul>
+          <li>Request access to the personal data we hold about you</li>
+          <li>Update or correct inaccuracies in your personal information</li>
+          <li>Request deletion of your data, subject to legal or transactional requirements</li>
+          <li>Opt-out of promotional communications at any time</li>
+        </ul>
+        <p>To exercise these rights, please contact us using the information provided below.</p>
+      `,
+    },
+    {
+      id: "cookies",
+      title: "Cookies & Tracking Technologies",
+      content: `
+        <p>WearGic uses cookies and similar technologies to enhance user experience, track website usage, and deliver personalized content.</p>
+        <p>You can control or disable cookies through your browser settings, but this may affect website functionality.</p>
+        <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+            <h4 class="font-medium text-blue-900">Essential Cookies</h4>
+            <p class="text-blue-700 text-sm mt-1">Necessary for website functionality</p>
+          </div>
+          <div class="p-3 bg-green-50 border border-green-200 rounded-lg">
+            <h4 class="font-medium text-green-900">Analytics Cookies</h4>
+            <p class="text-green-700 text-sm mt-1">Help us understand user behavior</p>
+          </div>
+        </div>
+      `,
+    },
+    {
+      id: "third-party-links",
+      title: "Third-Party Links",
+      content: `
+        <p>Our website may contain links to third-party sites. We are not responsible for the privacy practices or content of those sites. Please review their policies before providing personal information.</p>
+      `,
+    },
+    {
+      id: "data-retention",
+      title: "Data Retention",
+      content: `
+        <p>We retain your personal information only for as long as necessary to provide services, fulfill legal obligations, resolve disputes, and enforce agreements.</p>
+        <div class="mt-4 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+          <p class="font-medium text-gray-900">Retention Periods:</p>
+          <ul class="text-gray-700 mt-2">
+            <li>Account information: Until account deletion</li>
+            <li>Transaction records: 7 years for tax purposes</li>
+            <li>Marketing data: Until opt-out or 3 years of inactivity</li>
+            <li>Support communications: 2 years</li>
+          </ul>
+        </div>
+      `,
+    },
+    {
+      id: "children-privacy",
+      title: "Children's Privacy",
+      content: `
+        <p>Our services are not intended for children under the age of 13. We do not knowingly collect personal information from children under 13.</p>
+        <p>If you are a parent or guardian and believe your child has provided us with personal information, please contact us immediately so we can delete such information.</p>
+      `,
+    },
+    {
+      id: "international-transfers",
+      title: "International Data Transfers",
+      content: `
+        <p>Your information may be transferred to and processed in countries other than your own. When we transfer your information internationally, we implement appropriate safeguards including:</p>
+        <ul>
+          <li>Standard contractual clauses approved by regulatory authorities</li>
+          <li>Adequacy decisions by relevant authorities</li>
+          <li>Certification schemes and codes of conduct</li>
+        </ul>
+      `,
+    },
+    {
+      id: "policy-changes",
+      title: "Policy Updates",
+      content: `
+        <p>We may update this Privacy Policy from time to time. Any changes will be posted on this page with the updated effective date.</p>
+        <p>We encourage you to review this policy regularly to stay informed about how we are protecting your information.</p>
+        <div class="mt-4 p-4 bg-indigo-50 border border-indigo-200 rounded-lg">
+          <p class="text-indigo-800 font-medium">When we make changes, we will:</p>
+          <ul class="text-indigo-700 mt-2">
+            <li>Update the "Last Updated" date</li>
+            <li>Notify you of material changes via email</li>
+            <li>Provide opportunity to review updated policy</li>
+          </ul>
+        </div>
+      `,
+    },
+    {
+      id: "contact",
+      title: "Contact Us",
+      content: `
+        <p>If you have questions, requests, or concerns about this Privacy Policy, please contact us at:</p>
+        <div class="mt-4 space-y-2">
+          <p><strong>Email:</strong> <a href="mailto:contact@weargic.com" class="text-blue-600 hover:text-blue-800">contact@weargic.com</a></p>
+          <p><strong>Phone:</strong> <a href="https://wa.me/8801345880782" class="text-blue-600 hover:text-blue-800">+8801345880782</a></p>
+        </div>
+      `,
+    },
+  ],
+  contact: {
+    email: "contact@weargic.com",
+    phone: "+8801345880782",
+    address: "WearGic Customer Service, Rajshahi, Bangladesh",
+  },
+};

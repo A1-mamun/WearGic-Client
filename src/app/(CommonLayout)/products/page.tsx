@@ -2,33 +2,243 @@
 import AllProducts from "@/components/modules/product/AllProducts";
 import { useGetAllCategoriesQuery } from "@/redux/features/category/category";
 import { useGetAllProductsQuery } from "@/redux/features/product/product";
-
+import { useState } from "react";
+import { genders, sortOptions } from "@/data";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Search, X } from "lucide-react";
+import { TCategory } from "@/types/category";
+import { Skeleton } from "@/components/ui/skeleton";
+import ProductSkeletonCard from "@/components/modules/product/ProductSkeletonCard";
 const Products = () => {
-  const { data: products, isLoading: loadingProducts } =
-    useGetAllProductsQuery(undefined);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedGender, setSelectedGender] = useState("");
+  const [sortBy, setSortBy] = useState("price");
+  const [sortOrder, setSortOrder] = useState("asc");
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+
+  const clearFilters = () => {
+    setSearchTerm("");
+    setSelectedCategory("");
+    setSelectedGender("");
+    setSortOrder("asc");
+  };
+
+  const activeFiltersCount = [
+    selectedCategory !== "",
+    selectedGender !== "",
+    searchTerm !== "",
+  ].filter(Boolean).length;
+
+  const {
+    data: products,
+    isLoading: loadingProducts,
+    isFetching,
+  } = useGetAllProductsQuery({
+    gender: selectedGender,
+    category: selectedCategory,
+    searchTerm,
+    page,
+    limit,
+    sortBy,
+    sortOrder,
+  });
 
   const { data: categories, isLoading: loadingCategories } =
     useGetAllCategoriesQuery(undefined);
-  const genders = [
-    { value: "MALE", label: "Male" },
-    { value: "FEMALE", label: "Female" },
-  ];
-  const sortOptions = [
-    { value: "price-low", label: "Price: Low to High" },
-    { value: "price-high", label: "Price: High to Low" },
-  ];
 
-  if (loadingProducts || loadingCategories) {
-    return <div>Loading........</div>;
-  }
+  const loadMoreProducts = () => {
+    setLimit((prevLimit) => prevLimit + 10);
+  };
 
   return (
-    <AllProducts
-      products={products?.data}
-      categories={categories?.data}
-      genderOptions={genders}
-      sortOptions={sortOptions}
-    />
+    <main className="min-h-screen bg-background">
+      {/* Header */}
+      <section className="py-16 bg-gradient-subtle">
+        <div className="container mx-auto px-4 text-center">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">All Products</h1>
+          <p className="text-lg text-black/60 max-w-2xl mx-auto">
+            Explore our complete collection of premium fashion accessories
+          </p>
+        </div>
+      </section>
+
+      {/* Filters */}
+      <section className="py-8 border-b border-border">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
+            {/* Search */}
+            <div className="relative flex-1 max-w-md">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-black/60" />
+              <Input
+                placeholder="Search products..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 text-black/60 border-black/40"
+              />
+            </div>
+
+            {/* Filter controls */}
+            <div className="flex flex-wrap gap-4 items-center">
+              <Select
+                value={selectedCategory}
+                onValueChange={setSelectedCategory}
+              >
+                <SelectTrigger className="w-40 border-black/40">
+                  <SelectValue placeholder="Category" />
+                </SelectTrigger>
+
+                <SelectContent>
+                  {loadingCategories ? (
+                    <SelectItem key="loading" value="loading">
+                      Loading...
+                    </SelectItem>
+                  ) : (
+                    categories?.data?.map((category: TCategory) => (
+                      <SelectItem key={category.name} value={category.name}>
+                        {category.name}
+                      </SelectItem>
+                    ))
+                  )}
+                </SelectContent>
+              </Select>
+
+              <Select value={selectedGender} onValueChange={setSelectedGender}>
+                <SelectTrigger className="w-32 border-black/40">
+                  <SelectValue placeholder="Gender" />
+                </SelectTrigger>
+                <SelectContent>
+                  {genders.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <Select value={sortOrder} onValueChange={setSortOrder}>
+                <SelectTrigger className="w-48 border-black/40">
+                  <SelectValue placeholder="Sort by" />
+                </SelectTrigger>
+                <SelectContent>
+                  {sortOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              {activeFiltersCount > 0 && (
+                <Button
+                  variant="outline"
+                  onClick={clearFilters}
+                  className="gap-2"
+                >
+                  <X className="h-4 w-4" />
+                  Clear Filters
+                  <Badge variant="secondary">{activeFiltersCount}</Badge>
+                </Button>
+              )}
+            </div>
+          </div>
+
+          {/* Active filters display */}
+          {activeFiltersCount > 0 && (
+            <div className="mt-4 flex flex-wrap gap-2">
+              {searchTerm && (
+                <Badge variant="outline" className="gap-2">
+                  Search: &quot;{searchTerm}&quot;
+                  <Button
+                    type="button"
+                    size="icon"
+                    variant="ghost"
+                    className="h-5 w-5 p-0 bg-primary hover:bg-primary/90 rounded-sm"
+                    onClick={(e) => {
+                      e.stopPropagation(); // prevent parent badge click if any
+                      setSearchTerm("");
+                    }}
+                  >
+                    <X className="h-3 w-3 text-white" />
+                  </Button>
+                </Badge>
+              )}
+              {selectedCategory !== "" && (
+                <Badge variant="outline" className="gap-2">
+                  Category:{" "}
+                  {
+                    categories.data.find(
+                      (category: TCategory) =>
+                        category.name === selectedCategory
+                    )?.name
+                  }
+                  <Button
+                    type="button"
+                    size="icon"
+                    variant="ghost"
+                    className="h-5 w-5 p-0 bg-primary hover:bg-primary/90 rounded-sm"
+                    onClick={(e) => {
+                      e.stopPropagation(); // prevent parent badge click if any
+                      setSelectedCategory("");
+                    }}
+                  >
+                    <X className="h-3 w-3 text-white" />
+                  </Button>
+                </Badge>
+              )}
+              {selectedGender !== "" && (
+                <Badge variant="outline" className="gap-2">
+                  Gender:{" "}
+                  {genders.find((g) => g.value === selectedGender)?.label}
+                  <Button
+                    type="button"
+                    size="icon"
+                    variant="ghost"
+                    className="h-5 w-5 p-0 bg-primary hover:bg-primary/90 rounded-sm"
+                    onClick={(e) => {
+                      e.stopPropagation(); // prevent parent badge click if any
+                      setSelectedGender("");
+                    }}
+                  >
+                    <X className="h-3 w-3 text-white" />
+                  </Button>
+                </Badge>
+              )}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Products Grid */}
+      {loadingProducts || loadingCategories || isFetching ? (
+        <div className="container mx-auto px-4 py-12">
+          <div className="flex justify-between items-center mb-8">
+            <Skeleton className="h-6 w-48 bg-gray-300" />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            {Array.from({ length: 8 }).map((_, index) => (
+              <ProductSkeletonCard key={index} />
+            ))}
+          </div>
+        </div>
+      ) : (
+        <AllProducts
+          products={products}
+          clearFilters={clearFilters}
+          loadMoreProducts={loadMoreProducts}
+        />
+      )}
+    </main>
   );
 };
 

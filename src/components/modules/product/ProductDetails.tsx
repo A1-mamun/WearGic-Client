@@ -12,6 +12,8 @@ import {
   orderProductsSelector,
 } from "@/redux/features/cart/cartSlice";
 import { useRouter } from "next/navigation";
+import { Card } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 
 const ProductDetails = ({ productData }: { productData: TProduct }) => {
   const [showedColor, setShowedColor] = useState<TProductImage | null>(
@@ -123,26 +125,6 @@ const ProductDetails = ({ productData }: { productData: TProduct }) => {
                 height={1500}
                 className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
               />
-              <Badge className="absolute top-4 left-4 bg-destructive text-destructive-foreground text-sm">
-                {discountPercentage}% OFF
-              </Badge>
-              <Badge className="absolute top-12 left-4 bg-primary text-primary-foreground text-sm">
-                {productData.isNew ? "New" : "Featured"}
-              </Badge>
-              {/* <Button
-                variant="ghost"
-                size="icon"
-                className="absolute top-4 right-4 bg-background/80 hover:bg-background"
-                onClick={() => setIsWishlisted(!isWishlisted)}
-              >
-                <Heart
-                  className={`h-5 w-5 ${
-                    isWishlisted
-                      ? "fill-red-500 text-red-500"
-                      : "text-muted-foreground"
-                  }`}
-                />
-              </Button> */}
             </div>
 
             {/* Color Selection */}
@@ -173,152 +155,161 @@ const ProductDetails = ({ productData }: { productData: TProduct }) => {
 
           {/* Product Information */}
           <div className="space-y-6">
-            <div>
-              <Badge variant="secondary" className="mb-2">
-                {productData.category}
-              </Badge>
-              <h1 className="text-4xl font-black font-montserrat text-foreground mb-2">
-                {productData.name}
-              </h1>
-              <p className="text-lg text-muted-foreground font-open-sans">
-                {productData.description}
-              </p>
-            </div>
-
-            {/* Rating */}
-            {/* <div className="flex items-center gap-2">
-              <div className="flex">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="h-5 w-5 fill-accent text-accent" />
-                ))}
-              </div>
-              <span className="text-sm text-muted-foreground">
-                (4.8) • 127 reviews
-              </span>
-            </div> */}
-
-            {/* Pricing */}
-            <div className="space-y-2">
-              <div className="flex items-center gap-3">
-                <span className="text-3xl font-bold text-foreground">
-                  ${productData.price}
-                </span>
-                <span className="text-xl text-muted-foreground line-through">
-                  ${productData.originalPrice}
-                </span>
-              </div>
-              {discountPercentage > 0 && (
-                <Badge variant="destructive" className="w-fit">
-                  Limited Time Offer
+            <Card className="p-6 bg-card">
+              <div>
+                <Badge variant="secondary" className="mb-2">
+                  {productData.category}
                 </Badge>
-              )}
-            </div>
-
-            {/* Color and Stock Info */}
-            <div className="space-y-3">
-              <div>
-                <label className="text-sm font-medium text-foreground">
-                  Color: <span className="text-destructive">*</span>
-                </label>
-              </div>
-              <select
-                value={selectedColor?.color}
-                onChange={(e) => handleColorChange(e.target.value)}
-                className={`w-full px-3 py-2 border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent ${
-                  colorError ? "border-destructive" : "border-border"
-                }`}
-              >
-                <option value="">Select a color</option>
-                {productData?.productImages?.map((image) => (
-                  <option key={image.id} value={image.color}>
-                    {image.color} ({image.stock} in stock)
-                  </option>
-                ))}
-              </select>
-              {colorError && (
-                <p className="text-sm text-destructive font-medium">
-                  Please select a color to continue
+                <h1 className="text-4xl font-black font-montserrat text-foreground mb-2">
+                  {productData.name}
+                </h1>
+                <p className="text-lg text-muted-foreground font-open-sans">
+                  {productData.gender} Wear
                 </p>
-              )}
-              <div>
-                {selectedColor && selectedColor.stock < 50 && (
+
+                <div className="flex items-center gap-3 mt-4">
+                  <Badge className="bg-rose-600 font-semibold text-white text-sm">
+                    {discountPercentage}% OFF
+                  </Badge>
+                  <Badge className="bg-primary text-black font-semibold text-sm">
+                    {productData.isNew ? "New" : "Featured"}
+                  </Badge>
+                </div>
+              </div>
+
+              {/* Pricing */}
+              <div className="space-y-2">
+                <div className="flex items-center gap-3">
+                  <span className="text-3xl font-bold text-foreground">
+                    ${productData.price}
+                  </span>
+                  <span className="text-xl text-muted-foreground line-through">
+                    ${productData.originalPrice}
+                  </span>
+                </div>
+                {discountPercentage > 0 && (
                   <Badge variant="destructive" className="w-fit">
-                    Only {selectedColor.stock} left in stock!
+                    Limited Time Offer
                   </Badge>
                 )}
               </div>
-            </div>
 
-            {/* Quantity Selector */}
-            <div className="space-y-3">
-              <p className="text-sm font-medium text-foreground">Quantity</p>
-              <div className="flex items-center gap-3">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => handleQuantityChange(-1)}
-                  disabled={quantity <= 1}
+              {/* Color and Stock Info */}
+              <div className="space-y-3">
+                <div>
+                  <label className="text-sm font-medium text-foreground">
+                    Color: <span className="text-destructive">*</span>
+                  </label>
+                </div>
+                <select
+                  value={selectedColor?.color}
+                  onChange={(e) => handleColorChange(e.target.value)}
+                  className={`w-full px-3 py-2 border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent ${
+                    colorError ? "border-destructive" : "border-border"
+                  }`}
                 >
-                  <Minus className="h-4 w-4" />
+                  <option value="">Select a color</option>
+                  {productData?.productImages?.map((image) => (
+                    <option key={image.id} value={image.color}>
+                      {image.color} ({image.stock} in stock)
+                    </option>
+                  ))}
+                </select>
+                {colorError && (
+                  <p className="text-sm text-destructive font-medium">
+                    Please select a color to continue
+                  </p>
+                )}
+                <div>
+                  {selectedColor && selectedColor.stock < 50 && (
+                    <Badge variant="destructive" className="w-fit">
+                      Only {selectedColor.stock} left in stock!
+                    </Badge>
+                  )}
+                </div>
+              </div>
+
+              {/* Quantity Selector */}
+              <div className="space-y-3">
+                <p className="text-sm font-medium text-foreground">Quantity</p>
+                <div className="flex items-center gap-3">
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => handleQuantityChange(-1)}
+                    disabled={quantity <= 1}
+                  >
+                    <Minus className="h-4 w-4" />
+                  </Button>
+                  <span className="w-12 text-center font-medium">
+                    {quantity}
+                  </span>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => handleQuantityChange(1)}
+                    disabled={
+                      selectedColor ? quantity >= selectedColor.stock : false
+                    }
+                  >
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+
+              {/* Add to Cart */}
+              <div className="space-y-3">
+                <Button
+                  size="lg"
+                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-3"
+                  onClick={() => handleAddToCart(productData)}
+                >
+                  <ShoppingCart className="h-5 w-5 mr-2" />
+                  Add to Cart - ${(productData.price * quantity).toFixed(2)}
                 </Button>
-                <span className="w-12 text-center font-medium">{quantity}</span>
                 <Button
                   variant="outline"
-                  size="icon"
-                  onClick={() => handleQuantityChange(1)}
-                  disabled={
-                    selectedColor ? quantity >= selectedColor.stock : false
-                  }
+                  size="lg"
+                  className="w-full bg-transparent"
+                  onClick={() => handleBuyNow(productData)}
                 >
-                  <Plus className="h-4 w-4" />
+                  Buy Now
                 </Button>
               </div>
-            </div>
-
-            {/* Add to Cart */}
-            <div className="space-y-3">
-              <Button
-                size="lg"
-                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-3"
-                onClick={() => handleAddToCart(productData)}
-              >
-                <ShoppingCart className="h-5 w-5 mr-2" />
-                Add to Cart - ${(productData.price * quantity).toFixed(2)}
-              </Button>
-              <Button
-                variant="outline"
-                size="lg"
-                className="w-full bg-transparent"
-                onClick={() => handleBuyNow(productData)}
-              >
-                Buy Now
-              </Button>
-            </div>
+            </Card>
 
             {/* Product Details */}
-            {/* <Card className="p-6 bg-card">
-              <h3 className="font-semibold font-montserrat text-lg mb-4">
+
+            <Card className="p-6 bg-card">
+              <h3 className="font-semibold font-montserrat text-lg mb-2">
                 Product Details
               </h3>
-              <div className="space-y-3 text-sm font-open-sans">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Material:</span>
-                  <span>80% Cotton, 20% Polyester</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Fit:</span>
-                  <span>Regular Fit</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Care:</span>
-                  <span>Machine Wash Cold</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Gender:</span>
-                  <span>{productData.gender}</span>
-                </div>
-              </div>
-            </Card> */}
+              {productData.description && (
+                <p className="mb-2 text-[15px] text-justify leading-6">
+                  {productData.description}
+                </p>
+              )}
+
+              {/* Specifications Table */}
+              {productData.specifications &&
+                productData.specifications.length > 0 && (
+                  <div>
+                    <h4 className="font-medium mb-3">Specifications</h4>
+                    <Table>
+                      <TableBody className="text-sm font-open-sans">
+                        {productData.specifications.map((spec, index) => (
+                          <TableRow key={index}>
+                            <TableCell className="text-muted-foreground w-1/3">
+                              {spec.key}
+                            </TableCell>
+                            <TableCell>{spec.value}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                )}
+            </Card>
           </div>
         </div>
       </div>

@@ -1,6 +1,5 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { Bell, Search, User } from "lucide-react";
 
 export function DashboardHeader() {
@@ -17,7 +16,6 @@ export function DashboardHeader() {
 
       {/* Right side - Actions */}
       <div className="flex items-center gap-2">
-        <ThemeToggle />
         <Button
           variant="ghost"
           size="icon"
