@@ -15,10 +15,16 @@ import {
 } from "@/components/ui/dialog";
 
 import { toast } from "sonner";
-import { addUserInfo, loginUser, resendOtp, verifyOtp } from "@/services/auth";
+// import { addUserInfo, loginUser, resendOtp, verifyOtp } from "@/services/auth";
 import UserRegistrationForm from "./UserRegistrationForm";
 import { useUser } from "@/contexts/userContext";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  useAddUserInfoMutation,
+  useLoginMutation,
+  useResendOtpMutation,
+  useVerifyOtpMutation,
+} from "@/redux/features/auth/authApi";
 
 const phoneSchema = z.object({
   phone: z
@@ -47,6 +53,11 @@ const PhoneAuthModal = ({ open, onOpenChange }: PhoneAuthModalProps) => {
 
   const { user, refreshUser } = useUser();
 
+  const [login] = useLoginMutation();
+  const [addUserInfo] = useAddUserInfoMutation();
+  const [verifyOtp] = useVerifyOtpMutation();
+  const [resendOtp] = useResendOtpMutation();
+
   const phoneForm = useForm<z.infer<typeof phoneSchema>>({
     resolver: zodResolver(phoneSchema),
     defaultValues: {
@@ -65,7 +76,7 @@ const PhoneAuthModal = ({ open, onOpenChange }: PhoneAuthModalProps) => {
   const handlePhoneSubmit = async (data: z.infer<typeof phoneSchema>) => {
     setLoading(true);
     try {
-      const res = await loginUser({ phone: data.phone });
+      const res = await login({ phone: data.phone }).unwrap();
       if (res.success) {
         setPhone(data.phone);
         setStep("otp");
@@ -103,7 +114,7 @@ const PhoneAuthModal = ({ open, onOpenChange }: PhoneAuthModalProps) => {
   const handleResendOtp = async () => {
     setLoading(true);
     try {
-      const res = await resendOtp({ phone });
+      const res = await resendOtp({ phone }).unwrap();
       if (res.success) {
         setPhone(phone);
         setTimer(60); // start 60s countdown
@@ -121,7 +132,7 @@ const PhoneAuthModal = ({ open, onOpenChange }: PhoneAuthModalProps) => {
   const handleVerifyOtp = async () => {
     setLoading(true);
     try {
-      const res = await verifyOtp({ phone, otp });
+      const res = await verifyOtp({ phone, otp }).unwrap();
       refreshUser();
 
       if (res.success && res.data.isNewUser) {
@@ -148,7 +159,7 @@ const PhoneAuthModal = ({ open, onOpenChange }: PhoneAuthModalProps) => {
   }) => {
     setLoading(true);
     try {
-      await addUserInfo(userData, user!.userId);
+      await addUserInfo({ id: user!.userId, userInfo: userData });
       toast.success("Info updated successfully!");
       refreshUser();
       resetModal();

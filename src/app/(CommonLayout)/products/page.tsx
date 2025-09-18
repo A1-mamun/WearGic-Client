@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import AllProducts from "@/components/modules/product/AllProducts";
 import { useGetAllCategoriesQuery } from "@/redux/features/category/category";

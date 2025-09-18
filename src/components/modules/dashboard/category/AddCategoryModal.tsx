@@ -63,7 +63,7 @@ const AddCategoryModal = ({
       onClose();
       refetch();
     } catch (error: any) {
-      toast.error("Failed to add category");
+      toast.error(error.message || "Failed to add category");
     } finally {
       setIsSubmitting(false);
     }

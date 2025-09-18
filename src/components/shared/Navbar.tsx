@@ -11,17 +11,20 @@ import CartSidebar from "../modules/cart/CartSidebar";
 import PhoneAuthModal from "../modules/auth/PhoneAuthModal";
 // import { ThemeToggle } from "../ui/theme-toggle";
 import { useUser } from "@/contexts/userContext";
-import { logoutUser } from "@/services/auth";
 import { usePathname } from "next/navigation";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import Image from "next/image";
 import logo from "../../../public/Weargic_Logo.png";
+import { useAppDispatch } from "@/redux/hooks";
+import { logOut } from "@/redux/features/auth/authSlice";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const { user, refreshUser } = useUser();
   const pathname = usePathname();
+
+  const dispatch = useAppDispatch();
 
   const navigationItems = [
     { name: "Home", path: "/" },
@@ -32,8 +35,8 @@ const Navbar = () => {
     { name: "Dashboard", path: "/dashboard" },
   ];
 
-  const handleLogOut = async () => {
-    await logoutUser();
+  const handleLogOut = () => {
+    dispatch(logOut());
     refreshUser();
     toast.success("Logged out successfully");
     // router.push("/");

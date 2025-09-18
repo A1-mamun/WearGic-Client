@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { useState } from "react";
@@ -33,32 +35,32 @@ const Categories = ({
     category.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleEditCategory = (
-    categoryData: Omit<TCategory, "id" | "createdAt" | "updatedAt">
-  ) => {
-    if (!selectedCategory) return;
+  // const handleEditCategory = (
+  //   categoryData: Omit<TCategory, "id" | "createdAt" | "updatedAt">
+  // ) => {
+  //   if (!selectedCategory) return;
 
-    const updatedCategory: TCategory = {
-      ...categoryData,
-      id: selectedCategory.id,
-    };
+  //   const updatedCategory: TCategory = {
+  //     ...categoryData,
+  //     id: selectedCategory.id,
+  //   };
 
-    setCategories(
-      categories.map((cat) =>
-        cat.id === selectedCategory.id ? updatedCategory : cat
-      )
-    );
-    setIsEditModalOpen(false);
-    setSelectedCategory(null);
-  };
+  //   setCategories(
+  //     categories.map((cat) =>
+  //       cat.id === selectedCategory.id ? updatedCategory : cat
+  //     )
+  //   );
+  //   setIsEditModalOpen(false);
+  //   setSelectedCategory(null);
+  // };
 
-  const handleDeleteCategory = () => {
-    if (!selectedCategory) return;
+  // const handleDeleteCategory = () => {
+  //   if (!selectedCategory) return;
 
-    setCategories(categories.filter((cat) => cat.id !== selectedCategory.id));
-    setIsDeleteModalOpen(false);
-    setSelectedCategory(null);
-  };
+  //   setCategories(categories.filter((cat) => cat.id !== selectedCategory.id));
+  //   setIsDeleteModalOpen(false);
+  //   setSelectedCategory(null);
+  // };
 
   const handleEditClick = (category: TCategory) => {
     setSelectedCategory(category);

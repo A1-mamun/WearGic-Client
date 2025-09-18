@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
@@ -41,7 +42,7 @@ export default function Coupon({ setIsApplied }: CouponProps) {
     setIsApplied(false);
     form.reset();
     dispatch(removeCoupon());
-    console.log("Coupon removed");
+    // console.log("Coupon removed");
   };
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
@@ -53,7 +54,7 @@ export default function Coupon({ setIsApplied }: CouponProps) {
         setIsApplied(true);
       }
     } catch (error: any) {
-      console.log(error);
+      // console.log(error);
       toast.error(error.message);
     }
   };
