@@ -20,6 +20,7 @@ import { Search, X } from "lucide-react";
 import { TCategory } from "@/types/category";
 import { Skeleton } from "@/components/ui/skeleton";
 import ProductSkeletonCard from "@/components/modules/product/ProductSkeletonCard";
+import { ProductError } from "@/components/shared/ProductError";
 const Products = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -44,8 +45,10 @@ const Products = () => {
 
   const {
     data: products,
-    isLoading: loadingProducts,
+    isLoading,
     isFetching,
+    refetch,
+    isError,
   } = useGetAllProductsQuery({
     gender: selectedGender,
     category: selectedCategory,
@@ -66,21 +69,23 @@ const Products = () => {
   return (
     <main className="min-h-screen bg-background">
       {/* Header */}
-      <section className="py-16 bg-gradient-subtle">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">All Products</h1>
-          <p className="text-lg text-black/60 max-w-2xl mx-auto">
+      <section className="py-7 md:py-10 lg:py-14 xl-py-16 bg-gradient-subtle">
+        <div className="container mx-auto px-3 text-center">
+          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-3 md:mb-4">
+            All Products
+          </h1>
+          <p className="text-sm md:text-baselg:text-lg text-muted-foreground max-w-2xl mx-auto">
             Explore our complete collection of premium fashion accessories
           </p>
         </div>
       </section>
 
       {/* Filters */}
-      <section className="py-8 border-b border-border">
+      <section className="">
         <div className="container mx-auto px-4">
           <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
             {/* Search */}
-            <div className="relative flex-1 max-w-md">
+            <div className="relative flex-1 w-full md:max-w-lg">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-black/60" />
               <Input
                 placeholder="Search products..."
@@ -91,45 +96,50 @@ const Products = () => {
             </div>
 
             {/* Filter controls */}
-            <div className="flex flex-wrap gap-4 items-center">
-              <Select
-                value={selectedCategory}
-                onValueChange={setSelectedCategory}
-              >
-                <SelectTrigger className="w-40 border-black/40">
-                  <SelectValue placeholder="Category" />
-                </SelectTrigger>
+            <div className="flex flex-col md:flex-row gap-4 items-center justify-end w-full md:max-w-lg lg:w-2/3">
+              <div className="flex gap-4 w-full">
+                <Select
+                  value={selectedCategory}
+                  onValueChange={setSelectedCategory}
+                >
+                  <SelectTrigger className="border-black/40 w-1/2 md:w-1/3 lg:w-40 flex-1">
+                    <SelectValue placeholder="Category" />
+                  </SelectTrigger>
 
-                <SelectContent>
-                  {loadingCategories ? (
-                    <SelectItem key="loading" value="loading">
-                      Loading...
-                    </SelectItem>
-                  ) : (
-                    categories?.data?.map((category: TCategory) => (
-                      <SelectItem key={category.name} value={category.name}>
-                        {category.name}
+                  <SelectContent>
+                    {loadingCategories ? (
+                      <SelectItem key="loading" value="loading">
+                        Loading...
                       </SelectItem>
-                    ))
-                  )}
-                </SelectContent>
-              </Select>
+                    ) : (
+                      categories?.data?.map((category: TCategory) => (
+                        <SelectItem key={category.name} value={category.name}>
+                          {category.name}
+                        </SelectItem>
+                      ))
+                    )}
+                  </SelectContent>
+                </Select>
 
-              <Select value={selectedGender} onValueChange={setSelectedGender}>
-                <SelectTrigger className="w-32 border-black/40">
-                  <SelectValue placeholder="Gender" />
-                </SelectTrigger>
-                <SelectContent>
-                  {genders.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                <Select
+                  value={selectedGender}
+                  onValueChange={setSelectedGender}
+                >
+                  <SelectTrigger className="border-black/40 w-1/2 md:w-1/3 lg:w-40 flex-1">
+                    <SelectValue placeholder="Gender" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {genders.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
               <Select value={sortOrder} onValueChange={setSortOrder}>
-                <SelectTrigger className="w-48 border-black/40">
+                <SelectTrigger className="w-full md:w-1/3 lg:w-40 border-black/40">
                   <SelectValue placeholder="Sort by" />
                 </SelectTrigger>
                 <SelectContent>
@@ -222,16 +232,20 @@ const Products = () => {
       </section>
 
       {/* Products Grid */}
-      {loadingProducts || loadingCategories || isFetching ? (
-        <div className="container mx-auto px-4 py-12">
+      {isLoading || isFetching ? (
+        <div className="container mx-auto px-4 py-8 md:py-12">
           <div className="flex justify-between items-center mb-8">
             <Skeleton className="h-6 w-48 bg-gray-300" />
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-2 md:gap-8">
             {Array.from({ length: 8 }).map((_, index) => (
               <ProductSkeletonCard key={index} />
             ))}
           </div>
+        </div>
+      ) : isError ? (
+        <div className="min-h-[calc(100vh-200px)] flex items-center justify-center p-4">
+          <ProductError refetch={refetch} />
         </div>
       ) : (
         <AllProducts

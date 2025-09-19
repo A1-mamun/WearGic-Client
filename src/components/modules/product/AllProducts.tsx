@@ -18,10 +18,10 @@ const AllProducts = ({
   loadMoreProducts: () => void;
 }) => {
   return (
-    <section className="py-12">
+    <section className="py-6 md:py-9 lg:py-12">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center mb-8">
-          <p className="text-black/60">
+          <p className="text-sm md:text-base lg:text-lg text-muted-foreground max-w-2xl text-center md:text-left">
             Showing{" "}
             {products.meta.limit <= products.meta.total
               ? products.meta.limit
@@ -44,7 +44,7 @@ const AllProducts = ({
             </Button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-8 mb-8 md:mb-10 lg:mb-12">
             {products.data.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
@@ -55,7 +55,12 @@ const AllProducts = ({
         {products.data.length > 0 &&
           products.meta.total >= products.meta.limit && (
             <div className="text-center mt-12">
-              <Button onClick={loadMoreProducts} variant="outline" size="lg">
+              <Button
+                onClick={loadMoreProducts}
+                variant="outline"
+                size="lg"
+                className="h-8 md:h-10"
+              >
                 Load More Products
               </Button>
             </div>

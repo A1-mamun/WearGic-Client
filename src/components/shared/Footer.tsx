@@ -30,18 +30,23 @@ const Footer = () => {
       </div>
 
       {/* Main footer content */}
-      <div className="container mx-auto px-4 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
+      <div className="container mx-auto px-3 py-8 md:py-12 lg:py-14">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6 md:gap-8 lg:gap-12">
           {/* Brand section */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="md:col-span-3 lg:col-span-2 space-y-5 md:space-y-6">
             <div className="flex items-center space-x-2">
-              <Image
-                src={logo}
-                alt="WearGic"
-                width={200}
-                height={16}
-                className="rounded-lg"
-              />
+              <Link
+                href="/"
+                className="flex items-center space-x-2 hover:opacity-80 transition-smooth"
+              >
+                <Image
+                  src={logo}
+                  alt="WearGic"
+                  width={250}
+                  height={50}
+                  className="rounded-lg border border-primary-foreground h-10 w-28 lg:h-18 lg:w-52"
+                />
+              </Link>
             </div>
 
             <p className="text-white/60 max-w-md">
@@ -51,7 +56,7 @@ const Footer = () => {
             </p>
 
             {/* Newsletter */}
-            <div className="space-y-4">
+            <div className="space-y-2">
               <h4 className="font-semibold text-white/60">Stay Updated</h4>
               <div className="flex gap-2">
                 <Input
@@ -69,60 +74,62 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Shop links */}
-          <div className="space-y-4 ">
-            <h4 className="font-semibold text-white/60 text-lg">Shop</h4>
-            <ul className="space-y-3">
-              {footerLinks.shop.map((link) => (
-                <li key={link.name}>
-                  <Link
-                    href={link.path}
-                    className="text-white/60 hover:text-accent transition-colors text-sm"
-                  >
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+          <div className="md:col-span-3 grid grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
+            {/* Shop links */}
+            <div className="space-y-4 ">
+              <h4 className="font-semibold text-white/60 text-lg">Shop</h4>
+              <ul className="space-y-3">
+                {footerLinks.shop.map((link) => (
+                  <li key={link.name}>
+                    <Link
+                      href={link.path}
+                      className="text-white/60 hover:text-accent transition-colors text-sm"
+                    >
+                      {link.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
-          {/* Support links */}
-          <div className="space-y-4">
-            <h4 className="font-semibold text-white/60 text-lg">Support</h4>
-            <ul className="space-y-3">
-              {footerLinks.support.map((link) => (
-                <li key={link.name}>
-                  <Link
-                    href={link.path}
-                    className="text-white/60 hover:text-accent transition-colors text-sm"
-                  >
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+            {/* Support links */}
+            <div className="space-y-4">
+              <h4 className="font-semibold text-white/60 text-lg">Support</h4>
+              <ul className="space-y-3">
+                {footerLinks.support.map((link) => (
+                  <li key={link.name}>
+                    <Link
+                      href={link.path}
+                      className="text-white/60 hover:text-accent transition-colors text-sm"
+                    >
+                      {link.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
-          {/* Company links */}
-          <div className="space-y-4">
-            <h4 className="font-semibold text-white/60 text-lg">Company</h4>
-            <ul className="space-y-3">
-              {footerLinks.company.map((link) => (
-                <li key={link.name}>
-                  <Link
-                    href={link.path}
-                    className="text-white/60 hover:text-accent transition-colors text-sm"
-                  >
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+            {/* Company links */}
+            <div className="space-y-4">
+              <h4 className="font-semibold text-white/60 text-lg">Company</h4>
+              <ul className="space-y-3">
+                {footerLinks.company.map((link) => (
+                  <li key={link.name}>
+                    <Link
+                      href={link.path}
+                      className="text-white/60 hover:text-accent transition-colors text-sm"
+                    >
+                      {link.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
 
         {/* Contact info */}
-        <div className="mt-12 pt-8 border-t border-primary-foreground/10">
+        <div className="mt-6 md:mt-9 lg:mt-12 pt-6 md:pt-8 border-t border-primary-foreground/10">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {contactInfos.map((info, index) => (
               <div key={index} className="flex items-center gap-3">
