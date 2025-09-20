@@ -108,10 +108,10 @@ export function DashboardSidebar() {
                 </div>
                 <div className="flex-1 min-w-0 md:hidden lg:block">
                   <p className="text-sm font-medium text-card-foreground truncate">
-                    John Doe
+                    Admin
                   </p>
                   <p className="text-xs text-muted-foreground truncate">
-                    john@example.com
+                    contact@weargic.com
                   </p>
                 </div>
               </div>
