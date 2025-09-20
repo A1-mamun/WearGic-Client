@@ -1,10 +1,18 @@
+"use client";
 import SignInPage from "@/components/modules/auth/SignInPage";
-import React from "react";
-
+import { Suspense } from "react";
 const SignIn = () => {
   return (
     <div className="flex justify-center items-center min-h-[calc(100vh-60px)]">
-      <SignInPage />
+      <Suspense
+        fallback={
+          <div className="min-h-screen flex items-center justify-center">
+            Loading...
+          </div>
+        }
+      >
+        <SignInPage />
+      </Suspense>
     </div>
   );
 };

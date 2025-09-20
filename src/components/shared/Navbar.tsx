@@ -136,7 +136,7 @@ const Navbar = () => {
                 variant="ghost"
                 // size="icon"
                 className="flex ring-2 ring-primary rounded-full w-6 h-6 md:w-8 md:h-8"
-                onClick={() => router.push(`signin`)}
+                onClick={() => router.push(`signin?redirectPath=${pathname}`)}
               >
                 <User />
               </Button>
