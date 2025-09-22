@@ -834,3 +834,21 @@ export const privacyPolicy = {
     address: "WearGic Customer Service, Rajshahi, Bangladesh",
   },
 };
+
+export const bannerCarouselImages = [
+  {
+    id: 1,
+    img: "/Grand_Opening_Banner.jpg",
+    alt: "Grand Opening Banner",
+  },
+  // {
+  //   id: 2,
+  //   img: "/Weargic_Logo_white.png",
+  //   alt: "Grand Opening Banner 2",
+  // },
+  // {
+  //   id: 3,
+  //   img: "/Grand_Opening_Banner.jpg",
+  //   alt: "Grand Opening Banner 3",
+  // },
+];

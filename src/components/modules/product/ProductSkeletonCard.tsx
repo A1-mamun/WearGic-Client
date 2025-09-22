@@ -12,7 +12,7 @@ export default function ProductSkeletonCard() {
   return (
     <Card className="group max-w-sm rounded-t-none shadow-xl overflow-hidden pt-0 pb-2 md:pb-3">
       {/* Image placeholder */}
-      <div className="relative overflow-hidden rounded-t-none  w-full h-32 md:h-60 bg-gray-300">
+      <div className="relative overflow-hidden rounded-t-none  w-full h-32 md:h-44 xl:h-52 2xl:h-60 bg-gray-300">
         <Skeleton className="h-full w-full" />
         <div className="absolute top-0 left-0 space-y-2">
           <Skeleton className="h-4 md:h-6 w-12 md:w-16 rounded-none" />

@@ -9,8 +9,8 @@ import CartSidebar from "../modules/cart/CartSidebar";
 import { usePathname, useRouter } from "next/navigation";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import Image from "next/image";
-import logo from "../../../public/Weargic_Logo_white.png";
-import mart from "../../../public/Mart_icon.png";
+import logo from "@/../public/Weargic_Logo_white.png";
+import mart from "@/../public/Mart_icon.png";
 import { useUser } from "@/contexts/userContext";
 import { logoutUser } from "@/services/auth";
 

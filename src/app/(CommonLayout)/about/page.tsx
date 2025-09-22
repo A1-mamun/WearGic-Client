@@ -1,3 +1,9 @@
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "About | WearGic",
+  description: "Your one-stop shop for all things Wearable Technology.",
+};
 const AboutUs = () => {
   return (
     <div>

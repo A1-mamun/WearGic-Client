@@ -1,6 +1,12 @@
 import ContactForm from "@/components/modules/contact/ContactForm";
 import { ContactInfo } from "@/components/modules/contact/ContactInfo";
 import { Map } from "@/components/modules/contact/Map";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Contact | WearGic",
+  description: "Your one-stop shop for all things Wearable Technology.",
+};
 
 const Contact = () => {
   return (

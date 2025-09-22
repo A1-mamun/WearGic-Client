@@ -67,7 +67,7 @@ const ProductCard = ({ product }: { product: TProduct }) => {
         className="group hover:cursor-pointer max-w-sm shadow-none transition-all duration-300 overflow-hidden pt-0 rounded-t-none rounded-b-md border-0 pb-2 md:pb-3 lg;pb-4"
       >
         {/* Product Image */}
-        <div className="relative overflow-hidden w-full h-32 md:h-60">
+        <div className="relative overflow-hidden w-full h-32 md:h-44 xl:h-52 2xl:h-60">
           <Image
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"

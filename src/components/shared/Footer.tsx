@@ -10,6 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import Link from "next/link";
 
 const Footer = () => {
   return (
@@ -78,8 +79,27 @@ const Footer = () => {
           alt="Weargic Logo"
           className="w-48 md:w-56 lg:w-72"
         />
+        <div className="text-white/80 flex flex-wrap items-center justify-center text-sm md:text-base">
+          <Link
+            href="/terms-and-conditions"
+            className="mx-2 hover:text-primary"
+          >
+            Terms & Conditions
+          </Link>
+          <span className="text-primary">|</span>
+          <Link href="/privacy-policy" className="mx-2 hover:text-primary">
+            Privacy Policy
+          </Link>
+          <span className="text-primary">|</span>
+          <Link
+            href="/refund-and-return-policy"
+            className="mx-2 hover:text-primary"
+          >
+            Refund Policy
+          </Link>
+        </div>
         <p className="text-sm md:text-base">
-          &copy; 2025 Weargic. All rights reserved.
+          &copy; 2024 Weargic. All rights reserved.
         </p>
         <p className="text-sm md:text-base">weargic.com</p>
       </div>

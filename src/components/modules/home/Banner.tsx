@@ -1,24 +1,46 @@
+"use client";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { EffectFade, Pagination, Autoplay } from "swiper/modules";
+
+import "swiper/css";
+import "swiper/css/effect-fade";
+import "swiper/css/pagination";
+import { bannerCarouselImages } from "@/data";
+import Image from "next/image";
+
 const Banner = () => {
   return (
-    <div className="h-[200px] md:h-[460px] lg:h-[600px] w-full bg-cover bg-center bg-gradient-to-b from-primary-foreground to-primary py-5 md:py-10 px-3 flex flex-col justify-between">
-      <div className="w-full h-full flex flex-col items-center justify-center text-center text-white  md:space-y-4 lg:space-y-5">
-        <h2 className="text-2xl md:text-5xl lg:text-6xl font-medium tracking-wide md:tracking-wider">
-          GRAND
-        </h2>
-        <h1 className="text-4xl md:text-6xl lg:text-8xl font-semibold tracking-wider">
-          OPENING
-        </h1>
-        <h5 className="text-sm md:text-2xl lg:text-3xl text-black/80 font-medium tracking-wider">
-          OCTOBER 1, 2025
-        </h5>
-        <h1 className="text-2xl md:text-5xl lg:text-6xl font-medium tracking-wide md:tracking-wider">
-          FLAT 50% OFF
-        </h1>
-      </div>
-      <div className="w-full flex justify-between text-white container mx-auto text-[10px] md:text-base lg:text-lg">
-        <p>Available on weargic.com</p>
-        <p>On all products</p>
-      </div>
+    <div className="">
+      <Swiper
+        autoplay={{
+          delay: 500,
+          disableOnInteraction: false,
+        }}
+        speed={2000}
+        effect={"fade"}
+        pagination={{
+          dynamicBullets: true,
+        }}
+        // allowTouchMove={false}
+        loop={true}
+        modules={[EffectFade, Pagination, Autoplay]}
+        className="mySwiper h-full"
+      >
+        {bannerCarouselImages?.map(
+          (item: { id: number; img: string; alt: string }, index: number) => (
+            <SwiperSlide key={index} className="h-full">
+              <Image
+                src={item.img}
+                alt={item.alt}
+                width={1920}
+                height={1080}
+                layout="responsive"
+                className="object-cover w-full h-full"
+              />
+            </SwiperSlide>
+          )
+        )}
+      </Swiper>
     </div>
   );
 };
