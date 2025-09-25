@@ -12,7 +12,7 @@ const LadiesSection = () => {
     refetch,
     isError,
   } = useGetAllProductsQuery({
-    category: "Accessories",
+    category: "Ladies Bag",
   });
   return (
     <div className="pb-8 md:pb-12 lg:pb-16 container mx-auto px-3 ">

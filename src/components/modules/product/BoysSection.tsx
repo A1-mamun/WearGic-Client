@@ -12,7 +12,7 @@ const BoysSection = () => {
     refetch,
     isError,
   } = useGetAllProductsQuery({
-    category: "Clothing",
+    category: "Boys Bag",
   });
   return (
     <div className="py-8 md:py-12 lg:py-16 container mx-auto px-3">
