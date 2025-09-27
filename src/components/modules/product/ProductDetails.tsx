@@ -164,7 +164,7 @@ const ProductDetails = ({ productData }: { productData: TProduct }) => {
                   {productData.name}
                 </h1>
                 <p className="text-lg text-muted-foreground font-open-sans">
-                  {productData.gender} Wear
+                  {productData.gender} FASHION
                 </p>
 
                 <div className="flex items-center gap-3 mt-4">
@@ -211,7 +211,7 @@ const ProductDetails = ({ productData }: { productData: TProduct }) => {
                   <option value="">Select a color</option>
                   {productData?.productImages?.map((image) => (
                     <option key={image.id} value={image.color}>
-                      {image.color} ({image.stock} in stock)
+                      {image.color}
                     </option>
                   ))}
                 </select>

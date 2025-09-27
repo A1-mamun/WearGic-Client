@@ -12,6 +12,7 @@ import CategoriesTable from "./CategoriesTable";
 import AddCategoryModal from "./AddCategoryModal";
 import EditCategoryModal from "./EditCategoryModal";
 import DeleteCategoryModal from "./DeletCategoryModal";
+import ViewCategoryModal from "./ViewCategoryModal";
 
 const Categories = ({
   categoriesData,
@@ -27,6 +28,7 @@ const Categories = ({
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<TCategory | null>(
     null
   );
@@ -65,6 +67,11 @@ const Categories = ({
   const handleEditClick = (category: TCategory) => {
     setSelectedCategory(category);
     setIsEditModalOpen(true);
+  };
+
+  const handleViewClick = (category: TCategory) => {
+    setSelectedCategory(category);
+    setIsViewModalOpen(true);
   };
 
   const handleDeleteClick = (category: TCategory) => {
@@ -111,6 +118,7 @@ const Categories = ({
         categories={filteredCategories}
         onEdit={handleEditClick}
         onDelete={handleDeleteClick}
+        onView={handleViewClick}
       />
 
       {/* Modals */}
@@ -118,6 +126,7 @@ const Categories = ({
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
         refetch={refetch}
+        categories={categories}
       />
 
       <EditCategoryModal
@@ -126,7 +135,9 @@ const Categories = ({
           setIsEditModalOpen(false);
           setSelectedCategory(null);
         }}
+        refetch={refetch}
         category={selectedCategory}
+        categories={categories}
       />
 
       <DeleteCategoryModal
@@ -136,6 +147,16 @@ const Categories = ({
           setSelectedCategory(null);
         }}
         category={selectedCategory}
+        refetch={refetch}
+      />
+      <ViewCategoryModal
+        isOpen={isViewModalOpen}
+        onClose={() => {
+          setIsViewModalOpen(false);
+          setSelectedCategory(null);
+        }}
+        category={selectedCategory}
+        categories={categories}
       />
     </div>
   );

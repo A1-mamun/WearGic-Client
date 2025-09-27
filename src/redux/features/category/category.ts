@@ -9,13 +9,31 @@ const categoryApi = baseApi.injectEndpoints({
         body: categoryInfo,
       }),
     }),
+    updateCategory: build.mutation({
+      query: ({ id, categoryInfo }) => ({
+        url: `/category/update/${id}`,
+        method: "PATCH",
+        body: categoryInfo,
+      }),
+    }),
     getAllCategories: build.query({
       query: () => ({
         url: `/category/categories`,
         method: "GET",
       }),
     }),
+    deleteCategory: build.mutation({
+      query: (id) => ({
+        url: `/category/delete/${id}`,
+        method: "DELETE",
+      }),
+    }),
   }),
 });
 
-export const { useAddCategoryMutation, useGetAllCategoriesQuery } = categoryApi;
+export const {
+  useAddCategoryMutation,
+  useGetAllCategoriesQuery,
+  useUpdateCategoryMutation,
+  useDeleteCategoryMutation,
+} = categoryApi;

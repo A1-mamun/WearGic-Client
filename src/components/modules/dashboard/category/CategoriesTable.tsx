@@ -11,18 +11,20 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { TCategory } from "@/types/category";
-import { Edit, Trash2 } from "lucide-react";
+import { Edit, Eye, Trash2 } from "lucide-react";
 
 interface CategoriesTableProps {
   categories: TCategory[];
   onEdit: (category: TCategory) => void;
   onDelete: (category: TCategory) => void;
+  onView: (category: TCategory) => void;
 }
 
 export default function CategoriesTable({
   categories,
   onEdit,
   onDelete,
+  onView,
 }: CategoriesTableProps) {
   if (categories?.length === 0) {
     return (
@@ -51,6 +53,13 @@ export default function CategoriesTable({
               </TableCell>
               <TableCell className="text-right">
                 <div className="flex justify-end gap-2">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => onView(category)}
+                  >
+                    <Eye className="h-4 w-4" />
+                  </Button>
                   <Button
                     variant="ghost"
                     size="sm"
