@@ -18,6 +18,8 @@ interface CategoriesTableProps {
   onEdit: (category: TCategory) => void;
   onDelete: (category: TCategory) => void;
   onView: (category: TCategory) => void;
+  isLoading: boolean;
+  isFetching: boolean;
 }
 
 export default function CategoriesTable({
@@ -25,15 +27,9 @@ export default function CategoriesTable({
   onEdit,
   onDelete,
   onView,
+  isLoading,
+  isFetching,
 }: CategoriesTableProps) {
-  if (categories?.length === 0) {
-    return (
-      <div className="text-center py-12">
-        <p className="text-muted-foreground">No categories found</p>
-      </div>
-    );
-  }
-
   return (
     <div className="border rounded-lg">
       <Table>
@@ -44,40 +40,60 @@ export default function CategoriesTable({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {categories?.map((category) => (
-            <TableRow key={category.id}>
-              <TableCell>
-                <div>
-                  <div className="font-medium">{category.name}</div>
-                </div>
-              </TableCell>
-              <TableCell className="text-right">
-                <div className="flex justify-end gap-2">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => onView(category)}
-                  >
-                    <Eye className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => onEdit(category)}
-                  >
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => onDelete(category)}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
+          {isLoading || isFetching ? (
+            <TableRow>
+              <TableCell
+                colSpan={2}
+                className="text-center py-8 text-muted-foreground"
+              >
+                Loading...
               </TableCell>
             </TableRow>
-          ))}
+          ) : categories?.length === 0 ? (
+            <TableRow>
+              <TableCell
+                colSpan={2}
+                className="text-center py-8 text-muted-foreground"
+              >
+                No categories found
+              </TableCell>
+            </TableRow>
+          ) : (
+            categories?.map((category) => (
+              <TableRow key={category.id}>
+                <TableCell>
+                  <div>
+                    <div className="font-medium">{category.name}</div>
+                  </div>
+                </TableCell>
+                <TableCell className="text-right">
+                  <div className="flex justify-end gap-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onView(category)}
+                    >
+                      <Eye className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onEdit(category)}
+                    >
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onDelete(category)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))
+          )}
         </TableBody>
       </Table>
     </div>

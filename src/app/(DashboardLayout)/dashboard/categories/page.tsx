@@ -2,8 +2,7 @@ import CategoriesPage from "@/components/modules/dashboard/category/CategoriesPa
 
 const Categories = () => {
   return (
-    <main>
-      this is categories page
+    <main className="min-h-[calc(100vh-115px)]">
       <CategoriesPage />
     </main>
   );

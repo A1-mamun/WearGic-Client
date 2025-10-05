@@ -3,7 +3,7 @@ import React from "react";
 
 const Products = () => {
   return (
-    <main>
+    <main className="min-h-[calc(100vh-115px)]">
       <ProductsPage />
     </main>
   );

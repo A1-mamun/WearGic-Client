@@ -10,11 +10,14 @@ const CategoriesPage = () => {
     isFetching,
   } = useGetAllCategoriesQuery(undefined);
 
-  if (isLoading || isFetching) {
-    return <div>Loading...</div>;
-  }
-
-  return <Categories categoriesData={categories?.data} refetch={refetch} />;
+  return (
+    <Categories
+      categoriesData={categories?.data}
+      refetch={refetch}
+      isLoading={isLoading}
+      isFetching={isFetching}
+    />
+  );
 };
 
 export default CategoriesPage;

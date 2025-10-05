@@ -1,5 +1,3 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { useState } from "react";
@@ -17,13 +15,14 @@ import ViewCategoryModal from "./ViewCategoryModal";
 const Categories = ({
   categoriesData,
   refetch,
+  isLoading,
+  isFetching,
 }: {
   categoriesData: TCategory[];
   refetch: () => void;
+  isLoading: boolean;
+  isFetching: boolean;
 }) => {
-  const [categories, setCategories] = useState<TCategory[] | []>(
-    categoriesData
-  );
   const [searchTerm, setSearchTerm] = useState("");
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -33,36 +32,10 @@ const Categories = ({
     null
   );
 
-  const filteredCategories = categories?.filter((category) =>
-    category.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  // const handleEditCategory = (
-  //   categoryData: Omit<TCategory, "id" | "createdAt" | "updatedAt">
-  // ) => {
-  //   if (!selectedCategory) return;
-
-  //   const updatedCategory: TCategory = {
-  //     ...categoryData,
-  //     id: selectedCategory.id,
-  //   };
-
-  //   setCategories(
-  //     categories.map((cat) =>
-  //       cat.id === selectedCategory.id ? updatedCategory : cat
-  //     )
-  //   );
-  //   setIsEditModalOpen(false);
-  //   setSelectedCategory(null);
-  // };
-
-  // const handleDeleteCategory = () => {
-  //   if (!selectedCategory) return;
-
-  //   setCategories(categories.filter((cat) => cat.id !== selectedCategory.id));
-  //   setIsDeleteModalOpen(false);
-  //   setSelectedCategory(null);
-  // };
+  const filteredCategories =
+    categoriesData?.filter((category) =>
+      category.name.toLowerCase().includes(searchTerm.toLowerCase())
+    ) || [];
 
   const handleEditClick = (category: TCategory) => {
     setSelectedCategory(category);
@@ -119,6 +92,8 @@ const Categories = ({
         onEdit={handleEditClick}
         onDelete={handleDeleteClick}
         onView={handleViewClick}
+        isLoading={isLoading}
+        isFetching={isFetching}
       />
 
       {/* Modals */}
@@ -126,7 +101,7 @@ const Categories = ({
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
         refetch={refetch}
-        categories={categories}
+        categories={categoriesData}
       />
 
       <EditCategoryModal
@@ -137,7 +112,7 @@ const Categories = ({
         }}
         refetch={refetch}
         category={selectedCategory}
-        categories={categories}
+        categories={categoriesData}
       />
 
       <DeleteCategoryModal
@@ -156,7 +131,7 @@ const Categories = ({
           setSelectedCategory(null);
         }}
         category={selectedCategory}
-        categories={categories}
+        categories={categoriesData}
       />
     </div>
   );

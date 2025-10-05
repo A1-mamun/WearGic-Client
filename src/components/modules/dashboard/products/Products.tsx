@@ -1,9 +1,11 @@
+/* eslint-disable no-unused-vars */
+
 "use client";
 import ProductsTable from "./ProductsTable";
 import EditProductModal from "./EditProductModal";
 import { DeleteProductModal } from "./DeleteProductModal";
 import ViewProductModal from "./ViewProductModal";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { TProduct } from "@/types/product";
@@ -15,24 +17,62 @@ const Products = ({
   productsData,
   categoriesData,
   refetchProducts,
+  isFetching,
+  currentPage,
+  setCurrentPage,
+  totalPages,
+  searchTerm,
+  setSearchTerm,
+  loading,
 }: {
   productsData: TProduct[];
   categoriesData: TCategory[];
   refetchProducts: () => void;
+  isFetching: boolean;
+  currentPage: number;
+  setCurrentPage: (page: number) => void;
+  totalPages: number;
+  searchTerm: string;
+  setSearchTerm: (term: string) => void;
+  loading: boolean;
 }) => {
   const [products, setProducts] = useState<TProduct[]>(productsData || []);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [localSearchTerm, setLocalSearchTerm] = useState(searchTerm);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<TProduct | null>(null);
+  const isFirstRender = useRef(true);
+  // Update products when productsData changes
+  useEffect(() => {
+    if (productsData) {
+      setProducts(productsData);
+    }
+  }, [productsData]);
 
-  const filteredProducts = products.filter(
-    (product) =>
-      !product.isDeleted &&
-      (product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product.category.toLowerCase().includes(searchTerm.toLowerCase()))
+  // Debounce search - only reset page if search term actually changed
+  useEffect(() => {
+    // Skip the effect on first render
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      // Only update if the search term actually changed
+      if (localSearchTerm !== searchTerm) {
+        setSearchTerm(localSearchTerm);
+        setCurrentPage(1); // Reset to first page only when search changes
+      }
+    }, 500);
+
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [localSearchTerm]);
+
+  const filteredProducts = productsData?.filter(
+    (product) => !product.isDeleted
   );
 
   const handleEditProduct = (updatedProduct: TProduct) => {
@@ -45,6 +85,7 @@ const Products = ({
     );
     setIsEditModalOpen(false);
     setSelectedProduct(null);
+    refetchProducts();
   };
 
   const handleDeleteProduct = (productId: string) => {
@@ -57,6 +98,7 @@ const Products = ({
     );
     setIsDeleteModalOpen(false);
     setSelectedProduct(null);
+    refetchProducts();
   };
 
   const openEditModal = (product: TProduct) => {
@@ -75,8 +117,8 @@ const Products = ({
   };
 
   return (
-    <div className="container mx-auto py-8 px-4">
-      <div className="flex flex-col gap-6">
+    <div className="container mx-auto px-4">
+      <div className="flex flex-col gap-6 h-full">
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
@@ -99,8 +141,8 @@ const Products = ({
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
           <Input
             placeholder="Search products..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            value={localSearchTerm}
+            onChange={(e) => setLocalSearchTerm(e.target.value)}
             className="pl-10"
           />
         </div>
@@ -111,6 +153,11 @@ const Products = ({
           onEdit={openEditModal}
           onDelete={openDeleteModal}
           onView={openViewModal}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          totalPages={totalPages}
+          isFetching={isFetching}
+          loading={loading}
         />
 
         {/* Modals */}
