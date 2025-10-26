@@ -9,6 +9,10 @@ import {
   Shield,
   Truck,
   RotateCcw,
+  Clock,
+  Package,
+  CheckCircle2,
+  XCircle,
 } from "lucide-react";
 
 export const termsAndConditions = {
@@ -852,3 +856,59 @@ export const bannerCarouselImages = [
   //   alt: "Grand Opening Banner 3",
   // },
 ];
+
+export const orderStatuses = [
+  { value: "ALL", label: "All Status" },
+  { value: "ACCEPTED", label: "Accepted" },
+  { value: "COMPLETED", label: "Completed" },
+  { value: "DELIVERED", label: "Delivered" },
+  { value: "CANCELLED", label: "Cancelled" },
+];
+
+export const orderDateRanges = [
+  { value: "ALL", label: "All Time" },
+  {
+    value: "TODAY",
+    label: "Today",
+  },
+  { value: "WEEK", label: "This Week" },
+  { value: "MONTH", label: "This Month" },
+  { value: "YEAR", label: "This Year" },
+];
+
+export const orderUpdateStatus = [
+  { value: "PENDING", label: "Pending" },
+  { value: "PROCESSING", label: "Processing" },
+  { value: "SHIPPED", label: "Shipped" },
+  { value: "DELIVERED", label: "Delivered" },
+  { value: "CANCELLED", label: "Cancelled" },
+];
+
+export const statusConfig = {
+  PENDING: {
+    label: "Pending",
+    color: "bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200",
+    icon: Clock,
+  },
+  PROCESSING: {
+    label: "Processing",
+    color: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
+    icon: Package,
+  },
+  SHIPPED: {
+    label: "Shipped",
+    color:
+      "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200",
+    icon: Truck,
+  },
+  DELIVERED: {
+    label: "Delivered",
+    color: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
+    icon: CheckCircle2,
+  },
+  CANCELLED: {
+    label: "Cancelled",
+    color: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
+    icon: XCircle,
+  },
+};

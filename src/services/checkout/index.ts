@@ -5,13 +5,18 @@ import { IOrder } from "@/types/order";
 import { cookies } from "next/headers";
 
 export const createOrder = async (order: IOrder) => {
+  const token = (await cookies()).get("accessToken")?.value;
+
+  if (!token) {
+    throw new Error("You must be logged in to create a category");
+  }
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_API}/order/place-order`,
       {
         method: "POST",
         headers: {
-          Authorization: (await cookies()).get("accessToken")!.value,
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(order),

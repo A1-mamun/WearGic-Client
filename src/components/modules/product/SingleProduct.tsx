@@ -5,6 +5,7 @@ import ProductDetails from "./ProductDetails";
 import ProductDetailsSkeleton from "./ProductDetailsSkeleton";
 import { ProductError } from "@/components/shared/ProductError";
 import ProductNotFound from "@/components/shared/ProductNotFound";
+import SuggestedProducts from "./SuggestedProducts";
 
 const SingleProduct = ({ id }: { id: string }) => {
   const {
@@ -23,7 +24,13 @@ const SingleProduct = ({ id }: { id: string }) => {
   if (!product) {
     return <ProductNotFound />;
   }
-  return <ProductDetails productData={product.data} />;
+  return (
+    <div>
+      <ProductDetails productData={product.data} />
+
+      <SuggestedProducts product={product.data} />
+    </div>
+  );
 };
 
 export default SingleProduct;

@@ -80,6 +80,29 @@ const SignInPage = () => {
     resolver: zodResolver(registrationSchema),
   });
 
+  // Load persisted state on mount
+  useEffect(() => {
+    // Only load persisted state if user is not logged in
+    if (user) return;
+
+    const savedStep = sessionStorage.getItem("auth_step");
+    const savedPhone = sessionStorage.getItem("auth_phone");
+    const savedTimerEnd = sessionStorage.getItem("auth_timer_end");
+
+    if (savedStep && savedPhone) {
+      setStep(savedStep as "phone" | "otp" | "info");
+      setPhone(savedPhone);
+
+      // Calculate remaining time
+      if (savedTimerEnd) {
+        const endTime = parseInt(savedTimerEnd);
+        const now = Date.now();
+        const remaining = Math.max(0, Math.floor((endTime - now) / 1000));
+        setTimer(remaining);
+      }
+    }
+  }, [user]);
+
   const handleUserSubmit = async (data: z.infer<typeof registrationSchema>) => {
     await handleUserRegistration(data);
   };
@@ -91,7 +114,14 @@ const SignInPage = () => {
       if (res.success) {
         setPhone(data.phone);
         setStep("otp");
-        setTimer(60); // start 120s countdown
+
+        // Persist state
+        sessionStorage.setItem("auth_step", "otp");
+        sessionStorage.setItem("auth_phone", data.phone);
+        const timerEnd = Date.now() + 60000; // 60 seconds from now
+        sessionStorage.setItem("auth_timer_end", timerEnd.toString());
+
+        setTimer(180); // start 180s countdown
         toast.success("OTP sent to your phone number!");
       } else if (!res.success) {
         toast.error(res.message || "Failed to send OTP");
@@ -107,7 +137,13 @@ const SignInPage = () => {
   useEffect(() => {
     if (timer > 0) {
       const interval = setInterval(() => {
-        setTimer((prev) => prev - 1);
+        setTimer((prev) => {
+          const newTimer = prev - 1;
+          if (newTimer <= 0) {
+            sessionStorage.removeItem("auth_timer_end");
+          }
+          return newTimer;
+        });
       }, 1000);
       return () => clearInterval(interval);
     }
@@ -128,7 +164,12 @@ const SignInPage = () => {
       const res = await resendOtp({ phone });
       if (res.success) {
         setPhone(phone);
-        setTimer(60); // start 60s countdown
+
+        // Update timer and persist
+        const timerEnd = Date.now() + 60000;
+        sessionStorage.setItem("auth_timer_end", timerEnd.toString());
+        setTimer(180);
+
         toast.success(res.message || "OTP resent successfully!");
       } else if (!res.success) {
         toast.error(res.message || "Failed to send OTP");
@@ -140,21 +181,28 @@ const SignInPage = () => {
     }
   };
 
+  // function to handle OTP verification
   const handleVerifyOtp = async () => {
     setLoading(true);
     try {
       const res = await verifyOtp({ phone, otp });
-      refreshUser();
 
       if (res.success && res.data.isNewUser) {
         setIsNewUser(true);
         setStep("info");
+        sessionStorage.setItem("auth_step", "info");
         toast.success("Successfully logged in!");
+        await refreshUser();
       } else if (!res.success) {
         toast.error(res.message || "OTP verification failed");
       } else {
         toast.success("Successfully logged in!");
-        resetModal();
+        // Clear session storage before navigation
+        sessionStorage.removeItem("auth_step");
+        sessionStorage.removeItem("auth_phone");
+        sessionStorage.removeItem("auth_timer_end");
+
+        await refreshUser();
         router.push(redirect);
       }
     } catch (error: any) {
@@ -189,6 +237,11 @@ const SignInPage = () => {
     setOtp("");
     setIsNewUser(false);
     phoneForm.reset();
+
+    // Clear persisted state
+    sessionStorage.removeItem("auth_step");
+    sessionStorage.removeItem("auth_phone");
+    sessionStorage.removeItem("auth_timer_end");
   };
 
   if (step === "info" && isNewUser) {
@@ -298,8 +351,8 @@ const SignInPage = () => {
           </form>
         </div>
       ) : (
-        <>
-          <h3>Verify OTP</h3>
+        <div className="max-w-sm border border-gray-200 rounded-lg p-6 shadow-md">
+          <h3 className="text-lg font-medium mb-5">Verify OTP</h3>
 
           <div className="space-y-4">
             <p className="text-sm text-muted-foreground">
@@ -334,7 +387,7 @@ const SignInPage = () => {
               {timer > 0 ? `Resend OTP in ${formatTime(timer)}` : "Resend OTP"}
             </Button>
           </div>
-        </>
+        </div>
       )}
     </main>
   );

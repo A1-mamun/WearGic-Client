@@ -3,9 +3,15 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ShoppingCart, Minus, Plus } from "lucide-react";
+import {
+  ShoppingCart,
+  Minus,
+  Plus,
+  BadgeCheckIcon,
+  BadgeIcon,
+} from "lucide-react";
 import Image from "next/image";
-import { TProduct, TProductImage } from "@/types/product";
+import { TProduct, TProductImage, TShowedproductImage } from "@/types/product";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import {
   addProductWithQuantity,
@@ -16,9 +22,12 @@ import { Card } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 
 const ProductDetails = ({ productData }: { productData: TProduct }) => {
-  const [showedColor, setShowedColor] = useState<TProductImage | null>(
+  const [showedImage, setShowedImage] = useState<TShowedproductImage | null>(
     productData?.productImages?.length ? productData.productImages[0] : null
   );
+
+  // const [showedColor, setShowedcolor] = useState<TProductImage | null>();
+
   const [selectedColor, setSelectedColor] = useState<TProductImage | null>(
     null
   );
@@ -76,6 +85,12 @@ const ProductDetails = ({ productData }: { productData: TProduct }) => {
     if (colorImage) {
       setSelectedColor(colorImage as TProductImage);
       setColorError(false);
+      const matchingImage = productData.productImages.find(
+        (img) => img.color === color
+      );
+      if (matchingImage) {
+        setShowedImage(matchingImage);
+      }
     } else {
       setColorError(true);
     }
@@ -111,37 +126,43 @@ const ProductDetails = ({ productData }: { productData: TProduct }) => {
     router.push("/checkout");
   };
 
+  // all images array containing product images and bulk images
+  const allImages = [
+    ...(productData.productImages || []),
+    ...(productData.bulkImages || []),
+  ];
+
   return (
     <div className="grid lg:grid-cols-2 gap-12 max-w-7xl mx-auto">
       {/* Product Images */}
       <div className="space-y-4">
         <div className="relative aspect-square overflow-hidden rounded-lg bg-card">
           <Image
-            src={showedColor?.imageUrl || "/placeholder.svg"}
-            alt={`${productData.name} in ${showedColor?.color}`}
+            src={showedImage?.imageUrl || "/placeholder.svg"}
+            alt={`${productData.name} in ${showedImage?.color}`}
             width={1500}
             height={1500}
             className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
           />
         </div>
 
-        {/* Color Selection */}
+        {/* image Selection */}
         <div className="flex gap-3">
-          {productData?.productImages?.map((image) => (
+          {allImages.map((image, index) => (
             <button
               key={image.id}
               onClick={() => {
-                setShowedColor(image);
+                setShowedImage(image);
               }}
               className={`relative w-20 h-20 rounded-lg overflow-hidden border-1 transition-all ${
-                showedColor?.id === image.id
+                showedImage?.id === image.id
                   ? "border-primary ring-1 ring-accent/20"
                   : "border-border hover:border-primary/50"
               }`}
             >
               <Image
                 src={image.imageUrl || "/placeholder.svg"}
-                alt={`${productData.name} in ${image.color}`}
+                alt={`${productData.name}-${index}`}
                 className="w-full h-full object-cover"
                 width={500}
                 height={500}
@@ -155,14 +176,21 @@ const ProductDetails = ({ productData }: { productData: TProduct }) => {
       <div className="space-y-6">
         <Card className="p-6 bg-card">
           <div>
-            <Badge variant="secondary" className="mb-2">
-              {productData.category}
-            </Badge>
+            <div className="mb-2 flex gap-2">
+              <Badge variant="secondary" className="bg-green-300 text-black">
+                {productData.brand}
+              </Badge>
+              <Badge variant="secondary" className="">
+                {productData.category}
+              </Badge>
+            </div>
             <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold font-montserrat text-foreground mb-2">
               {productData.name}
             </h1>
+
             <p className="text-base md:text-lg text-muted-foreground font-open-sans">
-              {productData.gender} FASHION
+              <span className="font-medium text-black">Product Code: </span>
+              {productData.code}
             </p>
 
             <div className="flex items-center gap-3 mt-4">
@@ -177,12 +205,12 @@ const ProductDetails = ({ productData }: { productData: TProduct }) => {
 
           {/* Pricing */}
           <div className="space-y-2">
-            <div className="flex items-center gap-3">
-              <span className="text-2xl md:text-3xl font-bold text-foreground">
-                ${productData.price}
+            <div className="flex items-end gap-3">
+              <span className="text-2xl md:text-3xl font-semibold text-foreground">
+                TK {productData.price}
               </span>
               <span className="text-base md:text-xl text-muted-foreground line-through">
-                ${productData.originalPrice}
+                TK {productData.originalPrice}
               </span>
             </div>
             {discountPercentage > 0 && (
@@ -192,8 +220,30 @@ const ProductDetails = ({ productData }: { productData: TProduct }) => {
             )}
           </div>
 
+          {/* available color options */}
+          <div className="space-y-1 md:space-y-2">
+            <div className="flex flex-wrap items-center gap-3">
+              {productData?.productImages?.map((image) => (
+                <div
+                  key={image.id}
+                  className={`bg-gray-200 flex items-center gap-2 px-3 py-1 text-black font-medium text-base rounded-full hover:cursor-pointer ${
+                    showedImage?.id === image.id ? "border border-primary" : ""
+                  }`}
+                  onClick={() => setShowedImage(image)}
+                >
+                  {showedImage?.id === image.id ? (
+                    <BadgeCheckIcon size={20} color="green" />
+                  ) : (
+                    <BadgeIcon size={20} color="green" />
+                  )}
+                  {image.color}
+                </div>
+              ))}
+            </div>
+          </div>
+
           {/* Color and Stock Info */}
-          <div className="space-y-2 md:space-y-3">
+          <div className="space-y-1 md:space-y-2">
             <div>
               <label className="text-sm font-medium text-foreground">
                 Color: <span className="text-destructive">*</span>

@@ -14,7 +14,7 @@ const Contact = () => {
       {/* Header Section */}
       <section className="bg-card py-16 px-4">
         <div className="max-w-4xl mx-auto text-center">
-          <h1 className="font-montserrat font-black text-4xl md:text-5xl text-primary mb-4 text-balance">
+          <h1 className="font-montserrat font-bold text-4xl md:text-5xl text-primary mb-4 text-balance">
             Get in Touch
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto text-pretty">
