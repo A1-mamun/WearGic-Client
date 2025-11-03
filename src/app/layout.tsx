@@ -4,7 +4,6 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { ThemeProvider } from "next-themes";
 import "./globals.css";
 import StoreProvider from "@/providers/storeProvider";
-import UserProvider from "@/contexts/userContext";
 import { ReactNode } from "react";
 
 const poppins = Poppins({
@@ -35,12 +34,10 @@ export default function RootLayout({
         className={`${poppins.variable} ${geistMono.variable} antialiased`}
       >
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
-          <UserProvider>
-            <StoreProvider>
-              <Sonner />
-              {children}
-            </StoreProvider>
-          </UserProvider>
+          <StoreProvider>
+            <Sonner />
+            {children}
+          </StoreProvider>
         </ThemeProvider>
       </body>
     </html>

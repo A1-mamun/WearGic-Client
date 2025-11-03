@@ -1,103 +1,102 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 
 import { jwtDecode } from "jwt-decode";
 import { cookies } from "next/headers";
-import { FieldValues } from "react-hook-form";
+// import { FieldValues } from "react-hook-form";
 
-export const addUserInfo = async (userData: FieldValues, id: string) => {
-  try {
-    const token = (await cookies()).get("accessToken")?.value;
+// export const addUserInfo = async (userData: FieldValues, id: string) => {
+//   try {
+//     const token = (await cookies()).get("accessToken")?.value;
 
-    if (!token) {
-      throw new Error("You must be logged in to create a category");
-    }
+//     if (!token) {
+//       throw new Error("You must be logged in to create a category");
+//     }
 
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_API}/auth/add-user-info/${id}`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userData),
-        credentials: "include",
-      }
-    );
+//     const res = await fetch(
+//       `${process.env.NEXT_PUBLIC_BASE_API}/auth/add-user-info/${id}`,
+//       {
+//         method: "POST",
+//         headers: {
+//           Authorization: `Bearer ${token}`,
+//           "Content-Type": "application/json",
+//         },
+//         body: JSON.stringify(userData),
+//         credentials: "include",
+//       }
+//     );
 
-    const result = await res.json();
-    return result;
-  } catch (error: any) {
-    return Error(error);
-  }
-};
+//     const result = await res.json();
+//     return result;
+//   } catch (error: any) {
+//     return Error(error);
+//   }
+// };
 
-export const loginUser = async (userData: FieldValues) => {
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/auth/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(userData),
-      credentials: "include",
-    });
+// export const loginUser = async (userData: FieldValues) => {
+//   try {
+//     const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/auth/login`, {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//       body: JSON.stringify(userData),
+//       credentials: "include",
+//     });
 
-    const result = await res.json();
-    return result;
-  } catch (error: any) {
-    return Error(error);
-  }
-};
+//     const result = await res.json();
+//     return result;
+//   } catch (error: any) {
+//     return Error(error);
+//   }
+// };
 
-export const verifyOtp = async (userData: FieldValues) => {
-  try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_API}/auth/verify-otp`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userData),
-        credentials: "include",
-      }
-    );
+// export const verifyOtp = async (userData: FieldValues) => {
+//   try {
+//     const res = await fetch(
+//       `${process.env.NEXT_PUBLIC_BASE_API}/auth/verify-otp`,
+//       {
+//         method: "POST",
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//         body: JSON.stringify(userData),
+//         credentials: "include",
+//       }
+//     );
 
-    const result = await res.json();
+//     const result = await res.json();
 
-    if (result?.success) {
-      (await cookies()).set("accessToken", result?.data?.accessToken);
-      (await cookies()).set("refreshToken", result?.data?.refreshToken);
-    }
+//     if (result?.success) {
+//       (await cookies()).set("accessToken", result?.data?.accessToken);
+//       (await cookies()).set("refreshToken", result?.data?.refreshToken);
+//     }
 
-    return result;
-  } catch (error: any) {
-    return Error(error);
-  }
-};
+//     return result;
+//   } catch (error: any) {
+//     return Error(error);
+//   }
+// };
 
-export const resendOtp = async (userData: FieldValues) => {
-  try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_API}/auth/resend-otp`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userData),
-        credentials: "include",
-      }
-    );
+// export const resendOtp = async (userData: FieldValues) => {
+//   try {
+//     const res = await fetch(
+//       `${process.env.NEXT_PUBLIC_BASE_API}/auth/resend-otp`,
+//       {
+//         method: "POST",
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//         body: JSON.stringify(userData),
+//         credentials: "include",
+//       }
+//     );
 
-    const result = await res.json();
-    return result;
-  } catch (error: any) {
-    return Error(error);
-  }
-};
+//     const result = await res.json();
+//     return result;
+//   } catch (error: any) {
+//     return Error(error);
+//   }
+// };
 
 export const getCurrentUser = async () => {
   const accessToken = (await cookies()).get("accessToken")?.value;
@@ -115,7 +114,7 @@ export const getCurrentUser = async () => {
   }
 };
 
-export const logoutUser = async () => {
-  (await cookies()).delete("accessToken");
-  (await cookies()).delete("refreshToken");
-};
+// export const logoutUser = async () => {
+//   (await cookies()).delete("accessToken");
+//   (await cookies()).delete("refreshToken");
+// };
