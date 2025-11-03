@@ -12,7 +12,11 @@ interface DecodedToken {
 
 export const getCurrentUser = (request: NextRequest): DecodedToken | null => {
   try {
+    const allCookies = request.cookies.getAll();
+    console.log("All cookies in middleware:", allCookies);
+
     const accessToken = request.cookies.get("accessToken")?.value;
+    console.log("Access token exists:", !!accessToken);
 
     const token = accessToken
       ? Buffer.from(accessToken, "base64").toString("utf-8")
@@ -31,7 +35,8 @@ export const getCurrentUser = (request: NextRequest): DecodedToken | null => {
     }
 
     return decodedData;
-  } catch {
+  } catch (error) {
+    console.error("Error decoding token:", error);
     return null;
   }
 };

@@ -14,6 +14,7 @@ export const middleware = async (request: NextRequest) => {
   const { pathname } = request.nextUrl;
 
   const userInfo = getCurrentUser(request);
+  console.log("Middleware User Info:", userInfo);
 
   if (!userInfo) {
     if (authRoutes.includes(pathname)) {
