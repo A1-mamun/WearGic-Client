@@ -1,15 +1,15 @@
 "use client";
-import React, { useEffect, useState } from "react";
+// import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
-import { TProduct, TProductImage } from "@/types/product";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import {
-  addProduct,
-  orderProductsSelector,
-  removeFromCart,
-} from "@/redux/features/cart/cartSlice";
+import { TProduct } from "@/types/product";
+// import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+// import {
+//   addProduct,
+//   orderProductsSelector,
+//   removeFromCart,
+// } from "@/redux/features/cart/cartSlice";
 import { useRouter } from "next/navigation";
 import {
   Card,
@@ -17,37 +17,35 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import { Minus, Plus } from "lucide-react";
+// import { Minus, Plus } from "lucide-react";
 import Link from "next/link";
 
 const ProductCard = ({ product }: { product: TProduct }) => {
-  const [isCarted, setIsCarted] = useState(false);
+  // const [isCarted, setIsCarted] = useState(false);
   const router = useRouter();
-  const dispatch = useAppDispatch();
-  const cartProducts = useAppSelector(orderProductsSelector);
+  // const dispatch = useAppDispatch();
+  // const cartProducts = useAppSelector(orderProductsSelector);
 
-  const handleAddToCart = (product: TProduct) => {
-    dispatch(
-      addProduct({
-        product,
-        selectedId:
-          product.productImages.find((img: TProductImage) => img.isPrimary)
-            ?.id || product.productImages[0].id,
-      })
-    );
-  };
+  // const handleAddToCart = (product: TProduct) => {
+  //   dispatch(
+  //     addProduct({
+  //       product,
+  //       selectedId: product.id,
+  //     })
+  //   );
+  // };
 
-  const handleRemoveFromCart = (productId: string) => {
-    // Dispatch remove action
-    dispatch(removeFromCart(productId));
-  };
+  // const handleRemoveFromCart = (productId: string) => {
+  //   // Dispatch remove action
+  //   dispatch(removeFromCart(productId));
+  // };
 
-  useEffect(() => {
-    const existsInCart = cartProducts.some(
-      (cartItem) => cartItem.id === product.id
-    );
-    setIsCarted(existsInCart);
-  }, [cartProducts, product.id]);
+  // useEffect(() => {
+  //   const existsInCart = cartProducts.some(
+  //     (cartItem) => cartItem.id === product.id
+  //   );
+  //   setIsCarted(existsInCart);
+  // }, [cartProducts, product.id]);
 
   // Calculate discount percentage
   const discountPercentage = Math.round(
@@ -56,9 +54,7 @@ const ProductCard = ({ product }: { product: TProduct }) => {
       100
   );
 
-  const primaryImage =
-    product.productImages.find((img: TProductImage) => img.isPrimary) ||
-    product.productImages[0];
+  const coverImage = product.coverImage;
 
   return (
     <Link href={`/products/${product.id}`} className="w-full">
@@ -71,7 +67,7 @@ const ProductCard = ({ product }: { product: TProduct }) => {
           <Image
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            src={primaryImage.imageUrl}
+            src={coverImage.imageUrl}
             alt={product.name}
             priority
             className="object-cover group-hover:scale-110 transition-transform duration-500"
@@ -100,13 +96,13 @@ const ProductCard = ({ product }: { product: TProduct }) => {
           </h3>
         </CardHeader>
 
-        <CardContent className="px-2 md:px-3 lg:px-4 -my-6 md:-my-4 flex justify-between items-end">
+        <CardContent className="px-2 md:px-3 lg:px-4 -my-6 md:-my-5 flex justify-between items-end">
           <div className="space-y-0">
-            {/* <div>
+            <div>
               <p className="text-[11px] md:text-sm text-primary-foreground uppercase tracking-wide font-medium">
-                {product.category}
+                {product.brand}
               </p>
-            </div> */}
+            </div>
             <div className="flex gap-5 items-center">
               <span className="text-sm md:text-lg font-medium text-foreground">
                 TK {product.price}
@@ -118,7 +114,7 @@ const ProductCard = ({ product }: { product: TProduct }) => {
               )}
             </div>
           </div>
-          <div>
+          {/* <div>
             {isCarted ? (
               <Button
                 variant="outline"
@@ -146,7 +142,7 @@ const ProductCard = ({ product }: { product: TProduct }) => {
                 <Plus className="h-4 w-4" />
               </Button>
             )}
-          </div>
+          </div> */}
         </CardContent>
 
         <CardFooter

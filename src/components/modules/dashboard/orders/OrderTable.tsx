@@ -1,15 +1,8 @@
 /* eslint-disable no-unused-vars */
 "use client";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { TProduct } from "@/types/product";
-import Row from "./Row";
+
+import { useState } from "react";
+
 import {
   Pagination,
   PaginationContent,
@@ -19,30 +12,54 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { IOrderResponse } from "@/types/order";
+import OrderRow from "./OrderRow";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
-interface ProductsTableProps {
-  products: TProduct[];
-  // onEdit: (product: TProduct) => void;
-  onDelete: (product: TProduct) => void;
-  onView: (product: TProduct) => void;
+interface OrderTableProps {
+  orders: IOrderResponse[];
+  onView: (order: IOrderResponse) => void;
+  isFetching: boolean;
   currentPage: number;
   setCurrentPage: (page: number) => void;
+  onUpdateStatus: (
+    orderId: string,
+    newStatus: IOrderResponse["orderStatus"]
+  ) => void;
   totalPages: number;
-  isFetching: boolean;
   loading: boolean;
 }
 
-const ProductsTable = ({
-  products,
-  // onEdit,
-  onDelete,
+export function OrderTable({
+  orders,
   onView,
+  isFetching,
   currentPage,
   setCurrentPage,
+  onUpdateStatus,
   totalPages,
-  isFetching,
   loading,
-}: ProductsTableProps) => {
+}: OrderTableProps) {
+  const [sortBy, setSortBy] = useState<"date" | "amount">("date");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+
+  const toggleSort = (field: "date" | "amount") => {
+    if (sortBy === field) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      setSortBy(field);
+      setSortOrder("desc");
+    }
+  };
+
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
@@ -137,7 +154,7 @@ const ProductsTable = ({
 
   return (
     <div className="rounded-md border flex flex-col justify-between min-h-[calc(100vh-260px)]">
-      {loading && products?.length === 0 ? (
+      {loading && orders?.length === 0 ? (
         <div className="flex-grow flex items-center justify-center">
           <p className="text-muted-foreground">Loading...</p>
         </div>
@@ -145,14 +162,25 @@ const ProductsTable = ({
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-16">Image</TableHead>
-              <TableHead>Name</TableHead>
-              <TableHead>Category</TableHead>
-              <TableHead>Price</TableHead>
-              <TableHead>Original Price</TableHead>
-              <TableHead>Stock</TableHead>
-              <TableHead>Gender</TableHead>
+              <TableHead>OrderId</TableHead>
+              <TableHead>Customer</TableHead>
+              <TableHead>Items</TableHead>
+              <TableHead>Amount</TableHead>
               <TableHead>Status</TableHead>
+              <TableHead>
+                <button
+                  onClick={() => toggleSort("date")}
+                  className="flex items-center gap-2 hover:text-accent"
+                >
+                  Date
+                  {sortBy === "date" &&
+                    (sortOrder === "asc" ? (
+                      <ChevronUp className="h-4 w-4" />
+                    ) : (
+                      <ChevronDown className="h-4 w-4" />
+                    ))}
+                </button>
+              </TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -166,7 +194,7 @@ const ProductsTable = ({
                   Loading...
                 </TableCell>
               </TableRow>
-            ) : products?.length === 0 ? (
+            ) : orders?.length === 0 ? (
               <TableRow>
                 <TableCell
                   colSpan={9}
@@ -176,12 +204,11 @@ const ProductsTable = ({
                 </TableCell>
               </TableRow>
             ) : (
-              products?.map((product) => (
-                <Row
-                  key={product.id}
-                  product={product}
-                  // onEdit={onEdit}
-                  onDelete={onDelete}
+              orders?.map((order) => (
+                <OrderRow
+                  key={order.id}
+                  order={order}
+                  onUpdateStatus={onUpdateStatus}
                   onView={onView}
                 />
               ))
@@ -191,7 +218,7 @@ const ProductsTable = ({
       )}
 
       {/* Pagination - Only show if there are products and multiple pages */}
-      {!loading && products?.length > 0 && totalPages > 1 && (
+      {!loading && orders?.length > 0 && totalPages > 1 && (
         <Pagination className="py-4">
           <PaginationContent>
             <PaginationItem>
@@ -222,6 +249,4 @@ const ProductsTable = ({
       )}
     </div>
   );
-};
-
-export default ProductsTable;
+}

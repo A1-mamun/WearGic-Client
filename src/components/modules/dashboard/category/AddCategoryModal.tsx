@@ -36,7 +36,8 @@ const categorySchema = z.object({
   parentId: z
     .string()
     .uuid({ message: "Invalid parent category ID" })
-    .nullable(),
+    .nullable().optional(),
+   
 });
 
 type CategoryFormData = z.infer<typeof categorySchema>;
@@ -123,7 +124,7 @@ const AddCategoryModal = ({
                     <SelectValue placeholder="Select parent category (optional)" />
                   </SelectTrigger>
                   <SelectContent>
-                    {categories.map((category) => (
+                    {categories?.map((category) => (
                       <SelectItem
                         key={category.id}
                         value={category.id as string}

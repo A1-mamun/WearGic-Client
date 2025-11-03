@@ -1,22 +1,21 @@
 /* eslint-disable no-unused-vars */
 import { Badge } from "@/components/ui/badge";
 import { TableCell, TableRow } from "@/components/ui/table";
-import { TProduct, TProductImage } from "@/types/product";
+import { TProduct } from "@/types/product";
 import Image from "next/image";
 import { Eye, Edit, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface ProductsTableRowProps {
   product: TProduct;
-  onEdit: (product: TProduct) => void;
+  // onEdit: (product: TProduct) => void;
   onDelete: (product: TProduct) => void;
   onView: (product: TProduct) => void;
 }
 
-const Row = ({ product, onEdit, onDelete, onView }: ProductsTableRowProps) => {
-  const primaryImage =
-    product.productImages.find((img: TProductImage) => img.isPrimary) ||
-    product.productImages[0];
+// const Row = ({ product, onEdit, onDelete, onView }: ProductsTableRowProps) => {
+const Row = ({ product, onDelete, onView }: ProductsTableRowProps) => {
+  const coverImage = product.coverImage;
 
   // console.log("Primary Image: ", primaryImage);
 
@@ -28,7 +27,7 @@ const Row = ({ product, onEdit, onDelete, onView }: ProductsTableRowProps) => {
     <TableRow key={product.id}>
       <TableCell>
         <Image
-          src={primaryImage.imageUrl || "/placeholder.svg"}
+          src={coverImage.imageUrl || "/placeholder.svg"}
           alt={product.name}
           className="w-10 h-10 rounded-md object-cover"
           width={40}
@@ -74,7 +73,10 @@ const Row = ({ product, onEdit, onDelete, onView }: ProductsTableRowProps) => {
           <Button variant="ghost" size="sm" onClick={() => onView(product)}>
             <Eye className="h-4 w-4" />
           </Button>
-          <Button variant="ghost" size="sm" onClick={() => onEdit(product)}>
+          {/* <Button variant="ghost" size="sm" onClick={() => onEdit(product)}>
+            <Edit className="h-4 w-4" />
+          </Button> */}
+          <Button variant="ghost" size="sm">
             <Edit className="h-4 w-4" />
           </Button>
           <Button variant="ghost" size="sm" onClick={() => onDelete(product)}>

@@ -1,3 +1,7 @@
+import { AboutCTA } from "@/components/modules/about/AboutCta";
+import { AboutHero } from "@/components/modules/about/AboutHero";
+import { AboutStory } from "@/components/modules/about/AboutStory";
+import { AboutValues } from "@/components/modules/about/AboutValues";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -6,13 +10,12 @@ export const metadata: Metadata = {
 };
 const AboutUs = () => {
   return (
-    <div>
-      <h1>About Us</h1>
-      <p>
-        Welcome to our website. We are dedicated to providing the best service
-        possible.
-      </p>
-    </div>
+    <main className="min-h-screen bg-background">
+      <AboutHero />
+      <AboutStory />
+      <AboutValues />
+      <AboutCTA />
+    </main>
   );
 };
 

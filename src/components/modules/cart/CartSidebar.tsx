@@ -48,7 +48,7 @@ const CartSidebar = ({ children }: { children: ReactNode }) => {
             <ShoppingCart className="h-5 w-5" />
             Shopping Cart ({products.length} items)
           </SheetTitle>
-          <SheetClose>
+          <SheetClose asChild>
             <Button
               variant="outline"
               size="sm"

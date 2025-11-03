@@ -1,5 +1,4 @@
 import ProductsPage from "@/components/modules/dashboard/products/ProductsPage";
-import React from "react";
 
 const Products = () => {
   return (

@@ -6,7 +6,6 @@ import {
 } from "@/redux/features/cart/cartSlice";
 import { useAppDispatch } from "@/redux/hooks";
 import ICartProduct from "@/types/cartProduct";
-import { TProductImage } from "@/types/product";
 import { Plus, Minus, Trash2 } from "lucide-react";
 import Image from "next/image";
 
@@ -34,14 +33,12 @@ const CartProductCard = ({
     dispatch(removeSelectedProductFromCart({ productId: id, selectedId }));
   };
 
-  const primaryImage =
-    product.productImages.find((img: TProductImage) => img.isPrimary) ||
-    product.productImages[0];
+  const coverImage = product.coverImage;
 
   return (
     <div className="flex items-center space-x-4 p-3 border rounded-lg">
       <Image
-        src={primaryImage.imageUrl}
+        src={coverImage.imageUrl}
         alt={product.name}
         width={70}
         height={70}
@@ -49,7 +46,7 @@ const CartProductCard = ({
       />
       <div className="flex-1 min-w-0">
         <h4 className="font-medium truncate">{product.name}</h4>
-        <p className="text-sm text-muted-foreground">${product.price}</p>
+        <p className="text-sm text-muted-foreground">TK {product.price}</p>
       </div>
       <div className="flex items-center space-x-2">
         <Button

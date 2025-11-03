@@ -207,12 +207,11 @@ export const orderProductsSelector = (state: RootState) => state.cart.products;
 export const orderSelector = (state: RootState) => {
   return {
     products: state.cart.products.map((product) => ({
-      product: product.id,
+      productId: product.id,
       quantity: product.orderQuantity,
       selectedProductId: product.selectedProductId,
     })),
     shippingAddress: `${state.cart.shippingAddress} - ${state.cart.city}`,
-    paymentMethod: "Online",
   };
 };
 

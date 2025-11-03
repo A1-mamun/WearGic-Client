@@ -1,92 +1,26 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { Button } from "@/components/ui/button";
 
-import {
-  citySelector,
-  clearCart,
-  couponSelector,
-  discountAmountSelector,
-  grandTotalSelector,
-  orderProductsSelector,
-  orderSelector,
-  shippingAddressSelector,
-  shippingCostSelector,
-  subTotalSelector,
-} from "@/redux/features/cart/cartSlice";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { createOrder } from "@/services/checkout";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
+interface PaymentDetailsProps {
+  subTotal: number;
+  shippingCost: number;
+  discountAmount: number;
+  grandTotal: number;
+  coupon: { code: string; isLoading: boolean };
+  handleOpen: () => void;
+}
 
-export default function PaymentDetails() {
-  const subTotal = useAppSelector(subTotalSelector);
-  const shippingCost = useAppSelector(shippingCostSelector);
-  const discountAmount = useAppSelector(discountAmountSelector);
-  const grandTotal = useAppSelector(grandTotalSelector);
-  const order = useAppSelector(orderSelector);
-  const city = useAppSelector(citySelector);
-  const shippingAddress = useAppSelector(shippingAddressSelector);
-  const cartProducts = useAppSelector(orderProductsSelector);
-  const coupon = useAppSelector(couponSelector);
-
-  const user = {
-    user: {
-      id: "123", // Replace with actual user ID from context or state
-      name: "John Doe", // Replace with actual user name from context or state
-    },
-  };
-
-  const router = useRouter();
-
-  const dispatch = useAppDispatch();
-
-  const handleOrder = async () => {
-    const orderLoading = toast.loading("Order is being placed");
-    try {
-      if (!user.user) {
-        router.push("/login");
-        throw new Error("Please login first.");
-      }
-
-      if (!city) {
-        throw new Error("City is missing");
-      }
-      if (!shippingAddress) {
-        throw new Error("Shipping address is missing");
-      }
-
-      if (cartProducts.length === 0) {
-        throw new Error("Cart is empty, what are you trying to order ??");
-      }
-
-      let orderData;
-
-      if (coupon.code) {
-        orderData = { ...order, coupon: coupon.code };
-      } else {
-        orderData = order;
-      }
-
-      const res = await createOrder(orderData);
-
-      if (res.success) {
-        toast.success(res.message, { id: orderLoading });
-        dispatch(clearCart());
-        router.push(res.data.paymentUrl);
-      }
-
-      if (!res.success) {
-        toast.error(res.message, { id: orderLoading });
-      }
-    } catch (error: any) {
-      toast.error(error.message, { id: orderLoading });
-    }
-  };
-
+export default function PaymentDetails({
+  subTotal,
+  shippingCost,
+  discountAmount,
+  grandTotal,
+  coupon,
+  handleOpen,
+}: PaymentDetailsProps) {
   return (
-    <div className="border-2 border-white bg-background brightness-105 rounded-md col-span-4 h-fit p-5">
+    <div className="border-2 border-white bg-background brightness-105 rounded-md lg:col-span-4 h-fit p-5">
       <h1 className="text-2xl font-bold">Payment Details</h1>
       {coupon.isLoading && <div>Loading...</div>}
       {!coupon.isLoading && (
@@ -112,7 +46,7 @@ export default function PaymentDetails() {
         </>
       )}
       <Button
-        onClick={handleOrder}
+        onClick={handleOpen}
         className="w-full text-xl font-semibold py-5"
       >
         Order Now
