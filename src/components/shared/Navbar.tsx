@@ -11,14 +11,16 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import Image from "next/image";
 import logo from "@/../public/Weargic_Logo_white.png";
 import mart from "@/../public/Mart_icon.png";
-import { useUser } from "@/contexts/userContext";
-import { logoutUser } from "@/services/auth";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { logOut, useCurrentUser } from "@/redux/features/auth/authSlice";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { user, refreshUser } = useUser();
   const pathname = usePathname();
   const router = useRouter();
+  const user = useAppSelector(useCurrentUser);
+
+  const dispatch = useAppDispatch();
 
   const navigationItems = [
     { name: "Home", path: "/" },
@@ -29,11 +31,9 @@ const Navbar = () => {
   ];
 
   const handleLogOut = () => {
-    logoutUser();
-    refreshUser();
+    dispatch(logOut());
     toast.success("Logged out successfully");
     router.push("/");
-    refreshUser();
   };
 
   return (

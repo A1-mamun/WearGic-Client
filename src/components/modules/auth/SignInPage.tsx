@@ -11,10 +11,15 @@ import { Label } from "@/components/ui/label";
 
 import { toast } from "sonner";
 
-import { useUser } from "@/contexts/userContext";
+// import { useUser } from "@/contexts/userContext";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useAddUserInfoMutation } from "@/redux/features/auth/authApi";
-import { loginUser, resendOtp, verifyOtp } from "@/services/auth";
+import {
+  useAddUserInfoMutation,
+  useLoginMutation,
+  useResendOtpMutation,
+  useVerifyOtpMutation,
+} from "@/redux/features/auth/authApi";
+// import { verifyOtp } from "@/services/auth";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   Select,
@@ -24,6 +29,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cities } from "@/constants/cities";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { setUser, useCurrentUser } from "@/redux/features/auth/authSlice";
+import { verifyToken } from "@/utils/decodeToken";
 
 const phoneSchema = z.object({
   phone: z
@@ -54,12 +62,14 @@ const SignInPage = () => {
 
   const router = useRouter();
 
-  const { user, refreshUser } = useUser();
+  // const { user, refreshUser } = useUser();
+  const user = useAppSelector(useCurrentUser);
+  const dispatch = useAppDispatch();
 
-  // const [login] = useLoginMutation();
+  const [login] = useLoginMutation();
   const [addUserInfo] = useAddUserInfoMutation();
-  // const [verifyOtp] = useVerifyOtpMutation();
-  // const [resendOtp] = useResendOtpMutation();
+  const [verifyOtp] = useVerifyOtpMutation();
+  const [resendOtp] = useResendOtpMutation();
 
   const phoneForm = useForm<z.infer<typeof phoneSchema>>({
     resolver: zodResolver(phoneSchema),
@@ -110,7 +120,7 @@ const SignInPage = () => {
   const handlePhoneSubmit = async (data: z.infer<typeof phoneSchema>) => {
     setLoading(true);
     try {
-      const res = await loginUser({ phone: data.phone });
+      const res = await login({ phone: data.phone }).unwrap();
       if (res.success) {
         setPhone(data.phone);
         setStep("otp");
@@ -161,7 +171,7 @@ const SignInPage = () => {
   const handleResendOtp = async () => {
     setLoading(true);
     try {
-      const res = await resendOtp({ phone });
+      const res = await resendOtp({ phone }).unwrap();
       if (res.success) {
         setPhone(phone);
 
@@ -185,28 +195,49 @@ const SignInPage = () => {
   const handleVerifyOtp = async () => {
     setLoading(true);
     try {
-      const res = await verifyOtp({ phone, otp });
+      const res = await verifyOtp({ phone, otp }).unwrap();
 
       if (res.success && res.data.isNewUser) {
+        // Decode the access token
+        const user = verifyToken(res.data.accessToken);
+
+        // Set user and token in Redux store
+        dispatch(
+          setUser({
+            user: user.user,
+            token: res.data.accessToken,
+          })
+        );
         setIsNewUser(true);
         setStep("info");
         sessionStorage.setItem("auth_step", "info");
         toast.success("Successfully logged in!");
-        await refreshUser();
+        // await refreshUser();
       } else if (!res.success) {
         toast.error(res.message || "OTP verification failed");
       } else {
+        // Decode the access token
+        const user = verifyToken(res.data.accessToken);
+
+        // Set user and token in Redux store
+        dispatch(
+          setUser({
+            user: user.user,
+            token: res.data.accessToken,
+          })
+        );
+
         toast.success("Successfully logged in!");
         // Clear session storage before navigation
         sessionStorage.removeItem("auth_step");
         sessionStorage.removeItem("auth_phone");
         sessionStorage.removeItem("auth_timer_end");
 
-        await refreshUser();
+        // await refreshUser();
         router.push(redirect);
       }
     } catch (error: any) {
-      toast.error(error.message || "An unexpected error occurred");
+      toast.error(error.data.message || "An unexpected error occurred");
     } finally {
       setLoading(false);
     }
@@ -220,7 +251,6 @@ const SignInPage = () => {
     try {
       await addUserInfo({ id: user!.userId, userInfo: userData });
       toast.success("Info updated successfully!");
-      refreshUser();
       resetModal();
 
       router.push(redirect);
@@ -334,7 +364,10 @@ const SignInPage = () => {
                   />
                   <Label htmlFor="terms" className="text-sm">
                     I accept the{" "}
-                    <a href="/terms" className="text-blue-500 underline">
+                    <a
+                      href="/terms-and-conditions"
+                      className="text-blue-500 underline"
+                    >
                       Terms and Conditions
                     </a>
                   </Label>

@@ -29,12 +29,12 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { createOrder } from "@/services/checkout";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { getCurrentUser } from "@/services/auth";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useCurrentUser } from "@/redux/features/auth/authSlice";
 
 interface IAddressError {
   city: string;
@@ -71,13 +71,14 @@ const CheckoutPage = () => {
   const shippingAddress = useAppSelector(shippingAddressSelector);
   const cartProducts = useAppSelector(orderProductsSelector);
   const coupon = useAppSelector(couponSelector);
+  const user = useAppSelector(useCurrentUser);
 
   const dispatch = useAppDispatch();
   const router = useRouter();
 
   const handleOrder = async () => {
     const orderLoading = toast.loading("Order is being placed");
-    const user = await getCurrentUser();
+
     try {
       if (!user) {
         router.push("/login");

@@ -1,26 +1,25 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { useUser } from "@/contexts/userContext";
 import { LogOut, Menu, User, X } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
-import { logoutUser } from "@/services/auth";
 import { toast } from "sonner";
 import Link from "next/link";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { logOut, useCurrentUser } from "@/redux/features/auth/authSlice";
 
 export function DashboardHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { user, refreshUser } = useUser();
   const pathname = usePathname();
   const router = useRouter();
+  const dispatch = useAppDispatch();
+  const user = useAppSelector(useCurrentUser);
 
   const handleLogOut = () => {
-    logoutUser();
-    refreshUser();
+    dispatch(logOut());
     toast.success("Logged out successfully");
     router.push("/");
-    refreshUser();
   };
 
   const navigationItems = [
