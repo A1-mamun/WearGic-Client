@@ -1,6 +1,5 @@
 "use server";
 
-import { jwtDecode } from "jwt-decode";
 import { cookies } from "next/headers";
 // import { FieldValues } from "react-hook-form";
 
@@ -98,23 +97,7 @@ import { cookies } from "next/headers";
 //   }
 // };
 
-export const getCurrentUser = async () => {
-  const accessToken = (await cookies()).get("accessToken")?.value;
-  let decodedData = null;
-
-  const token = accessToken
-    ? Buffer.from(accessToken, "base64").toString("utf-8")
-    : null;
-
-  if (accessToken) {
-    decodedData = token ? await jwtDecode(token) : null;
-    return decodedData;
-  } else {
-    return null;
-  }
+export const logoutUser = async () => {
+  (await cookies()).delete("accessToken");
+  (await cookies()).delete("refreshToken");
 };
-
-// export const logoutUser = async () => {
-//   (await cookies()).delete("accessToken");
-//   (await cookies()).delete("refreshToken");
-// };

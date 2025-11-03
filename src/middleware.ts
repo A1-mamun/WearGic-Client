@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCurrentUser } from "./services/auth";
+import { getCurrentUser } from "./services/currentUser";
 
 type Role = keyof typeof roleBasedPrivateRoutes;
 
@@ -13,7 +13,7 @@ const roleBasedPrivateRoutes = {
 export const middleware = async (request: NextRequest) => {
   const { pathname } = request.nextUrl;
 
-  const userInfo = await getCurrentUser();
+  const userInfo = getCurrentUser(request);
 
   if (!userInfo) {
     if (authRoutes.includes(pathname)) {
