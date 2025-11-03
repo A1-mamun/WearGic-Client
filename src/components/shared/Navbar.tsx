@@ -13,6 +13,7 @@ import logo from "@/../public/Weargic_Logo_white.png";
 import mart from "@/../public/Mart_icon.png";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { logOut, useCurrentUser } from "@/redux/features/auth/authSlice";
+import { logoutUser } from "@/services/auth";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -32,6 +33,7 @@ const Navbar = () => {
 
   const handleLogOut = () => {
     dispatch(logOut());
+    logoutUser();
     toast.success("Logged out successfully");
     router.push("/");
   };

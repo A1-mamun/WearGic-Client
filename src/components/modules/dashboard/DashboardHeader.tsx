@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import Link from "next/link";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { logOut, useCurrentUser } from "@/redux/features/auth/authSlice";
+import { logoutUser } from "@/services/auth";
 
 export function DashboardHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -18,6 +19,7 @@ export function DashboardHeader() {
 
   const handleLogOut = () => {
     dispatch(logOut());
+    logoutUser();
     toast.success("Logged out successfully");
     router.push("/");
   };
