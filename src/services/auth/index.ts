@@ -98,6 +98,7 @@ import { cookies } from "next/headers";
 // };
 
 export const logoutUser = async () => {
-  (await cookies()).delete("accessToken");
-  (await cookies()).delete("refreshToken");
+  const cookieStore = await cookies();
+  cookieStore.delete("accessToken");
+  cookieStore.delete("refreshToken");
 };
