@@ -99,6 +99,17 @@ import { cookies } from "next/headers";
 
 export const logoutUser = async () => {
   const cookieStore = await cookies();
-  cookieStore.delete("accessToken");
-  cookieStore.delete("refreshToken");
+
+  // Delete with the same options used when setting
+  cookieStore.delete({
+    name: "accessToken",
+    path: "/",
+    domain: ".weargic.com", // Uncomment if you set domain when creating cookie
+  });
+
+  cookieStore.delete({
+    name: "refreshToken",
+    path: "/",
+    domain: ".weargic.com", // Uncomment if you set domain when creating cookie
+  });
 };
