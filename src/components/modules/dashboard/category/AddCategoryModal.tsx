@@ -36,8 +36,8 @@ const categorySchema = z.object({
   parentId: z
     .string()
     .uuid({ message: "Invalid parent category ID" })
-    .nullable().optional(),
-   
+    .nullable()
+    .optional(),
 });
 
 type CategoryFormData = z.infer<typeof categorySchema>;
@@ -79,7 +79,7 @@ const AddCategoryModal = ({
       onClose();
       refetch();
     } catch (error: any) {
-      toast.error(error.message || "Failed to add category");
+      toast.error(error.data.message || "Failed to add category");
     } finally {
       setIsSubmitting(false);
     }

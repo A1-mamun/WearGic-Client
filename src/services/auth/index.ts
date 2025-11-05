@@ -97,15 +97,16 @@ import { cookies } from "next/headers";
 //   }
 // };
 
+// for production use only
 export const logoutUser = async () => {
   const cookieStore = await cookies();
 
   // Delete with the same options used when setting
-  cookieStore.delete({
-    name: "accessToken",
-    path: "/",
-    domain: ".weargic.com", // Uncomment if you set domain when creating cookie
-  });
+  // cookieStore.delete({
+  //   name: "accessToken",
+  //   path: "/",
+  //   domain: ".weargic.com", // Uncomment if you set domain when creating cookie
+  // });
 
   cookieStore.delete({
     name: "refreshToken",
@@ -113,3 +114,21 @@ export const logoutUser = async () => {
     domain: ".weargic.com", // Uncomment if you set domain when creating cookie
   });
 };
+
+// for development purpose only
+// export const logoutUser = async () => {
+//   const cookieStore = await cookies();
+
+//   // Delete with the same options used when setting
+//   cookieStore.delete({
+//     name: "accessToken",
+//     path: "/",
+//     domain: "localhost",
+//   });
+
+//   cookieStore.delete({
+//     name: "refreshToken",
+//     path: "/",
+//     domain: "localhost",
+//   });
+// };

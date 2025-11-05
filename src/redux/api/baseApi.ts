@@ -9,6 +9,7 @@ import {
 import { RootState } from "../store";
 import { logOut, setUser } from "../features/auth/authSlice";
 import { toast } from "sonner";
+import { logoutUser } from "@/services/auth";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: process.env.NEXT_PUBLIC_BASE_API as string,
@@ -52,13 +53,14 @@ const baseQueryWithRefreshToken: BaseQueryFn<
       api.dispatch(
         setUser({
           user,
-          token: data.data.accessToken,
+          token: data?.data?.accessToken,
         })
       );
       result = await baseQuery(args, api, extraOptions);
     } else {
       // redirect to login
       api.dispatch(logOut());
+      logoutUser();
     }
   }
   return result;
