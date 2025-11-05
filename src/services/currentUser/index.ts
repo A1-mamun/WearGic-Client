@@ -12,11 +12,7 @@ interface DecodedToken {
 
 export const getCurrentUser = (request: NextRequest): DecodedToken | null => {
   try {
-    const accessToken = request.cookies.get("accessToken")?.value;
-
-    const token = accessToken
-      ? Buffer.from(accessToken, "base64").toString("utf-8")
-      : null;
+    const token = request.cookies.get("refreshToken")?.value;
 
     if (!token) {
       return null;
