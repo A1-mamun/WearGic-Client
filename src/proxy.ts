@@ -10,7 +10,7 @@ const roleBasedPrivateRoutes = {
   ADMIN: [/^\/dashboard/],
 };
 
-export const middleware = async (request: NextRequest) => {
+export const proxy = async (request: NextRequest) => {
   const { pathname } = request.nextUrl;
 
   const userInfo = getCurrentUser(request);
