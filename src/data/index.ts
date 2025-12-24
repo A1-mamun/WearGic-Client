@@ -842,8 +842,23 @@ export const privacyPolicy = {
 export const bannerCarouselImages = [
   {
     id: 1,
-    img: "/Grand_Opening_Banner.jpg",
-    alt: "Grand Opening Banner",
+    img: "/Banner-1.jpg",
+    alt: "Banner-1",
+  },
+  {
+    id: 1,
+    img: "/Banner-2.jpg",
+    alt: "Banner-2",
+  },
+  {
+    id: 1,
+    img: "/Banner-3.jpg",
+    alt: "Banner-3",
+  },
+  {
+    id: 1,
+    img: "/Banner-4.jpg",
+    alt: "Banner-4",
   },
   // {
   //   id: 2,
@@ -911,4 +926,9 @@ export const statusConfig = {
     color: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
     icon: XCircle,
   },
+};
+
+export const floatWhatsAppData = {
+  phoneNumber: "+8801345880782",
+  message: "Hi! I want to see Weargic's products price list.",
 };

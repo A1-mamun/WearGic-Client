@@ -13,7 +13,7 @@ const Banner = () => {
     <div className="">
       <Swiper
         autoplay={{
-          delay: 500,
+          delay: 1500,
           disableOnInteraction: false,
         }}
         speed={2000}
@@ -24,18 +24,18 @@ const Banner = () => {
         // allowTouchMove={false}
         loop={true}
         modules={[EffectFade, Pagination, Autoplay]}
-        className="mySwiper h-full"
+        className="mySwiper h-full lg:max-h-[calc(100vh-64px)]"
       >
         {bannerCarouselImages?.map(
           (item: { id: number; img: string; alt: string }, index: number) => (
-            <SwiperSlide key={index} className="h-full">
+            <SwiperSlide key={index} className="h-full ">
               <Image
                 src={item.img}
                 alt={item.alt}
                 width={1920}
                 height={1080}
                 layout="responsive"
-                className="object-cover w-full h-full"
+                className="object-cover w-full h-full "
               />
             </SwiperSlide>
           )
