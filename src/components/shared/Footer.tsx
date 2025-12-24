@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { features, socialLinks } from "@/data";
-import logo from "../../../public/Weargic_Logo_white.png";
+import logo from "../../../public/new_weargic_logo.png";
 import Image from "next/image";
 import { MapPin } from "lucide-react";
 import { Select } from "@radix-ui/react-select";

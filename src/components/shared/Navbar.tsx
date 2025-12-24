@@ -9,7 +9,7 @@ import CartSidebar from "../modules/cart/CartSidebar";
 import { usePathname, useRouter } from "next/navigation";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import Image from "next/image";
-import logo from "@/../public/Weargic_Logo_white.png";
+import logo from "@/../public/new_weargic_logo.png";
 import mart from "@/../public/Mart_icon.png";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { logOut, useCurrentUser } from "@/redux/features/auth/authSlice";
@@ -175,7 +175,7 @@ const Navbar = () => {
       {/* Mobile Navigation */}
       {isMenuOpen && (
         <div
-          className={`lg:hidden py-4 border-y border-border bg-primary-foreground backdrop-blur-xs shadow-elegant transform transition-all duration-1000 ease-in-out ${
+          className={`lg:hidden py-4 border-y border-border bg-primary-foreground backdrop-blur-xs shadow-elegant transform transition-all duration-3000 ease-in-out ${
             isMenuOpen ? "" : ""
           }`}
         >
