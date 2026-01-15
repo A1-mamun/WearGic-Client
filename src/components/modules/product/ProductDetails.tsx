@@ -136,7 +136,7 @@ const ProductDetails = ({ productData }: { productData: TProduct }) => {
     <div className="grid lg:grid-cols-2 gap-12 max-w-7xl mx-auto">
       {/* Product Images */}
       <div className="space-y-4">
-        <div className="relative aspect-square overflow-hidden rounded-lg bg-card">
+        <div className="relative w-full max-w-md h-64 mx-auto aspect-square overflow-hidden rounded-lg bg-card">
           <Image
             key={showedImage?.id}
             src={showedImage?.imageUrl || "/placeholder.svg"}
@@ -157,7 +157,7 @@ const ProductDetails = ({ productData }: { productData: TProduct }) => {
               onClick={() => {
                 setShowedImage(image);
               }}
-              className={`relative w-20 h-20 rounded-lg overflow-hidden border-1 transition-all ${
+              className={`relative w-10 h-10 md:w-20 md:h-20 rounded-lg overflow-hidden border-1 transition-all ${
                 showedImage?.id === image.id
                   ? "border-primary ring-1 ring-accent/20"
                   : "border-border hover:border-primary/50"
@@ -339,14 +339,19 @@ const ProductDetails = ({ productData }: { productData: TProduct }) => {
             productData.specifications.length > 0 && (
               <div>
                 <h4 className="font-medium mb-3">Specifications</h4>
-                <Table>
+                <Table className="w-full table-fixed">
                   <TableBody className="text-sm font-open-sans">
                     {productData.specifications.map((spec, index) => (
                       <TableRow key={index}>
-                        <TableCell className="text-muted-foreground w-1/3">
+                        {/* Key cell */}
+                        <TableCell className="text-muted-foreground break-words whitespace-normal align-top">
                           {spec.key}
                         </TableCell>
-                        <TableCell>{spec.value}</TableCell>
+
+                        {/* Value cell */}
+                        <TableCell className="break-words whitespace-normal align-top">
+                          {spec.value}
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
