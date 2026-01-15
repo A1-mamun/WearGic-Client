@@ -143,11 +143,14 @@ const ProductDetails = ({ productData }: { productData: TProduct }) => {
       <div className="space-y-4">
         <div className="relative aspect-square overflow-hidden rounded-lg bg-card">
           <Image
+            key={showedImage?.id}
             src={showedImage?.imageUrl || "/placeholder.svg"}
             alt={`${productData.name} in ${showedImage?.color}`}
             width={1500}
             height={1500}
             className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+            unoptimized
+            priority
           />
         </div>
 
