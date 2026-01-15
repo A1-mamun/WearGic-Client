@@ -41,8 +41,8 @@ const coverImageSchema = z.object({
     .custom<File | null>((val) => val instanceof File && val.size > 0, {
       message: "Product image is required",
     })
-    .refine((file) => !file || file.size <= 10 * 1024 * 1024, {
-      message: "Max file size is 10MB",
+    .refine((file) => !file || file.size <= 20 * 1024 * 1024, {
+      message: "Max file size is 20MB",
     })
     .refine(
       (file) =>
@@ -58,8 +58,8 @@ const productImageSchema = z.object({
     .custom<File | null>((val) => val instanceof File && val.size > 0, {
       message: "Product image is required",
     })
-    .refine((file) => !file || file.size <= 5 * 1024 * 1024, {
-      message: "Max file size is 5MB",
+    .refine((file) => !file || file.size <= 20 * 1024 * 1024, {
+      message: "Max file size is 20MB",
     })
     .refine(
       (file) =>
@@ -80,8 +80,8 @@ const bulkImageSchema = z
       .custom<File | null>((val) => val instanceof File && val.size > 0, {
         message: "Product image is required",
       })
-      .refine((file) => !file || file.size <= 5 * 1024 * 1024, {
-        message: "Max file size is 5MB",
+      .refine((file) => !file || file.size <= 20 * 1024 * 1024, {
+        message: "Max file size is 20MB",
       })
       .refine(
         (file) =>
@@ -870,7 +870,7 @@ export function AddProductModal({
                                 {/* Info */}
                                 <p className="text-xs text-gray-500">
                                   Accepted formats: JPG, JPEG, PNG (Max size:
-                                  10MB)
+                                  20MB)
                                 </p>
 
                                 {image.previewUrl && (
