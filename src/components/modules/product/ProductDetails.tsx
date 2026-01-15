@@ -132,11 +132,6 @@ const ProductDetails = ({ productData }: { productData: TProduct }) => {
     ...(productData.bulkImages || []),
   ];
 
-  console.log("Bulk Images:", productData.bulkImages);
-  console.log("Product Images:", productData.productImages);
-
-  console.log("Showed Image:", showedImage);
-
   return (
     <div className="grid lg:grid-cols-2 gap-12 max-w-7xl mx-auto">
       {/* Product Images */}
