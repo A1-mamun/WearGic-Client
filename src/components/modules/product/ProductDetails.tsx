@@ -136,11 +136,12 @@ const ProductDetails = ({ productData }: { productData: TProduct }) => {
     <div className="grid lg:grid-cols-2 gap-12 max-w-7xl mx-auto">
       {/* Product Images */}
       <div className="space-y-4">
-        <div className="relative w-full max-w-md h-64 mx-auto aspect-square overflow-hidden rounded-lg bg-card">
+        {/* Main image */}
+        <div className="relative w-full mx-auto aspect-[4/3] overflow-hidden rounded-lg bg-card">
           <Image
             key={showedImage?.id}
             src={showedImage?.imageUrl || "/placeholder.svg"}
-            alt={`${productData.name} in ${showedImage?.color}`}
+            alt={`${productData.name} in ${showedImage?.color ?? "default"}`}
             width={1500}
             height={1500}
             className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
@@ -150,29 +151,55 @@ const ProductDetails = ({ productData }: { productData: TProduct }) => {
         </div>
 
         {/* image Selection */}
-        <div className="flex gap-3">
+        <div className="flex gap-2 overflow-x-auto sm:overflow-visible pb-1">
           {allImages.map((image, index) => (
             <button
               key={image.id}
-              onClick={() => {
-                setShowedImage(image);
-              }}
-              className={`relative w-10 h-10 md:w-20 md:h-20 rounded-lg overflow-hidden border-1 transition-all ${
-                showedImage?.id === image.id
-                  ? "border-primary ring-1 ring-accent/20"
-                  : "border-border hover:border-primary/50"
-              }`}
+              onClick={() => setShowedImage(image)}
+              className={`relative flex-shrink-0 w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-lg overflow-hidden border transition-all
+          ${
+            showedImage?.id === image.id
+              ? "border-primary ring-2 ring-primary/30"
+              : "border-border hover:border-primary/50"
+          }`}
             >
               <Image
                 src={image.imageUrl || "/placeholder.svg"}
                 alt={`${productData.name}-${index}`}
-                className="w-full h-full object-cover"
-                width={500}
-                height={500}
+                fill
+                sizes="80px"
+                className="object-cover"
               />
             </button>
           ))}
         </div>
+
+        {/* Specifications Table */}
+        <Card className="p-6 bg-card hidden lg:block">
+          {productData.specifications &&
+            productData.specifications.length > 0 && (
+              <div>
+                <h4 className="font-medium mb-3">Specifications</h4>
+                <Table className="w-full table-fixed">
+                  <TableBody className="text-sm font-open-sans">
+                    {productData.specifications.map((spec, index) => (
+                      <TableRow key={index}>
+                        {/* Key cell */}
+                        <TableCell className="text-muted-foreground break-words whitespace-normal align-top">
+                          {spec.key}
+                        </TableCell>
+
+                        {/* Value cell */}
+                        <TableCell className="break-words whitespace-normal align-top">
+                          {spec.value}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
+        </Card>
       </div>
 
       {/* Product Information */}
@@ -334,30 +361,32 @@ const ProductDetails = ({ productData }: { productData: TProduct }) => {
             </div>
           )}
 
-          {/* Specifications Table */}
-          {productData.specifications &&
-            productData.specifications.length > 0 && (
-              <div>
-                <h4 className="font-medium mb-3">Specifications</h4>
-                <Table className="w-full table-fixed">
-                  <TableBody className="text-sm font-open-sans">
-                    {productData.specifications.map((spec, index) => (
-                      <TableRow key={index}>
-                        {/* Key cell */}
-                        <TableCell className="text-muted-foreground break-words whitespace-normal align-top">
-                          {spec.key}
-                        </TableCell>
+          <div className="lg:hidden">
+            {/* Specifications Table */}
+            {productData.specifications &&
+              productData.specifications.length > 0 && (
+                <div>
+                  <h4 className="font-medium mb-3">Specifications</h4>
+                  <Table className="w-full table-fixed">
+                    <TableBody className="text-sm font-open-sans">
+                      {productData.specifications.map((spec, index) => (
+                        <TableRow key={index}>
+                          {/* Key cell */}
+                          <TableCell className="text-muted-foreground break-words whitespace-normal align-top">
+                            {spec.key}
+                          </TableCell>
 
-                        {/* Value cell */}
-                        <TableCell className="break-words whitespace-normal align-top">
-                          {spec.value}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-            )}
+                          {/* Value cell */}
+                          <TableCell className="break-words whitespace-normal align-top">
+                            {spec.value}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              )}
+          </div>
         </Card>
       </div>
     </div>
