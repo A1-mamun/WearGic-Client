@@ -19,7 +19,7 @@ const SuggestedProducts = ({ product }: { product: TProduct }) => {
   });
 
   const suggestedProducts = products?.data?.filter(
-    (p: TProduct) => p.id !== product.id
+    (p: TProduct) => p.id !== product.id,
   );
 
   return (
@@ -57,7 +57,7 @@ const SuggestedProducts = ({ product }: { product: TProduct }) => {
           </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-8">
-            {suggestedProducts?.data?.map((product: TProduct) => (
+            {suggestedProducts?.map((product: TProduct) => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>
