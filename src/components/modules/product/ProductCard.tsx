@@ -51,7 +51,7 @@ const ProductCard = ({ product }: { product: TProduct }) => {
   const discountPercentage = Math.round(
     (((product?.originalPrice ?? 0) - product?.price) /
       (product?.originalPrice ?? 0)) *
-      100
+      100,
   );
 
   const coverImage = product.coverImage;
@@ -91,29 +91,31 @@ const ProductCard = ({ product }: { product: TProduct }) => {
         </div>
 
         <CardHeader className="px-2 md:px-3 lg:px-4 -mt-3 flex justify-between items-center">
-          {product.brand ? (
-            <h3 className="text-sm md:text-base font-semibold text-foreground transition-colors line-clamp-2">
-              {product.name.length > 20
-                ? product.name.slice(0, 20) + "..."
-                : product.name}
-            </h3>
-          ) : (
-            <h3 className="text-sm md:text-base font-semibold text-foreground transition-colors line-clamp-2">
-              {product.name.length > 27
-                ? product.name.slice(0, 27) + "..."
-                : product.name}
-            </h3>
-          )}
-          <div>
+          {/* <div className="">
+            {product.brand ? (
+              <h3 className="text-sm md:text-base font-semibold text-foreground transition-colors line-clamp-2">
+                {product.name.length > 20
+                  ? product.name.slice(0, 20) + "..."
+                  : product.name}
+              </h3>
+            ) : ( */}
+          <h3 className="text-sm md:text-base font-semibold text-foreground transition-colors line-clamp-2">
+            {product.name.length > 27
+              ? product.name.slice(0, 27) + "..."
+              : product.name}
+          </h3>
+          {/* //   )}
+          // </div> */}
+          {/* <div className="hidden md:block">
             {product.brand && (
               <Badge variant="secondary" className="bg-green-300 text-black">
                 {product.brand}
               </Badge>
             )}
-          </div>
+          </div> */}
         </CardHeader>
 
-        <CardContent className="px-2 md:px-3 lg:px-4 -my-6 md:-my-5 flex justify-between items-end">
+        <CardContent className="px-2 md:px-3 lg:px-4 -my-4 md:-my-5 flex justify-between items-end">
           <div className="space-y-0">
             <div className="flex gap-5 items-center">
               <span className="text-sm md:text-lg font-medium text-foreground">

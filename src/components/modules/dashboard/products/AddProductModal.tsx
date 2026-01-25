@@ -49,7 +49,7 @@ const coverImageSchema = z.object({
         !file || ["image/jpeg", "image/png", "image/jpg"].includes(file.type),
       {
         message: "Only JPG, JPEG or PNG files are allowed",
-      }
+      },
     ),
 });
 
@@ -66,7 +66,7 @@ const productImageSchema = z.object({
         !file || ["image/jpeg", "image/png", "image/jpg"].includes(file.type),
       {
         message: "Only JPG, JPEG or PNG files are allowed",
-      }
+      },
     ),
   color: z.string().min(1, "Color is required"),
   stock: z.number().nonnegative("Stock cannot be negative"),
@@ -88,7 +88,7 @@ const bulkImageSchema = z
           !file || ["image/jpeg", "image/png", "image/jpg"].includes(file.type),
         {
           message: "Only JPG, JPEG or PNG files are allowed",
-        }
+        },
       ),
   })
   .optional();
@@ -172,7 +172,7 @@ export function AddProductModal({
   const [bulkImages, setBulkImages] = useState<File[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<TCategory | null>(
-    null
+    null,
   );
 
   const coverImageInputRef = useRef<HTMLInputElement>(null);
@@ -181,7 +181,7 @@ export function AddProductModal({
 
   const availableCategories = categories || [];
   const subCategories = availableCategories.filter(
-    (cat: any) => cat.parent?.id === selectedCategory?.id
+    (cat: any) => cat.parent?.id === selectedCategory?.id,
   );
 
   const {
@@ -238,7 +238,7 @@ export function AddProductModal({
   // ]);
 
   const [specifications, setSpecifications] = useState<ProductSpecification[]>(
-    DEFAULT_SPECIFICATION_KEYS.map((key) => ({ key, value: "" }))
+    DEFAULT_SPECIFICATION_KEYS.map((key) => ({ key, value: "" })),
   );
 
   const [addProduct] = useAddProductMutation();
@@ -264,8 +264,8 @@ export function AddProductModal({
           productImages.map((img) => {
             const { file, ...rest } = img;
             return rest;
-          })
-        )
+          }),
+        ),
       );
     }
 
@@ -295,6 +295,7 @@ export function AddProductModal({
       onClose();
       refetchProducts();
     } catch (error: any) {
+      // console.error("Error adding product:", error);
       toast.error(error.message || "Failed creating product!", {
         id: toastId,
         duration: 2000,
@@ -317,7 +318,7 @@ export function AddProductModal({
     ]);
     setBulkImages([]);
     setSpecifications(
-      DEFAULT_SPECIFICATION_KEYS.map((key) => ({ key, value: "" }))
+      DEFAULT_SPECIFICATION_KEYS.map((key) => ({ key, value: "" })),
     );
   };
 
@@ -336,7 +337,7 @@ export function AddProductModal({
   const updateSpecification = (
     index: number,
     field: keyof ProductSpecification,
-    value: string
+    value: string,
   ) => {
     const newSpecs = [...specifications];
     newSpecs[index] = { ...newSpecs[index], [field]: value };
@@ -402,7 +403,7 @@ export function AddProductModal({
   const updateProductImage = (
     index: number,
     field: keyof ProductImageForm,
-    value: any
+    value: any,
   ) => {
     const newImages = [...productImages];
 
@@ -493,7 +494,7 @@ export function AddProductModal({
 
                             const selected =
                               availableCategories.find(
-                                (cat) => cat.name === value
+                                (cat) => cat.name === value,
                               ) || null;
 
                             setSelectedCategory(selected);
@@ -904,7 +905,7 @@ export function AddProductModal({
                                   updateProductImage(
                                     index,
                                     "color",
-                                    e.target.value
+                                    e.target.value,
                                   ); // ✅ keeps your preview/local state
                                 }}
                                 className={
@@ -1146,7 +1147,7 @@ export function AddProductModal({
                               updateSpecification(
                                 index,
                                 "value",
-                                e.target.value
+                                e.target.value,
                               )
                             }
                             className={
