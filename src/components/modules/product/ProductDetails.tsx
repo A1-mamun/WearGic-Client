@@ -23,13 +23,13 @@ import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 
 const ProductDetails = ({ productData }: { productData: TProduct }) => {
   const [showedImage, setShowedImage] = useState<TShowedproductImage | null>(
-    productData?.productImages?.length ? productData.productImages[0] : null
+    productData?.productImages?.length ? productData.productImages[0] : null,
   );
 
   // const [showedColor, setShowedcolor] = useState<TProductImage | null>();
 
   const [selectedColor, setSelectedColor] = useState<TProductImage | null>(
-    null
+    null,
   );
   const [colorError, setColorError] = useState(false);
   const [quantity, setQuantity] = useState(1);
@@ -39,15 +39,15 @@ const ProductDetails = ({ productData }: { productData: TProduct }) => {
 
   useEffect(() => {
     const existsInCart = products.find(
-      (cartItem) => cartItem.id === productData.id
+      (cartItem) => cartItem.id === productData.id,
     );
 
     setSelectedColor(
       existsInCart
         ? productData.productImages.find(
-            (img) => img.id === existsInCart.selectedProductId
+            (img) => img.id === existsInCart.selectedProductId,
           ) || null
-        : null
+        : null,
     );
 
     setQuantity(existsInCart ? existsInCart.orderQuantity : 1);
@@ -58,7 +58,7 @@ const ProductDetails = ({ productData }: { productData: TProduct }) => {
   const discountPercentage = Math.round(
     (((productData?.originalPrice ?? 0) - productData?.price) /
       (productData?.originalPrice ?? 0)) *
-      100
+      100,
   );
 
   const dispatch = useAppDispatch();
@@ -80,13 +80,13 @@ const ProductDetails = ({ productData }: { productData: TProduct }) => {
 
   const handleColorChange = (color: string) => {
     const colorImage = productData.productImages.find(
-      (img) => img.color === color
+      (img) => img.color === color,
     );
     if (colorImage) {
       setSelectedColor(colorImage as TProductImage);
       setColorError(false);
       const matchingImage = productData.productImages.find(
-        (img) => img.color === color
+        (img) => img.color === color,
       );
       if (matchingImage) {
         setShowedImage(matchingImage);
@@ -106,7 +106,7 @@ const ProductDetails = ({ productData }: { productData: TProduct }) => {
         product,
         selectedId: selectedColor.id,
         quantity,
-      })
+      }),
     );
   };
 
@@ -120,7 +120,7 @@ const ProductDetails = ({ productData }: { productData: TProduct }) => {
         product,
         selectedId: selectedColor.id,
         quantity,
-      })
+      }),
     );
     // Redirect to checkout page
     router.push("/checkout");
@@ -133,7 +133,7 @@ const ProductDetails = ({ productData }: { productData: TProduct }) => {
   ];
 
   return (
-    <div className="grid lg:grid-cols-2 gap-12 max-w-7xl mx-auto">
+    <div className="grid lg:grid-cols-2 gap-5 md:gap-12 max-w-7xl mx-auto">
       {/* Product Images */}
       <div className="space-y-4">
         {/* Main image */}
@@ -151,7 +151,7 @@ const ProductDetails = ({ productData }: { productData: TProduct }) => {
         </div>
 
         {/* image Selection */}
-        <div className="flex gap-2 overflow-x-auto sm:overflow-visible pb-1">
+        <div className="flex flex-wrap gap-2 overflow-x-auto sm:overflow-visible md:pb-1">
           {allImages.map((image, index) => (
             <button
               key={image.id}
