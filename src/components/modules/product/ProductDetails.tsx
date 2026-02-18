@@ -301,29 +301,68 @@ const ProductDetails = ({ productData }: { productData: TProduct }) => {
           </div>
 
           {/* Quantity Selector */}
-          <div className="space-y-3">
-            <p className="text-sm font-medium text-foreground">Quantity</p>
-            <div className="flex items-center gap-2 md:gap-3">
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => handleQuantityChange(-1)}
-                disabled={quantity <= 1}
-              >
-                <Minus className="h-3 md:h-4 w-3 md:w-4" />
-              </Button>
-              <span className="w-12 text-center font-medium">{quantity}</span>
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => handleQuantityChange(1)}
-                disabled={
-                  selectedColor ? quantity >= selectedColor.stock : false
-                }
-              >
-                <Plus className="h-3 md:h-4 w-3 md:w-4" />
-              </Button>
+          {!selectedColor && (
+            <div className="space-y-3">
+              <p className="text-sm font-medium text-foreground">Quantity</p>
+              <div className="flex items-center gap-2 md:gap-3">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => handleQuantityChange(-1)}
+                  disabled={quantity <= 1}
+                >
+                  <Minus className="h-3 md:h-4 w-3 md:w-4" />
+                </Button>
+                <span className="w-12 text-center font-medium">{quantity}</span>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => handleQuantityChange(1)}
+                >
+                  <Plus className="h-3 md:h-4 w-3 md:w-4" />
+                </Button>
+              </div>
             </div>
+          )}
+
+          <div className="space-y-3">
+            {selectedColor &&
+              (selectedColor.stock > 0 ? (
+                <div className="space-y-3">
+                  <p className="text-sm font-medium text-foreground">
+                    Quantity
+                  </p>
+                  <div className="flex items-center gap-2 md:gap-3">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => handleQuantityChange(-1)}
+                      disabled={quantity <= 1}
+                    >
+                      <Minus className="h-3 md:h-4 w-3 md:w-4" />
+                    </Button>
+                    <span className="w-12 text-center font-medium">
+                      {quantity}
+                    </span>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => handleQuantityChange(1)}
+                      disabled={
+                        selectedColor ? quantity >= selectedColor.stock : false
+                      }
+                    >
+                      <Plus className="h-3 md:h-4 w-3 md:w-4" />
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  <p className="text-base font-medium text-red-500">
+                    Out of Stock
+                  </p>
+                </div>
+              ))}
           </div>
 
           {/* Add to Cart */}

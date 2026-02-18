@@ -192,14 +192,33 @@ const ProductCard = ({ product }: { product: TProduct }) => {
               </Button>
             )}
           </div> */}
-          <Button
+          {product.totalStock > 0 ? (
+            <Button
+              variant="default"
+              size="sm"
+              className="w-full h-[30px] md:h-8 text-black bg-orange-500"
+              onClick={() => router.push(`/products/${product.id}`)}
+            >
+              Buy Now
+            </Button>
+          ) : (
+            <Button
+              variant="default"
+              size="sm"
+              className="w-full h-[30px] md:h-8 text-black bg-red-500"
+              // onClick={() => router.push(`/products/${product.id}`)}
+            >
+              Out of Stock
+            </Button>
+          )}
+          {/* <Button
             variant="default"
             size="sm"
             className="w-full h-[30px] md:h-8 text-black bg-orange-500"
             onClick={() => router.push(`/products/${product.id}`)}
           >
             Buy Now
-          </Button>
+          </Button> */}
         </CardFooter>
       </Card>
     </Link>
