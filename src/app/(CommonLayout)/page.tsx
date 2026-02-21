@@ -10,8 +10,9 @@ const HomePage = () => {
     <main className="min-h-screen bg-background">
       <Banner />
       {/* Boys aection */}
-      <BoysSection />
       <LadiesSection />
+      <BoysSection />
+
       {/* Featured Products Section */}
       {/* <FeaturedProducts /> */}
 
