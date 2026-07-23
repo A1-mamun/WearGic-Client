@@ -121,6 +121,7 @@ const SignInPage = () => {
     setLoading(true);
     try {
       const res = await login({ phone: data.phone }).unwrap();
+      // console.log("Login response:", res);
       if (res.success) {
         setPhone(data.phone);
         setStep("otp");
@@ -137,7 +138,16 @@ const SignInPage = () => {
         toast.error(res.message || "Failed to send OTP");
       }
     } catch (error: any) {
-      toast.error(error.message || "Failed to send OTP");
+      // toast.error(error.message || "Failed to send OTP");
+      // Log the full error to see its structure
+      // console.log("Full error object:", error);
+      // console.log("Error data:", error.data);
+      // console.log("Error status:", error.status);
+
+      // RTK Query error structure
+      const errorMessage =
+        error?.data?.message || error?.message || "Failed to send OTP";
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -206,7 +216,7 @@ const SignInPage = () => {
           setUser({
             user: user.user,
             token: res.data.accessToken,
-          })
+          }),
         );
         setIsNewUser(true);
         setStep("info");
@@ -224,7 +234,7 @@ const SignInPage = () => {
           setUser({
             user: user.user,
             token: res.data.accessToken,
-          })
+          }),
         );
 
         toast.success("Successfully logged in!");
