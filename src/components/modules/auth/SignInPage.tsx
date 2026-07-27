@@ -252,50 +252,52 @@ const SignInPage = () => {
   // function to handle OTP verification
   const handleVerifyOtp = async () => {
     setLoading(true);
+
     try {
       const res = await verifyOtp({ phone, otp }).unwrap();
 
-      if (res.success && res.data.isNewUser) {
-        // Decode the access token
-        const user = verifyToken(res.data.accessToken);
+      if (!res.success) {
+        toast.error(res.message || "OTP verification failed");
+        return;
+      }
 
-        // Set user and token in Redux store
-        dispatch(
-          setUser({
-            user: user.user,
-            token: res.data.accessToken,
-          }),
-        );
+      // Decode access token
+      const decoded = verifyToken(res.data.accessToken);
+
+      // Save in Redux
+      dispatch(
+        setUser({
+          user: decoded.user,
+          token: res.data.accessToken,
+        }),
+      );
+
+      // Persist access token (client-side)
+      document.cookie = `accessToken=${res.data.accessToken}; path=/; max-age=86400; SameSite=Lax`;
+
+      if (res.data.isNewUser) {
         setIsNewUser(true);
         setStep("info");
+
         sessionStorage.setItem("auth_step", "info");
-        toast.success("Successfully logged in!");
-        // await refreshUser();
-      } else if (!res.success) {
-        toast.error(res.message || "OTP verification failed");
-      } else {
-        // Decode the access token
-        const user = verifyToken(res.data.accessToken);
-
-        // Set user and token in Redux store
-        dispatch(
-          setUser({
-            user: user.user,
-            token: res.data.accessToken,
-          }),
-        );
 
         toast.success("Successfully logged in!");
-        // Clear session storage before navigation
-        sessionStorage.removeItem("auth_step");
-        sessionStorage.removeItem("auth_phone");
-        sessionStorage.removeItem("auth_timer_end");
-
-        // await refreshUser();
-        router.push(redirect);
+        return;
       }
+
+      // Existing user
+      sessionStorage.removeItem("auth_step");
+      sessionStorage.removeItem("auth_phone");
+      sessionStorage.removeItem("auth_timer_end");
+
+      toast.success("Successfully logged in!");
+
+      router.replace(redirect);
     } catch (error: any) {
-      toast.error(error.data.message || "An unexpected error occurred");
+      const errorMessage =
+        error?.data?.message || error?.message || "OTP verification failed";
+
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }

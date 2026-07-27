@@ -12,7 +12,7 @@ interface DecodedToken {
 
 export const getCurrentUser = (request: NextRequest): DecodedToken | null => {
   try {
-    const token = request.cookies.get("refreshToken")?.value;
+    const token = request.cookies.get("accessToken")?.value;
 
     if (!token) {
       return null;

@@ -20,7 +20,7 @@ export const proxy = async (request: NextRequest) => {
       return NextResponse.next();
     } else {
       return NextResponse.redirect(
-        new URL(`/signin?redirectPath=${pathname}`, request.url)
+        new URL(`/signin?redirectPath=${pathname}`, request.url),
       );
     }
   }
