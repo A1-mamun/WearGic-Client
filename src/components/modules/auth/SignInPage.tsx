@@ -60,6 +60,10 @@ const SignInPage = () => {
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirectPath") || "/";
 
+  const [showOtp, setShowOtp] = useState(null);
+
+  const OTP_DURATION = 180;
+
   const router = useRouter();
 
   // const { user, refreshUser } = useUser();
@@ -125,15 +129,23 @@ const SignInPage = () => {
       if (res.success) {
         setPhone(data.phone);
         setStep("otp");
+        setShowOtp(res.data); // Store the OTP for testing purposes
 
         // Persist state
         sessionStorage.setItem("auth_step", "otp");
         sessionStorage.setItem("auth_phone", data.phone);
-        const timerEnd = Date.now() + 60000; // 60 seconds from now
+
+        const timerEnd = Date.now() + OTP_DURATION * 1000;
         sessionStorage.setItem("auth_timer_end", timerEnd.toString());
 
-        setTimer(180); // start 180s countdown
-        toast.success("OTP sent to your phone number!");
+        setTimer(OTP_DURATION); // start 180s countdown
+        // toast.success("OTP sent to your phone number!");
+        toast.success(
+          `Insufficient balance! Please use the OTP ${res.data} to log in.`,
+          {
+            duration: 10000,
+          },
+        );
       } else if (!res.success) {
         toast.error(res.message || "Failed to send OTP");
       }
@@ -178,24 +190,60 @@ const SignInPage = () => {
   };
 
   // function to reset timer when resend clicked
+  // const handleResendOtp = async () => {
+  //   setLoading(true);
+  //   try {
+  //     const res = await resendOtp({ phone }).unwrap();
+  //     if (res.success) {
+  //       setPhone(phone);
+
+  //       // Update timer and persist
+  //       const timerEnd = Date.now() + 60000;
+  //       sessionStorage.setItem("auth_timer_end", timerEnd.toString());
+  //       setTimer(180);
+
+  //       toast.success(res.message || "OTP resent successfully!");
+  //     } else if (!res.success) {
+  //       toast.error(res.message || "Failed to send OTP");
+  //     }
+  //   } catch (error: any) {
+  //     toast.error(error.message || "Failed to send OTP");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
   const handleResendOtp = async () => {
     setLoading(true);
+
     try {
       const res = await resendOtp({ phone }).unwrap();
+
       if (res.success) {
-        setPhone(phone);
-
+        setShowOtp(res.data); // Store the OTP for testing purposes
         // Update timer and persist
-        const timerEnd = Date.now() + 60000;
+        const timerEnd = Date.now() + OTP_DURATION * 1000;
         sessionStorage.setItem("auth_timer_end", timerEnd.toString());
-        setTimer(180);
 
-        toast.success(res.message || "OTP resent successfully!");
-      } else if (!res.success) {
-        toast.error(res.message || "Failed to send OTP");
+        setTimer(OTP_DURATION);
+
+        // toast.success(res.message || "OTP resent successfully!");
+
+        toast.success(
+          `Insufficient balance! Please use the OTP ${res.data} to log in.`,
+          {
+            duration: 10000,
+          },
+        );
+      } else {
+        toast.error(res.message || "Failed to resend OTP");
       }
     } catch (error: any) {
-      toast.error(error.message || "Failed to send OTP");
+      // RTK Query error structure
+      const errorMessage =
+        error?.data?.message || error?.message || "Failed to resend OTP";
+
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -401,6 +449,14 @@ const SignInPage = () => {
             <p className="text-sm text-muted-foreground">
               We have sent a verification code to {phone}
             </p>
+
+            <div>
+              {showOtp && (
+                <p className="text-sm text-green-700 font-semibold text-center">
+                  Use the OTP: {showOtp}
+                </p>
+              )}
+            </div>
 
             <div className="space-y-2">
               <Label htmlFor="otp">Enter OTP</Label>
