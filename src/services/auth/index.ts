@@ -109,9 +109,9 @@ export const logoutUser = async () => {
   // });
 
   cookieStore.delete({
-    name: "refreshToken",
+    name: "accessToken",
     path: "/",
-    domain: ".weargic.com", // Uncomment if you set domain when creating cookie
+    // domain: ".weargic.com", // Uncomment if you set domain when creating cookie
   });
 };
 
