@@ -15,7 +15,7 @@ const LadiesSection = () => {
     category: "Ladies Bag",
   });
   return (
-    <div className="pb-8 md:pb-12 lg:pb-16 container mx-auto px-3 ">
+    <div className="py-8 md:py-12 lg:py-16 container mx-auto px-3 ">
       <div className=" text-center flex items-center justify-center gap-5 w-full pb-8 md:pb-12 lg:pb-16">
         <div className="border-t border-black flex-1"></div>
         <p className="text-2xl md:text-3xl lg:text-4xl font-medium md:font-semibold">
@@ -38,7 +38,8 @@ const LadiesSection = () => {
           <ProductError refetch={refetch} />
         </div>
       ) : (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8 mb-8 md:mb-10 lg:mb-12">
+        // <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8 mb-8 md:mb-10 lg:mb-12">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-8">
           {products?.data?.map((product: TProduct) => (
             <ProductCard key={product.id} product={product} />
           ))}

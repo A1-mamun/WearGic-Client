@@ -16,7 +16,7 @@ const FeaturedProducts = () => {
     refetch,
   } = useGetAllProductsQuery(undefined);
 
-  const featuredProducts: TProduct[] = products?.data.slice(0, 8);
+  const featuredProducts: TProduct[] = products?.data.slice(0, 8) || [];
   return (
     <section className="py-7 md:py-10 lg:py-14 xl-py-16 bg-background">
       <div className="container mx-auto px-3">

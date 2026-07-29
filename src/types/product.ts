@@ -1,7 +1,18 @@
-export type TProductSpecifications = {
+export interface SpecificationPayload {
   key: string;
   value: string;
-};
+}
+
+export interface CloudinaryImageRef {
+  publicId: string;
+  imageUrl: string;
+}
+
+export interface ProductImagePayload extends CloudinaryImageRef {
+  color: string;
+  stock: number;
+  isActive: boolean;
+}
 
 export type TProductImage = {
   id: string;
@@ -50,8 +61,30 @@ export type TProduct = {
   coverImage: TCoverImage;
   bulkImages: TBulkImage[];
   productImages: TProductImage[];
-  specifications: TProductSpecifications[];
+  specifications: SpecificationPayload[];
 };
+
+export interface CreateProductPayload {
+  name: string;
+  description?: string;
+  originalPrice?: number;
+  price: number;
+  category: string;
+  subCategory?: string;
+  code: string;
+  brand?: string;
+  isNew: boolean;
+  gender?: "MALE" | "FEMALE";
+  coverImage: CloudinaryImageRef;
+  productImages: ProductImagePayload[];
+  bulkImages: CloudinaryImageRef[];
+  specifications: SpecificationPayload[];
+}
+
+export interface UpdateProductPayload extends Partial<CreateProductPayload> {
+  removedProductImageIds?: string[];
+  removedBulkImageIds?: string[];
+}
 
 // Image type for creation
 export type TCreateProductImage = {
@@ -85,3 +118,25 @@ export type TShowedproductImage = {
   stock?: number | null | undefined;
   isActive?: boolean | null | undefined;
 };
+
+export interface TMeta {
+  page: number;
+  limit: number;
+  total: number;
+  totalPage: number;
+}
+
+export interface TProductListResponse {
+  meta: TMeta;
+  data: TProduct[];
+}
+
+export interface GetProductsParams {
+  gender?: string;
+  category?: string;
+  searchTerm?: string;
+  page?: number;
+  limit?: number;
+  sortBy?: string;
+  sortOrder?: string;
+}

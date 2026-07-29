@@ -25,7 +25,7 @@ const ProductsPage = () => {
   useEffect(() => {
     if (products?.meta) {
       const totalPages = Math.ceil(
-        (products?.meta?.total || 0) / (products?.meta?.limit || limit)
+        (products?.meta?.total || 0) / (products?.meta?.limit || limit),
       );
       setTotalPages(totalPages);
     }
@@ -34,7 +34,7 @@ const ProductsPage = () => {
   return (
     <div className="h-full">
       <Products
-        productsData={products?.data}
+        productsData={products?.data || []}
         categoriesData={categories?.data}
         refetchProducts={refetchProducts}
         isFetching={isFetching}
