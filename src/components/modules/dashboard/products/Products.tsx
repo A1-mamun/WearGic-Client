@@ -36,7 +36,7 @@ const Products = ({
   setSearchTerm: (term: string) => void;
   loading: boolean;
 }) => {
-  const [products, setProducts] = useState<TProduct[]>(productsData || []);
+  // const [products, setProducts] = useState<TProduct[]>(productsData || []);
   const [localSearchTerm, setLocalSearchTerm] = useState(searchTerm);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   // const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -45,11 +45,11 @@ const Products = ({
   const [selectedProduct, setSelectedProduct] = useState<TProduct | null>(null);
   const isFirstRender = useRef(true);
   // Update products when productsData changes
-  useEffect(() => {
-    if (productsData) {
-      setProducts(productsData);
-    }
-  }, [productsData]);
+  // useEffect(() => {
+  //   if (productsData) {
+  //     setProducts(productsData);
+  //   }
+  // }, [productsData]);
 
   // Debounce search - only reset page if search term actually changed
   useEffect(() => {
@@ -72,7 +72,7 @@ const Products = ({
   }, [localSearchTerm]);
 
   const filteredProducts = productsData?.filter(
-    (product) => !product.isDeleted
+    (product) => !product.isDeleted,
   );
 
   // const handleEditProduct = (updatedProduct: TProduct) => {
@@ -88,18 +88,18 @@ const Products = ({
   //   refetchProducts();
   // };
 
-  const handleDeleteProduct = (productId: string) => {
-    setProducts(
-      products.map((p) =>
-        p.id === productId
-          ? { ...p, isDeleted: true, updatedAt: new Date() }
-          : p
-      )
-    );
-    setIsDeleteModalOpen(false);
-    setSelectedProduct(null);
-    refetchProducts();
-  };
+  // const handleDeleteProduct = (productId: string) => {
+  //   setProducts(
+  //     products.map((p) =>
+  //       p.id === productId
+  //         ? { ...p, isDeleted: true, updatedAt: new Date() }
+  //         : p
+  //     )
+  //   );
+  //   setIsDeleteModalOpen(false);
+  //   setSelectedProduct(null);
+  //   refetchProducts();
+  // };
 
   // const openEditModal = (product: TProduct) => {
   //   setSelectedProduct(product);
@@ -187,7 +187,7 @@ const Products = ({
                 setIsDeleteModalOpen(false);
                 setSelectedProduct(null);
               }}
-              onDelete={handleDeleteProduct}
+              // onDelete={handleDeleteProduct}
               product={selectedProduct}
             />
 

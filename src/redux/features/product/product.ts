@@ -71,6 +71,36 @@ const productApi = baseApi.injectEndpoints({
       }),
       providesTags: (result, error, id) => [{ type: "Product", id }],
     }),
+    deleteProduct: build.mutation<unknown, string>({
+      query: (id) => ({
+        url: `/product/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: (result, error, id) => [
+        { type: "Product", id: "LIST" },
+        { type: "Product", id },
+      ],
+    }),
+    restoreProduct: build.mutation<unknown, string>({
+      query: (id) => ({
+        url: `/product/restore-product/${id}`,
+        method: "PATCH",
+      }),
+      invalidatesTags: (result, error, id) => [
+        { type: "Product", id: "LIST" },
+        { type: "Product", id },
+      ],
+    }),
+    hardDeleteProduct: build.mutation<unknown, string>({
+      query: (id) => ({
+        url: `/product/hard-delete/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: (result, error, id) => [
+        { type: "Product", id: "LIST" },
+        { type: "Product", id },
+      ],
+    }),
   }),
 });
 
@@ -79,4 +109,7 @@ export const {
   useUpdateProductMutation,
   useGetAllProductsQuery,
   useGetProductByIdQuery,
+  useDeleteProductMutation,
+  useRestoreProductMutation,
+  useHardDeleteProductMutation,
 } = productApi;
