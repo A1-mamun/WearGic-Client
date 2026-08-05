@@ -22,7 +22,7 @@ import {
 
 interface ProductsTableProps {
   products: TProduct[];
-  // onEdit: (product: TProduct) => void;
+  onEdit: (product: TProduct) => void;
   onDelete: (product: TProduct) => void;
   onView: (product: TProduct) => void;
   currentPage: number;
@@ -34,7 +34,7 @@ interface ProductsTableProps {
 
 const ProductsTable = ({
   products,
-  // onEdit,
+  onEdit,
   onDelete,
   onView,
   currentPage,
@@ -65,7 +65,7 @@ const ProductsTable = ({
             >
               {i}
             </PaginationLink>
-          </PaginationItem>
+          </PaginationItem>,
         );
       }
     } else {
@@ -79,7 +79,7 @@ const ProductsTable = ({
           >
             1
           </PaginationLink>
-        </PaginationItem>
+        </PaginationItem>,
       );
 
       // Show ellipsis and middle pages
@@ -87,7 +87,7 @@ const ProductsTable = ({
         items.push(
           <PaginationItem key="ellipsis-start">
             <PaginationEllipsis />
-          </PaginationItem>
+          </PaginationItem>,
         );
       }
 
@@ -105,7 +105,7 @@ const ProductsTable = ({
             >
               {i}
             </PaginationLink>
-          </PaginationItem>
+          </PaginationItem>,
         );
       }
 
@@ -114,7 +114,7 @@ const ProductsTable = ({
         items.push(
           <PaginationItem key="ellipsis-end">
             <PaginationEllipsis />
-          </PaginationItem>
+          </PaginationItem>,
         );
       }
 
@@ -128,7 +128,7 @@ const ProductsTable = ({
           >
             {totalPages}
           </PaginationLink>
-        </PaginationItem>
+        </PaginationItem>,
       );
     }
 
@@ -180,7 +180,7 @@ const ProductsTable = ({
                 <Row
                   key={product.id}
                   product={product}
-                  // onEdit={onEdit}
+                  onEdit={onEdit}
                   onDelete={onDelete}
                   onView={onView}
                 />

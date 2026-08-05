@@ -8,20 +8,20 @@ import { Button } from "@/components/ui/button";
 
 interface ProductsTableRowProps {
   product: TProduct;
-  // onEdit: (product: TProduct) => void;
+  onEdit: (product: TProduct) => void;
   onDelete: (product: TProduct) => void;
   onView: (product: TProduct) => void;
 }
 
 // const Row = ({ product, onEdit, onDelete, onView }: ProductsTableRowProps) => {
-const Row = ({ product, onDelete, onView }: ProductsTableRowProps) => {
+const Row = ({ product, onEdit, onDelete, onView }: ProductsTableRowProps) => {
   const coverImage = product.coverImage;
 
   // console.log("Primary Image: ", primaryImage);
 
   const totalStock = product.productImages.reduce(
     (total, image) => total + image.stock,
-    0
+    0,
   );
   return (
     <TableRow key={product.id}>
@@ -73,12 +73,12 @@ const Row = ({ product, onDelete, onView }: ProductsTableRowProps) => {
           <Button variant="ghost" size="sm" onClick={() => onView(product)}>
             <Eye className="h-4 w-4" />
           </Button>
-          {/* <Button variant="ghost" size="sm" onClick={() => onEdit(product)}>
-            <Edit className="h-4 w-4" />
-          </Button> */}
-          <Button variant="ghost" size="sm">
+          <Button variant="ghost" size="sm" onClick={() => onEdit(product)}>
             <Edit className="h-4 w-4" />
           </Button>
+          {/* <Button variant="ghost" size="sm">
+            <Edit className="h-4 w-4" />
+          </Button> */}
           <Button variant="ghost" size="sm" onClick={() => onDelete(product)}>
             <Trash2 className="h-4 w-4" />
           </Button>

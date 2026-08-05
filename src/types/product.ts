@@ -1,4 +1,5 @@
 export interface SpecificationPayload {
+  id?: string;
   key: string;
   value: string;
 }
@@ -139,4 +140,11 @@ export interface GetProductsParams {
   limit?: number;
   sortBy?: string;
   sortOrder?: string;
+}
+
+export interface ProductImagePayload extends CloudinaryImageRef {
+  id?: string;
+  color: string;
+  stock: number;
+  isActive: boolean;
 }

@@ -12,6 +12,7 @@ import { TProduct } from "@/types/product";
 import { Plus, Search } from "lucide-react";
 import { AddProductModal } from "./AddProductModal";
 import { TCategory } from "@/types/category";
+import { EditProductModal } from "./EditProductModal";
 
 const Products = ({
   productsData,
@@ -39,7 +40,7 @@ const Products = ({
   // const [products, setProducts] = useState<TProduct[]>(productsData || []);
   const [localSearchTerm, setLocalSearchTerm] = useState(searchTerm);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  // const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<TProduct | null>(null);
@@ -101,10 +102,10 @@ const Products = ({
   //   refetchProducts();
   // };
 
-  // const openEditModal = (product: TProduct) => {
-  //   setSelectedProduct(product);
-  //   setIsEditModalOpen(true);
-  // };
+  const openEditModal = (product: TProduct) => {
+    setSelectedProduct(product);
+    setIsEditModalOpen(true);
+  };
 
   const openDeleteModal = (product: TProduct) => {
     setSelectedProduct(product);
@@ -150,7 +151,7 @@ const Products = ({
         {/* Products Table */}
         <ProductsTable
           products={filteredProducts}
-          // onEdit={openEditModal}
+          onEdit={openEditModal}
           onDelete={openDeleteModal}
           onView={openViewModal}
           currentPage={currentPage}
@@ -170,16 +171,16 @@ const Products = ({
 
         {selectedProduct && (
           <>
-            {/* <EditProductModal
+            <EditProductModal
               isOpen={isEditModalOpen}
               onClose={() => {
                 setIsEditModalOpen(false);
                 setSelectedProduct(null);
               }}
-              categories={categoriesData}
-              onEdit={handleEditProduct}
               product={selectedProduct}
-            /> */}
+              categories={categoriesData}
+              // onEdit={handleEditProduct}
+            />
 
             <DeleteProductModal
               isOpen={isDeleteModalOpen}
