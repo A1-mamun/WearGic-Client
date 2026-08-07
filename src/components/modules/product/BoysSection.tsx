@@ -15,7 +15,7 @@ const BoysSection = () => {
     category: "Boys Bag",
   });
   return (
-    <div className="py-8 md:py-12 lg:py-16 container mx-auto px-3">
+    <div className="pb-8 md:pb-12 lg:pb-16 container mx-auto px-3">
       <div className=" text-center flex items-center justify-center gap-5 w-full pb-8 md:pb-12 lg:pb-16">
         <div className="border-t border-black flex-1"></div>
         <p className="text-2xl md:text-3xl lg:text-4xl font-medium md:font-semibold">
